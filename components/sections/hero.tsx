@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { WavyBackground } from "@/components/ui/wavy-background";
 
 const logos = [
   { name: "Stripe", width: 60 },
@@ -13,12 +14,14 @@ const logos = [
 export function Hero() {
   return (
     <section className="relative bg-white overflow-hidden">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-indigo-50 via-white to-white rounded-full blur-3xl opacity-60" />
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <WavyBackground
+        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+        containerClassName="pt-24 pb-16"
+        colors={["#c7d2fe", "#a5b4fc", "#818cf8", "#6366f1", "#4f46e5"]}
+        waveOpacity={0.3}
+        blur={20}
+        speed="slow"
+      >
         <div className="text-center">
           {/* Announcement banner */}
           <a
@@ -74,7 +77,7 @@ export function Hero() {
             </div>
           </div>
         </div>
-      </div>
+      </WavyBackground>
     </section>
   );
 }
