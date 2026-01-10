@@ -27,24 +27,24 @@ const useCases = [
 
 export function UseCases() {
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
             Digital receipts that work for
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {useCases.map((useCase, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+          {useCases.slice(0, 3).map((useCase, index) => (
             <div key={index} className="space-y-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue to-navy-light flex items-center justify-center shadow-lg">
-                <useCase.icon className="w-7 h-7 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-[#3b82f6] flex items-center justify-center">
+                <useCase.icon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900">
                 {useCase.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed text-[15px]">
                 {useCase.description}
               </p>
             </div>

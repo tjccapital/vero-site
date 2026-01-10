@@ -4,32 +4,31 @@ import { Github, Twitter, FileText } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-white border-t border-gray-200 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-4 gap-12 mb-8">
           <div>
-            <h3 className="text-white font-bold text-xl mb-4">Vero</h3>
-            <p className="text-sm text-gray-400">
-              Building the future of digital receipts with open standards and
-              interoperability.
+            <h3 className="text-gray-900 font-bold text-lg mb-4">Vero</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Building the future of digital receipts with open standards and interoperability.
             </p>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Product</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-gray-900 font-semibold mb-4 text-sm">Product</h4>
+            <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Features
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#use-cases" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Use Cases
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Pricing
                 </a>
               </li>
@@ -37,20 +36,20 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Resources</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-gray-900 font-semibold mb-4 text-sm">Resources</h4>
+            <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Documentation
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   API Reference
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   DRP Specification
                 </a>
               </li>
@@ -58,20 +57,20 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-gray-900 font-semibold mb-4 text-sm">Company</h4>
+            <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   About
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Blog
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Contact
                 </a>
               </li>
@@ -79,28 +78,28 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
             © 2026 Vero. Built on the Digital Receipt Protocol.
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          <div className="flex gap-6">
             <a
               href="#"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-gray-900 transition-colors"
               aria-label="GitHub"
             >
               <Github className="w-5 h-5" />
             </a>
             <a
               href="#"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-gray-900 transition-colors"
               aria-label="Twitter"
             >
               <Twitter className="w-5 h-5" />
             </a>
             <a
               href="#"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-gray-900 transition-colors"
               aria-label="Documentation"
             >
               <FileText className="w-5 h-5" />

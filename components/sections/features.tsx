@@ -27,35 +27,34 @@ const features = [
 
 export function Features() {
   return (
-    <section className="py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Why Vero?
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Built on the Digital Receipt Protocol - an open standard for programmable
-            receipt flows between merchants, payment processors, and consumers.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Built on the Digital Receipt Protocol - an open standard for programmable receipt flows between merchants, payment processors, and consumers.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
+              className="bg-white rounded-xl p-8 hover:shadow-lg transition-all duration-300 border border-gray-200"
             >
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-lg bg-blue/10 flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-blue" />
+                  <div className="w-12 h-12 rounded-xl bg-[#3b82f6]/10 flex items-center justify-center">
+                    <feature.icon className="w-6 h-6 text-[#3b82f6]" />
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed text-[15px]">
                     {feature.description}
                   </p>
                 </div>
