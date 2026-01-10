@@ -10,37 +10,37 @@ export function ReceiptDemo() {
           {/* Left side - Content */}
           <div className="space-y-8">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Make your receipts portable
+              Digital receipts that reduce friendly fraud
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Implement the DRP specification to generate encrypted receipt models at point of sale that are instantly available to customers. You control the data you want delivered, while customers maintain true ownership.
+              Card issuers and merchants can deliver verifiable digital receipts that link to transactions. When customers dispute charges, you have the proof you need.
             </p>
 
             <div className="space-y-5 pt-4">
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">Enable Digital Receipts</h4>
+                  <h4 className="font-semibold text-gray-900">Transaction linking</h4>
                   <p className="text-gray-600 text-sm mt-1">
-                    Cloud based encryption and delivery that binds to individual consumer model objects.
+                    Every receipt is cryptographically linked to its transaction for verification.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">Create Payment & Secure Receipt</h4>
+                  <h4 className="font-semibold text-gray-900">Instant delivery</h4>
                   <p className="text-gray-600 text-sm mt-1">
-                    Have the system create encrypted receipt packets and securely store them.
+                    Receipts arrive in real-time via email, SMS, or push notification.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">View Receipt</h4>
+                  <h4 className="font-semibold text-gray-900">Dispute resolution</h4>
                   <p className="text-gray-600 text-sm mt-1">
-                    Use viewing clients to decrypt and query over personally encrypted receipts.
+                    Provide itemized proof of purchase for chargeback defense.
                   </p>
                 </div>
               </div>
@@ -50,7 +50,7 @@ export function ReceiptDemo() {
               href="#"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 rounded-md hover:bg-gray-800 transition-colors"
             >
-              View the spec
+              Join the beta program
             </a>
           </div>
 
@@ -109,9 +109,9 @@ export function ReceiptDemo() {
               </div>
             </div>
 
-            {/* API Badge */}
+            {/* Badge */}
             <div className="absolute -top-3 -right-3 bg-gray-900 text-white px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium">
-              API Ready
+              Verified
             </div>
           </div>
         </div>
