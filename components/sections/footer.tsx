@@ -11,7 +11,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <Logo className="h-6 text-gray-900 mb-4" />
             <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
-              Building the future of digital receipts with open standards and interoperability.
+              Digital receipts for the modern world. Reduce friendly fraud and provide value to your users.
             </p>
           </div>
 
@@ -20,17 +20,17 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Features
+                  Digital Receipts
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Fraud Prevention
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Pricing
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Changelog
                 </a>
               </li>
             </ul>
@@ -72,7 +72,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Careers
+                  Contact
                 </a>
               </li>
             </ul>
@@ -81,7 +81,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
-            © 2026 Vero. Built on the Digital Receipt Protocol.
+            © 2026 Vero. Digital receipts for the modern world.
           </p>
           <div className="flex gap-4">
             <a

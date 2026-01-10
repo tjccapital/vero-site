@@ -1,22 +1,22 @@
 "use client";
 
-import { Store, CreditCard, Users } from "lucide-react";
+import { CreditCard, Store, Users } from "lucide-react";
 
 const useCases = [
   {
-    icon: Store,
-    title: "For merchants",
-    description: "Reduce chargebacks and verify point-of-sale receipt data. Integrated loyalty programs and personalized receipts engage customers while reducing support tickets.",
+    icon: CreditCard,
+    title: "For card issuers",
+    description: "Deliver digital receipts directly to cardholders. Reduce friendly fraud, improve customer experience, and provide itemized transaction details in your banking app.",
   },
   {
-    icon: CreditCard,
-    title: "For consumers",
-    description: "Own your purchase history with encrypted records that only you can decrypt. Share with accountants, expense tools, or keep private - your data, your choice.",
+    icon: Store,
+    title: "For merchants",
+    description: "Replace paper receipts with secure digital delivery. Reduce chargebacks, build customer loyalty with personalized receipts, and gain insights from purchase data.",
   },
   {
     icon: Users,
-    title: "For enterprises",
-    description: "Decrease receipts-related expenses including printing costs, lost receipt support, expense claims for returns, and receipt reprint requests.",
+    title: "For consumers",
+    description: "Access all your receipts in one place. Share with expense tools, track spending, and never lose a receipt again. Your data, your control.",
   },
 ];
 

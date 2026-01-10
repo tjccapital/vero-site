@@ -18,10 +18,10 @@ export function Features() {
           {/* Card 1 - Large */}
           <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-8 hover:border-gray-300 transition-colors">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Embeddable admin portal
+              Merchant receipt portal
             </h3>
             <p className="text-gray-600 text-sm mb-6 max-w-md">
-              Let your enterprise customers self-serve receipt configuration, data export setup, and organization settings.
+              Let merchants self-serve receipt configuration, branding, and delivery settings. Full control over receipt data and customer touchpoints.
             </p>
 
             {/* Mock UI */}
@@ -33,23 +33,23 @@ export function Features() {
               </div>
               <div className="p-4">
                 <div className="flex gap-6 text-sm text-gray-500 border-b border-gray-200 pb-3 mb-4">
-                  <span className="text-blue-600 border-b-2 border-blue-600 pb-3 -mb-3">SSO</span>
-                  <span>Organization</span>
-                  <span>Members</span>
-                  <span>SCIM</span>
+                  <span className="text-blue-600 border-b-2 border-blue-600 pb-3 -mb-3">Receipts</span>
+                  <span>Branding</span>
+                  <span>Webhooks</span>
+                  <span>Analytics</span>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span className="text-sm font-medium text-gray-900">Google SAML</span>
+                    <span className="text-sm font-medium text-gray-900">Email delivery</span>
                     <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Active</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span className="text-sm font-medium text-gray-900">Okta OIDC</span>
+                    <span className="text-sm font-medium text-gray-900">SMS delivery</span>
                     <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Active</span>
                   </div>
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-sm font-medium text-gray-900">Custom SAML</span>
-                    <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Active</span>
+                    <span className="text-sm font-medium text-gray-900">Push notifications</span>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Pending</span>
                   </div>
                 </div>
               </div>
@@ -59,26 +59,28 @@ export function Features() {
           {/* Card 2 */}
           <div className="bg-white border border-gray-200 rounded-xl p-8 hover:border-gray-300 transition-colors">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Enterprise-grade encryption
+              Fraud prevention
             </h3>
             <p className="text-gray-600 text-sm mb-6">
-              From passkeys, to breach-resistant encryption, to SAML SSO.
+              Reduce friendly fraud with verifiable purchase records. Link receipts to transactions for dispute resolution.
             </p>
 
             {/* Code snippet */}
             <div className="bg-gray-900 rounded-lg p-4 text-sm font-mono overflow-x-auto">
               <div className="text-gray-500">
                 <span className="text-purple-400">const</span>{" "}
-                <span className="text-blue-300">config</span>{" "}
+                <span className="text-blue-300">receipt</span>{" "}
                 <span className="text-white">=</span> {"{"}
               </div>
               <div className="text-gray-500 pl-4">
-                products: [
+                transactionId: <span className="text-green-300">&quot;txn_123&quot;</span>,
               </div>
-              <div className="pl-8">
-                <span className="bg-blue-500/20 text-blue-300 px-1 rounded">&apos;passkeys&apos;</span>
+              <div className="text-gray-500 pl-4">
+                verified: <span className="text-orange-300">true</span>,
               </div>
-              <div className="text-gray-500 pl-4">]</div>
+              <div className="pl-4">
+                <span className="bg-blue-500/20 text-blue-300 px-1 rounded">signature: &quot;0x8f3...&quot;</span>
+              </div>
               <div className="text-gray-500">{"}"}</div>
             </div>
           </div>
@@ -89,30 +91,30 @@ export function Features() {
           {/* Card 3 */}
           <div className="bg-white border border-gray-200 rounded-xl p-8 hover:border-gray-300 transition-colors">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Connect your users to other applications
+              Connected apps
             </h3>
             <p className="text-gray-600 text-sm">
-              Power cross-application data sharing with secure, user-consented receipt exports.
+              Enable receipt sharing with expense management tools, accounting software, and budgeting apps with user consent.
             </p>
           </div>
 
           {/* Card 4 */}
           <div className="bg-white border border-gray-200 rounded-xl p-8 hover:border-gray-300 transition-colors">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Machine-to-machine authentication
+              Real-time delivery
             </h3>
             <p className="text-gray-600 text-sm">
-              Enable your services to securely communicate with receipt APIs using OAuth 2.0.
+              Instant receipt delivery at point of sale via webhooks. Customers get receipts before they leave the store.
             </p>
           </div>
 
           {/* Card 5 */}
           <div className="bg-white border border-gray-200 rounded-xl p-8 hover:border-gray-300 transition-colors">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Turnkey multi-tenancy
+              AI agent ready
             </h3>
             <p className="text-gray-600 text-sm">
-              Including organization policies, IdP-driven role mapping, JIT provisioning controls, SCIM and more.
+              Structured receipt data designed for AI agents. Enable autonomous expense tracking, returns, and purchase insights.
             </p>
           </div>
         </div>

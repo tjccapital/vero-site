@@ -6,9 +6,9 @@ import { WavyBackground } from "@/components/ui/wavy-background";
 const logos = [
   { name: "Stripe", width: 60 },
   { name: "Square", width: 70 },
+  { name: "Visa", width: 50 },
+  { name: "Mastercard", width: 90 },
   { name: "Shopify", width: 80 },
-  { name: "Toast", width: 60 },
-  { name: "Clover", width: 70 },
 ];
 
 export function Hero() {
@@ -29,21 +29,21 @@ export function Hero() {
           href="#"
           className="inline-flex items-center gap-2 px-4 py-2 mb-8 text-sm font-medium bg-[#d4f542] text-gray-900 rounded-full hover:bg-[#c8e93d] transition-colors"
         >
-          Vero joins the Digital Receipt Protocol consortium
+          Card issuers and merchants can now join our beta program
           <ArrowRight className="w-4 h-4" />
         </a>
 
         {/* Main headline */}
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1] mb-8">
-          The receipt platform for
+          Digital receipts for the
           <br />
-          <span className="text-gray-900">humans & AI agents</span>
+          <span className="text-gray-900">modern world</span>
         </h1>
 
         {/* Subtitle */}
         <p className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-600 leading-relaxed mb-10">
-          One integration for digital receipts, data portability, and privacy,
-          making your app <span className="font-semibold text-gray-900">enterprise-ready</span> and <span className="font-semibold text-gray-900">consumer-ready</span>.
+          One integration to deliver secure, portable digital receipts.
+          Reduce friendly fraud, increase customer loyalty, and provide real value to your users.
         </p>
 
         {/* CTA buttons */}
@@ -52,18 +52,19 @@ export function Hero() {
             href="#"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 rounded-md hover:bg-gray-800 transition-colors min-w-[140px]"
           >
-            Watch demo
+            Join the beta
           </a>
           <a
             href="#"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors min-w-[140px]"
           >
-            Talk to an expert
+            Read the docs
           </a>
         </div>
 
         {/* Logo cloud */}
         <div className="border-t border-gray-200 pt-12">
+          <p className="text-sm text-gray-500 mb-6">Trusted by leading payment providers</p>
           <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-60">
             {logos.map((logo) => (
               <div
