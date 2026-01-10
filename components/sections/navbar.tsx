@@ -67,7 +67,7 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <a href="#" className="text-gray-900">
+            <a href="/" className="text-gray-900">
               <Logo className="h-6" />
             </a>
           </div>
@@ -92,7 +92,7 @@ export function Navbar() {
                       {productItems.map((item) => (
                         <a
                           key={item.title}
-                          href="#"
+                          href="/product"
                           className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
@@ -115,7 +115,7 @@ export function Navbar() {
                     {/* Bottom CTA bar */}
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <a
-                        href="#"
+                        href="/product"
                         className="flex items-center justify-center gap-2 py-3 bg-cyan-50 text-gray-700 rounded-lg hover:bg-cyan-100 transition-colors text-sm"
                       >
                         <Zap className="w-4 h-4" />
@@ -218,7 +218,7 @@ export function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-3">
-            <a href="#" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
+            <a href="/product" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
               Product
             </a>
             <a href="#" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
