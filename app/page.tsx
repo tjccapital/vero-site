@@ -12,13 +12,9 @@ export default function Home() {
       <Navbar />
       <main className="pt-16">
         <Hero />
-        <div id="features">
-          <Features />
-        </div>
+        <Features />
         <ReceiptDemo />
-        <div id="use-cases">
-          <UseCases />
-        </div>
+        <UseCases />
         <CTA />
       </main>
       <Footer />
