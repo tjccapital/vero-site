@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 import { Menu, X } from "lucide-react";
 
 export function Navbar() {
@@ -13,8 +14,8 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <a href="#" className="text-2xl font-bold bg-gradient-to-r from-navy to-blue bg-clip-text text-transparent">
-              Vero
+            <a href="#" className="text-navy hover:text-blue transition-colors">
+              <Logo className="h-7" />
             </a>
           </div>
 
