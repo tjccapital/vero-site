@@ -188,9 +188,6 @@ export function Navbar() {
             <a href="#" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Docs
             </a>
-            <a href="#" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-              Pricing
-            </a>
           </div>
 
           {/* Desktop CTA */}
@@ -232,9 +229,6 @@ export function Navbar() {
             </a>
             <a href="#" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
               Docs
-            </a>
-            <a href="#" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
-              Pricing
             </a>
             <div className="pt-4 space-y-2 border-t border-gray-200">
               <a href="#" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">

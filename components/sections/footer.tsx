@@ -19,18 +19,18 @@ export function Footer() {
             <h4 className="text-gray-900 font-semibold mb-4 text-sm">Product</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Digital Receipts
+                <a href="/product" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Overview
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Fraud Prevention
+                  For Card Issuers
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Pricing
+                  For Merchants
                 </a>
               </li>
             </ul>
