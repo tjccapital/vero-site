@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
+import { Metadata } from "next";
 import {
   Receipt,
   CreditCard,
@@ -18,6 +19,18 @@ import {
   Wallet,
   Layers,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Product - Digital Receipt Platform",
+  description:
+    "Everything you need to deliver digital receipts. Free for merchants, beta for card issuers. Reduce friendly fraud by 40% with secure, portable receipts.",
+  openGraph: {
+    title: "Vero Product - Digital Receipt Platform",
+    description:
+      "Everything you need to deliver digital receipts. Free for merchants, beta for card issuers.",
+    type: "website",
+  },
+};
 
 export default function ProductPage() {
   return (

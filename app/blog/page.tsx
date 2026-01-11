@@ -1,9 +1,21 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { ArrowRight } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blog | Vero - Digital Receipts",
+  description: "News, updates, and insights from the Vero team. Learn about digital receipts, fraud prevention, and the future of payments.",
+  openGraph: {
+    title: "Blog | Vero - Digital Receipts",
+    description: "News, updates, and insights from the Vero team. Learn about digital receipts, fraud prevention, and the future of payments.",
+    type: "website",
+  },
+};
 
 const posts = [
   {
+    slug: "introducing-vero",
     title: "Introducing Vero: Digital Receipts for the Modern World",
     excerpt: "We're launching our beta program to help card issuers and merchants reduce friendly fraud with secure, portable digital receipts.",
     date: "Jan 10, 2026",
@@ -12,6 +24,7 @@ const posts = [
     featured: true,
   },
   {
+    slug: "reduce-friendly-fraud",
     title: "How Digital Receipts Reduce Friendly Fraud by 40%",
     excerpt: "Friendly fraud costs card issuers billions annually. Learn how itemized digital receipts linked to transactions help resolve disputes instantly.",
     date: "Jan 8, 2026",
@@ -19,6 +32,7 @@ const posts = [
     readTime: "5 min read",
   },
   {
+    slug: "drp-explained",
     title: "The Digital Receipt Protocol (DRP) Explained",
     excerpt: "A deep dive into the open standard powering secure receipt delivery. End-to-end encryption ensures card issuers can deliver but never read your receipts.",
     date: "Jan 5, 2026",
@@ -26,6 +40,7 @@ const posts = [
     readTime: "8 min read",
   },
   {
+    slug: "pos-integration-guide",
     title: "5-Minute Integration: Adding Vero to Your POS",
     excerpt: "Step-by-step guide to integrating digital receipts with Square, Toast, Clover, and Shopify. No code required.",
     date: "Jan 3, 2026",
@@ -33,6 +48,7 @@ const posts = [
     readTime: "4 min read",
   },
   {
+    slug: "card-issuers-digital-receipts",
     title: "Why Card Issuers Are Betting on Digital Receipts",
     excerpt: "From reduced chargebacks to increased customer engagement, here's why leading issuers are joining our beta program.",
     date: "Dec 28, 2025",
@@ -40,6 +56,7 @@ const posts = [
     readTime: "6 min read",
   },
   {
+    slug: "zero-knowledge-receipts",
     title: "Building for Privacy: Zero-Knowledge Receipt Delivery",
     excerpt: "How we designed a system where card issuers can deliver receipts without ever seeing what you bought.",
     date: "Dec 20, 2025",
@@ -72,7 +89,7 @@ export default function BlogPage() {
         {featuredPost && (
           <section className="pb-12">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <a href="#" className="group block bg-blue-900 rounded-2xl p-8 md:p-12 hover:bg-blue-800 transition-colors">
+              <a href={`/blog/${featuredPost.slug}`} className="group block bg-blue-900 rounded-2xl p-8 md:p-12 hover:bg-blue-800 transition-colors">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-xs font-medium text-blue-300 bg-blue-800 px-3 py-1 rounded-full">
                     {featuredPost.category}
@@ -100,8 +117,8 @@ export default function BlogPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {regularPosts.map((post) => (
                 <a
-                  key={post.title}
-                  href="#"
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
                   className="group block bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all"
                 >
                   <div className="flex items-center gap-3 mb-3">
