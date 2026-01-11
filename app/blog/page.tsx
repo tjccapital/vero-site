@@ -74,8 +74,8 @@ export default function BlogPage() {
       <Navbar />
       <main className="pt-16">
         {/* Hero */}
-        <section className="py-16 bg-gradient-to-b from-blue-50 to-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-gradient-to-b from-primary-50 to-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
               Blog
             </h1>
@@ -88,18 +88,18 @@ export default function BlogPage() {
         {/* Featured Post */}
         {featuredPost && (
           <section className="pb-12">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <a href={`/blog/${featuredPost.slug}`} className="group block bg-blue-900 rounded-2xl p-8 md:p-12 hover:bg-blue-800 transition-colors">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <a href={`/blog/${featuredPost.slug}`} className="group block bg-primary-900 rounded-2xl p-8 md:p-12 hover:bg-primary-800 transition-colors">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-xs font-medium text-blue-300 bg-blue-800 px-3 py-1 rounded-full">
+                  <span className="text-xs font-medium text-primary-400 bg-primary-800 px-3 py-1 rounded-full">
                     {featuredPost.category}
                   </span>
-                  <span className="text-xs text-blue-300">{featuredPost.date}</span>
+                  <span className="text-xs text-primary-400">{featuredPost.date}</span>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-semibold text-white mb-3 group-hover:text-blue-100 transition-colors">
+                <h2 className="text-2xl md:text-3xl font-semibold text-white mb-3 group-hover:text-primary-100 transition-colors">
                   {featuredPost.title}
                 </h2>
-                <p className="text-blue-200 mb-6 max-w-2xl">
+                <p className="text-primary-100 mb-6 max-w-2xl">
                   {featuredPost.excerpt}
                 </p>
                 <div className="flex items-center gap-2 text-white font-medium text-sm">
@@ -113,7 +113,7 @@ export default function BlogPage() {
 
         {/* Post Grid */}
         <section className="pb-24">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {regularPosts.map((post) => (
                 <a
@@ -122,11 +122,11 @@ export default function BlogPage() {
                   className="group block bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-medium text-primary-900 bg-primary-50 px-2.5 py-1 rounded-full">
                       {post.category}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-900 transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-4 line-clamp-2">
@@ -155,11 +155,11 @@ export default function BlogPage() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                className="px-6 py-3 bg-primary-900 text-white font-medium rounded-lg hover:bg-primary-800 transition-colors text-sm"
               >
                 Subscribe
               </button>

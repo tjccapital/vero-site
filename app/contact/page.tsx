@@ -26,8 +26,8 @@ export default function ContactPage() {
       <Navbar />
       <main className="pt-16">
         {/* Hero */}
-        <section className="py-16 bg-gradient-to-b from-blue-50 to-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-gradient-to-b from-primary-50 to-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
               Get in touch
             </h1>
@@ -39,7 +39,7 @@ export default function ContactPage() {
 
         {/* Contact Form Section */}
         <section className="pb-24">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-5 gap-12">
               {/* Left - Contact Info */}
               <div className="lg:col-span-2 space-y-8">
@@ -56,8 +56,8 @@ export default function ContactPage() {
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-5 h-5 text-primary-900" />
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900 text-sm">Email us</h3>
@@ -66,8 +66,8 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                      <MessageSquare className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0">
+                      <MessageSquare className="w-5 h-5 text-primary-900" />
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900 text-sm">Sales inquiries</h3>
@@ -76,8 +76,8 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0">
+                      <Building2 className="w-5 h-5 text-primary-900" />
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900 text-sm">Partnerships</h3>
@@ -90,15 +90,15 @@ export default function ContactPage() {
                 <div className="pt-6 border-t border-gray-200">
                   <h3 className="font-medium text-gray-900 text-sm mb-3">Quick links</h3>
                   <div className="space-y-2">
-                    <a href="/product" className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                    <a href="/product" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
                       <ArrowRight className="w-3 h-3" />
                       View product details
                     </a>
-                    <a href="/blog" className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                    <a href="/blog" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
                       <ArrowRight className="w-3 h-3" />
                       Read our blog
                     </a>
-                    <a href="#" className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                    <a href="#" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
                       <ArrowRight className="w-3 h-3" />
                       API documentation
                     </a>
@@ -119,7 +119,7 @@ export default function ContactPage() {
                         id="name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
                         placeholder="John Smith"
                         required
                       />
@@ -133,7 +133,7 @@ export default function ContactPage() {
                         id="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
                         placeholder="john@company.com"
                         required
                       />
@@ -150,7 +150,7 @@ export default function ContactPage() {
                         id="company"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
                         placeholder="Acme Inc."
                       />
                     </div>
@@ -162,7 +162,7 @@ export default function ContactPage() {
                         id="role"
                         value={formData.role}
                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm bg-white"
                       >
                         <option value="">Select one...</option>
                         <option value="card-issuer">Card Issuer</option>
@@ -183,7 +183,7 @@ export default function ContactPage() {
                       rows={5}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm resize-none"
                       placeholder="Tell us about your needs..."
                       required
                     />
@@ -196,7 +196,7 @@ export default function ContactPage() {
                         type="checkbox"
                         checked={formData.newsletter}
                         onChange={(e) => setFormData({ ...formData, newsletter: e.target.checked })}
-                        className="mt-0.5 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="mt-0.5 w-4 h-4 text-primary-900 border-gray-300 rounded focus:ring-primary-900"
                       />
                       <span className="text-sm text-gray-600">
                         Subscribe to our newsletter for product updates, industry insights, and tips on reducing friendly fraud.
@@ -206,7 +206,7 @@ export default function ContactPage() {
 
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center justify-center gap-2"
+                    className="w-full px-6 py-3 bg-primary-900 text-white font-medium rounded-lg hover:bg-primary-800 transition-colors text-sm flex items-center justify-center gap-2"
                   >
                     Send message
                     <ArrowRight className="w-4 h-4" />
@@ -218,23 +218,23 @@ export default function ContactPage() {
         </section>
 
         {/* Newsletter Section */}
-        <section className="py-16 bg-blue-900">
+        <section className="py-16 bg-primary-900">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-2xl font-semibold text-white mb-3">
               Just want updates?
             </h2>
-            <p className="text-blue-200 mb-6">
+            <p className="text-primary-100 mb-6">
               Subscribe to our newsletter and stay informed about the latest in digital receipts.
             </p>
             <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 border border-blue-700 bg-blue-800 text-white placeholder-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-sm"
+                className="flex-1 px-4 py-3 border border-primary-700 bg-primary-800 text-white placeholder-primary-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-sm"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-white text-blue-900 font-medium rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                className="px-6 py-3 bg-white text-primary-900 font-medium rounded-lg hover:bg-primary-50 transition-colors text-sm"
               >
                 Subscribe
               </button>

@@ -41,7 +41,7 @@ export function ContainerTextFlip({
             ease: "easeInOut",
           }}
           className={cn(
-            "inline-block text-blue-600",
+            "inline-block text-primary-900",
             textClassName
           )}
         >

@@ -102,8 +102,8 @@ export function Navbar() {
                           href={item.href}
                           className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                            <item.icon className="w-5 h-5 text-blue-600" />
+                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center">
+                            <item.icon className="w-5 h-5 text-primary-900" />
                           </div>
                           <div>
                             <span className="font-medium text-gray-900 text-sm">{item.title}</span>
@@ -116,7 +116,7 @@ export function Navbar() {
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <a
                         href="/contact"
-                        className="flex items-center justify-center gap-2 py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                        className="flex items-center justify-center gap-2 py-2.5 bg-primary-50 text-primary-900 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium"
                       >
                         Not sure which solution?
                         <ArrowRight className="w-4 h-4" />
@@ -180,7 +180,7 @@ export function Navbar() {
             </a>
             <a
               href="#"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
             >
               Get started
             </a>
@@ -230,7 +230,7 @@ export function Navbar() {
               </a>
               <a
                 href="#"
-                className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
               >
                 Get started
               </a>

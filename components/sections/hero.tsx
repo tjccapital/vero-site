@@ -13,11 +13,11 @@ const logos = [
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-b from-blue-50 to-white overflow-hidden">
+    <section className="relative bg-gradient-to-b from-primary-50 to-white overflow-hidden">
       <WavyBackground
         className="w-full"
         containerClassName="pt-28 pb-20"
-        colors={["#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#3b82f6"]}
+        colors={["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#1e3a8a"]}
         waveOpacity={0.25}
         blur={30}
         speed="slow"
@@ -27,9 +27,9 @@ export function Hero() {
           {/* Announcement banner */}
           <a
             href="/blog"
-            className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors border border-blue-100"
+            className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-primary-50 text-primary-900 rounded-full hover:bg-primary-100 transition-colors border border-primary-100"
           >
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-primary-900 animate-pulse" />
             Card issuers and merchants can now join our beta
             <ArrowRight className="w-4 h-4" />
           </a>
@@ -38,7 +38,7 @@ export function Hero() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-gray-900 leading-[1.1] mb-6">
             Digital receipts for the
             <br />
-            <span className="text-blue-600">modern world</span>
+            <span className="text-primary-900">modern world</span>
           </h1>
 
           {/* Subtitle */}
@@ -51,7 +51,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
             <a
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors shadow-sm shadow-primary-100"
             >
               Join the beta
               <ArrowRight className="w-4 h-4 ml-2" />
