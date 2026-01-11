@@ -1,8 +1,8 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
+import { ProductHero } from "@/components/sections/product-hero";
 import { Metadata } from "next";
 import {
-  Receipt,
   CreditCard,
   Store,
   Shield,
@@ -10,8 +10,6 @@ import {
   Lock,
   ArrowRight,
   CheckCircle2,
-  Smartphone,
-  Link2,
   Bot,
   FileCode,
   BarChart3,
@@ -37,137 +35,106 @@ export default function ProductPage() {
     <>
       <Navbar />
       <main className="pt-16">
-        {/* Hero */}
-        <section className="py-20 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Scales from your first receipt to Fortune 100 retailers
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Free for merchants. Free beta for card issuers. Reduce friendly fraud that costs the industry billions.
-            </p>
-          </div>
-        </section>
+        {/* Hero with Grid Background */}
+        <ProductHero />
 
         {/* Feature Grid */}
-        <section className="pb-24 bg-white">
+        <section className="py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <p className="text-sm font-medium text-blue-600 mb-3">Features</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                Everything you need to go digital
+              </h2>
+            </div>
 
-            {/* Row 1 */}
-            <div className="grid lg:grid-cols-5 gap-5 mb-5">
-              {/* Large card - Receipt Flow */}
-              <div className="lg:col-span-3 border border-gray-200 rounded-2xl p-8 bg-white">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Seamless receipt delivery
+            {/* Row 1 - Main Features */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-6">
+              {/* Fraud Prevention - Primary */}
+              <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-2xl p-8">
+                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-5">
+                  <Shield className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  Reduce friendly fraud by 40%
                 </h3>
-                <p className="text-gray-600 text-sm mb-8">
-                  Receipts flow from POS to consumer&apos;s card app automatically. No email, no phone number, no friction.
+                <p className="text-gray-600 mb-6">
+                  Itemized receipts linked to transactions help customers recognize charges instantly. No more &quot;I don&apos;t recognize this&quot; disputes.
                 </p>
-
-              {/* Visual - hidden on mobile */}
-                <div className="hidden md:block bg-gray-900 rounded-xl p-6 overflow-x-auto">
-                  <div className="flex items-center justify-between min-w-[500px]">
-                    {/* POS Receipt */}
-                    <div className="bg-gray-800 rounded-lg p-4 w-36">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-white text-xs font-medium">Payment Complete</span>
-                        <CheckCircle2 className="w-4 h-4 text-green-400" />
+                <div className="bg-white rounded-xl p-5 border border-gray-100">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 bg-red-50 rounded-lg p-3">
+                      <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-red-600 text-[10px] font-bold">!</span>
                       </div>
-                      <div className="space-y-1.5 text-[10px] text-gray-400">
-                        <div className="flex justify-between"><span>Latte</span><span>$4.20</span></div>
-                        <div className="flex justify-between"><span>Croissant</span><span>$3.50</span></div>
-                        <div className="flex justify-between"><span>Espresso</span><span>$2.75</span></div>
-                        <div className="border-t border-gray-700 pt-1.5 mt-1.5">
-                          <div className="flex justify-between text-white font-medium"><span>Total</span><span>$11.29</span></div>
-                        </div>
-                      </div>
-                      <div className="mt-3 pt-2 border-t border-gray-700 text-[9px] text-green-400 text-center">
-                        Digital Receipt Sent
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Dispute: $47.99</p>
+                        <p className="text-xs text-gray-500">&quot;I don&apos;t recognize this charge&quot;</p>
                       </div>
                     </div>
-
-                    <ArrowRight className="w-5 h-5 text-gray-600" />
-
-                    {/* API */}
-                    <div className="bg-gray-800 rounded-lg p-3 w-44">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">POST</span>
-                        <span className="text-gray-400 text-[10px] font-mono">/v1/receipts</span>
-                      </div>
-                      <pre className="text-[9px] text-gray-400 font-mono leading-relaxed">
-{`{
-  "merchant": "Coffee Shop",
-  "total": 11.29,
-  "card_token": "tok_visa",
-  "encrypted": true
-}`}
-                      </pre>
-                    </div>
-
-                    <ArrowRight className="w-5 h-5 text-gray-600" />
-
-                    {/* Card App */}
-                    <div className="bg-white rounded-lg p-4 w-36 shadow-lg">
-                      <div className="mb-2">
-                        <p className="text-xs font-semibold text-gray-900">Coffee Shop</p>
-                        <p className="text-[9px] text-gray-500">123 Main St</p>
-                      </div>
-                      <div className="space-y-1.5 text-[10px] text-gray-600">
-                        <div className="flex justify-between"><span>Latte</span><span>$4.20</span></div>
-                        <div className="flex justify-between"><span>Croissant</span><span>$3.50</span></div>
-                        <div className="flex justify-between"><span>Espresso</span><span>$2.75</span></div>
-                        <div className="border-t border-gray-200 pt-1.5 mt-1.5">
-                          <div className="flex justify-between text-gray-900 font-medium"><span>Total</span><span>$11.29</span></div>
-                        </div>
+                    <div className="flex items-start gap-3 bg-green-50 rounded-lg p-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Resolved instantly</p>
+                        <p className="text-xs text-gray-500">Mario&apos;s Italian - 2 entrees, dessert, tip</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Fraud Prevention */}
-              <div className="lg:col-span-2 border border-gray-200 rounded-2xl p-8 bg-white">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Fraud prevention
+              {/* Real-time Delivery */}
+              <div className="bg-gradient-to-br from-purple-50 to-white border border-purple-100 rounded-2xl p-8">
+                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center mb-5">
+                  <Zap className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  Real-time delivery
                 </h3>
-                <p className="text-gray-600 text-sm mb-6">
-                  Reduce friendly fraud with verifiable purchase records linked to transactions.
+                <p className="text-gray-600 mb-6">
+                  Receipts arrive in the customer&apos;s card app before they leave the store. Instant webhook notifications for your systems.
                 </p>
-                <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-                  <div className="text-gray-500">{"{"}</div>
-                  <div className="pl-3 text-gray-400">
-                    <span className="text-purple-400">&quot;transaction_id&quot;</span>: <span className="text-green-400">&quot;txn_8x7k2&quot;</span>,
+                <div className="bg-gray-900 rounded-xl p-5 font-mono text-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">POST</span>
+                    <span className="text-gray-400">/v1/receipts</span>
                   </div>
-                  <div className="pl-3 text-gray-400">
-                    <span className="text-purple-400">&quot;receipt_hash&quot;</span>: <span className="text-green-400">&quot;0x8f3a...&quot;</span>,
+                  <pre className="text-xs text-gray-400 leading-relaxed">
+{`{
+  "merchant": "Coffee Shop",
+  "total": 11.29,
+  "items": [...],
+  "encrypted": true
+}`}
+                  </pre>
+                  <div className="mt-3 pt-3 border-t border-gray-800 flex items-center gap-2 text-green-400 text-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Delivered in 47ms</span>
                   </div>
-                  <div className="pl-3 text-gray-400">
-                    <span className="text-purple-400">&quot;verified&quot;</span>: <span className="text-orange-400">true</span>
-                  </div>
-                  <div className="text-gray-500">{"}"}</div>
                 </div>
               </div>
             </div>
 
-            {/* Row 2 */}
-            <div className="grid lg:grid-cols-3 gap-5 mb-5">
+            {/* Row 2 - Three Column */}
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
               {/* Free for Merchants */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center mb-4">
+              <div className="border border-gray-200 rounded-2xl p-7 bg-white hover:shadow-lg hover:border-gray-300 transition-all">
+                <div className="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center mb-4">
                   <Store className="w-5 h-5 text-green-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
                   Free for merchants
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
-                  Download our free plugin for Square, Toast, Clover, Shopify. No fees, no contracts.
+                  Download our plugin for Square, Toast, Clover, Shopify. No fees ever.
                 </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center gap-2">
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
                     5-minute setup
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 text-sm text-gray-600">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
                     No code required
                   </li>
@@ -175,162 +142,146 @@ export default function ProductPage() {
               </div>
 
               {/* Card Issuer Beta */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
+              <div className="border border-gray-200 rounded-2xl p-7 bg-white hover:shadow-lg hover:border-gray-300 transition-all">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
                   <CreditCard className="w-5 h-5 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
                   Card issuer beta
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
-                  Join our free pilot to deliver digital receipts to cardholders and reduce disputes.
+                  Join our free pilot to deliver receipts and reduce disputes.
                 </p>
-                <a href="/contact" className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
+                <a href="/contact" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700">
                   Request access <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
 
-              {/* Real-time */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center mb-4">
-                  <Zap className="w-5 h-5 text-purple-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Real-time delivery
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  Receipts arrive before customers leave the store. Instant webhook notifications.
-                </p>
-                <div className="bg-gray-100 rounded-lg px-3 py-2 text-xs font-mono text-gray-600">
-                  POST /webhooks/receipt
-                </div>
-              </div>
-            </div>
-
-            {/* Row 3 */}
-            <div className="grid lg:grid-cols-2 gap-5 mb-5">
-              {/* Dispute Resolution */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Dispute resolution
-                </h3>
-                <p className="text-gray-600 text-sm mb-6">
-                  Every dispute costs time and money. Itemized receipts linked to transactions resolve disputes instantly.
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3 bg-red-50 rounded-lg p-3">
-                    <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                      <span className="text-red-600 text-xs">!</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Customer disputes $47.99</p>
-                      <p className="text-xs text-gray-500">&quot;I don&apos;t recognize this&quot;</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 bg-green-50 rounded-lg p-3">
-                    <CheckCircle2 className="w-6 h-6 text-green-500 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Receipt shows itemized purchase</p>
-                      <p className="text-xs text-gray-500">Mario&apos;s Italian - 2 entrees, dessert</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Connected Apps */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Connected apps
-                </h3>
-                <p className="text-gray-600 text-sm mb-6">
-                  Consumers share receipts with expense tools, accounting software, and budgeting apps.
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <BarChart3 className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-                    <p className="text-[10px] text-gray-500">Expensify</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <BookOpen className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-                    <p className="text-[10px] text-gray-500">QuickBooks</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <Wallet className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-                    <p className="text-[10px] text-gray-500">Mint</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <Layers className="w-5 h-5 text-gray-600 mx-auto mb-1" />
-                    <p className="text-[10px] text-gray-500">Your App</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 4 */}
-            <div className="grid lg:grid-cols-3 gap-5">
-              {/* End-to-end encryption */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4">
+              {/* End-to-end Encryption */}
+              <div className="border border-gray-200 rounded-2xl p-7 bg-white hover:shadow-lg hover:border-gray-300 transition-all">
+                <div className="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center mb-4">
                   <Lock className="w-5 h-5 text-gray-700" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  End-to-end encryption
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  End-to-end encrypted
                 </h3>
-                <p className="text-gray-600 text-sm">
-                  Built on DRP. Card issuers deliver but cannot read receipts. Only you see your data.
+                <p className="text-gray-600 text-sm mb-4">
+                  Built on DRP. Card issuers deliver but cannot read receipts.
                 </p>
+                <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-gray-900">
+                  Learn about DRP <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+            {/* Row 3 - Two Column */}
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              {/* Connected Apps */}
+              <div className="border border-gray-200 rounded-2xl p-7 bg-white">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Connected apps
+                </h3>
+                <p className="text-gray-600 text-sm mb-5">
+                  Consumers share receipts with expense tools, accounting software, and budgeting apps.
+                </p>
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="bg-gray-50 rounded-xl p-4 text-center hover:bg-gray-100 transition-colors">
+                    <BarChart3 className="w-6 h-6 text-gray-600 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500 font-medium">Expensify</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4 text-center hover:bg-gray-100 transition-colors">
+                    <BookOpen className="w-6 h-6 text-gray-600 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500 font-medium">QuickBooks</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4 text-center hover:bg-gray-100 transition-colors">
+                    <Wallet className="w-6 h-6 text-gray-600 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500 font-medium">Mint</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4 text-center hover:bg-gray-100 transition-colors">
+                    <Layers className="w-6 h-6 text-gray-600 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500 font-medium">Your App</p>
+                  </div>
+                </div>
               </div>
 
               {/* AI Ready */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4">
-                  <Bot className="w-5 h-5 text-gray-700" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="border border-gray-200 rounded-2xl p-7 bg-white">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
                   AI agent ready
                 </h3>
-                <p className="text-gray-600 text-sm">
-                  Structured receipt data for AI agents. Enable autonomous expense tracking and insights.
+                <p className="text-gray-600 text-sm mb-5">
+                  Structured receipt data designed for AI agents. Enable autonomous expense tracking and purchase insights.
                 </p>
-              </div>
-
-              {/* API & SDK */}
-              <div className="border border-gray-200 rounded-2xl p-8 bg-white">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4">
-                  <FileCode className="w-5 h-5 text-gray-700" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
+                    <Bot className="w-6 h-6 text-violet-600" />
+                  </div>
+                  <div className="flex-1 bg-gray-50 rounded-xl p-3">
+                    <p className="text-xs text-gray-500 mb-1">AI Agent Response</p>
+                    <p className="text-sm text-gray-700">&quot;You spent $142 on coffee this month across 12 transactions.&quot;</p>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  API & SDK
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  RESTful API and SDKs for Node.js, Python, and mobile. Or use our pre-built plugins.
-                </p>
+              </div>
+            </div>
+
+            {/* Row 4 - API */}
+            <div className="border border-gray-200 rounded-2xl p-8 bg-gradient-to-br from-gray-50 to-white">
+              <div className="flex flex-col md:flex-row md:items-center gap-6">
+                <div className="flex-1">
+                  <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center mb-4">
+                    <FileCode className="w-6 h-6 text-gray-700" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Developer-friendly API
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    RESTful API and SDKs for Node.js, Python, Go, and mobile platforms. Comprehensive documentation and sandbox environment.
+                  </p>
+                  <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700">
+                    View documentation <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
+                <div className="md:w-80 bg-gray-900 rounded-xl p-5 font-mono text-sm">
+                  <div className="text-gray-500 mb-2"># Install SDK</div>
+                  <div className="text-green-400 mb-4">npm install @vero/sdk</div>
+                  <div className="text-gray-500 mb-2"># Send receipt</div>
+                  <pre className="text-xs text-gray-400">
+{`import { Vero } from '@vero/sdk'
+
+const vero = new Vero('sk_live_...')
+await vero.receipts.create({
+  transaction_id: 'txn_123',
+  items: [...]
+})`}
+                  </pre>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* CTA */}
-        <section className="py-20 bg-gray-50 border-t border-gray-200">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <section className="py-20 bg-blue-900">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Ready to reduce friendly fraud?
             </h2>
-            <p className="text-gray-600 mb-8">
+            <p className="text-lg text-blue-100 mb-10">
               Card issuers: Join our free beta. Merchants: Get started in 5 minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-blue-900 bg-white rounded-lg hover:bg-blue-50 transition-colors"
               >
                 Request beta access
+                <ArrowRight className="w-4 h-4 ml-2" />
               </a>
               <a
                 href="#"
-                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
               >
-                Download plugin
+                View documentation
               </a>
             </div>
           </div>
