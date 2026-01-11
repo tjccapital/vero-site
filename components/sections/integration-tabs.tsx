@@ -53,7 +53,7 @@ export function IntegrationTabs() {
     <section className="py-24 bg-gradient-to-b from-white to-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="text-sm font-medium text-indigo-600 mb-3">Integration</p>
+          <p className="text-sm font-medium text-blue-600 mb-3">Integration</p>
           <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
             Built for everyone in the ecosystem
           </h2>

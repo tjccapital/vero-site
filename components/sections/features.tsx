@@ -8,7 +8,7 @@ export function Features() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-16">
-          <p className="text-sm font-medium text-indigo-600 mb-3">Platform</p>
+          <p className="text-sm font-medium text-blue-600 mb-3">Platform</p>
           <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
             Everything you need for digital receipts
           </h2>
@@ -19,8 +19,8 @@ export function Features() {
           {/* Card 1 - Large */}
           <div className="md:col-span-2 bg-gradient-to-br from-slate-50 to-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg hover:shadow-gray-100/50 transition-all">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                <LayoutDashboard className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                <LayoutDashboard className="w-5 h-5 text-blue-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
                 Merchant portal
@@ -39,7 +39,7 @@ export function Features() {
               </div>
               <div className="p-5">
                 <div className="flex gap-6 text-sm text-gray-400 border-b border-gray-100 pb-3 mb-4">
-                  <span className="text-indigo-600 border-b-2 border-indigo-600 pb-3 -mb-3 font-medium">Receipts</span>
+                  <span className="text-blue-600 border-b-2 border-blue-600 pb-3 -mb-3 font-medium">Receipts</span>
                   <span>Branding</span>
                   <span className="hidden sm:inline">Webhooks</span>
                 </div>

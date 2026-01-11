@@ -7,7 +7,7 @@ export function Encryption() {
     <section className="py-24 bg-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-sm font-medium text-indigo-400 mb-3">Security</p>
+          <p className="text-sm font-medium text-blue-400 mb-3">Security</p>
           <h2 className="text-3xl md:text-4xl font-semibold text-white">
             End-to-end encryption by design
           </h2>
