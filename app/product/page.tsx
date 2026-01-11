@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
+import { Metadata } from "next";
 import {
   Receipt,
   CreditCard,
@@ -18,6 +19,18 @@ import {
   Wallet,
   Layers,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Product - Digital Receipt Platform",
+  description:
+    "Everything you need to deliver digital receipts. Free for merchants, beta for card issuers. Reduce friendly fraud by 40% with secure, portable receipts.",
+  openGraph: {
+    title: "Vero Product - Digital Receipt Platform",
+    description:
+      "Everything you need to deliver digital receipts. Free for merchants, beta for card issuers.",
+    type: "website",
+  },
+};
 
 export default function ProductPage() {
   return (
@@ -172,7 +185,7 @@ export default function ProductPage() {
                 <p className="text-gray-600 text-sm mb-4">
                   Join our free pilot to deliver digital receipts to cardholders and reduce disputes.
                 </p>
-                <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
+                <a href="/contact" className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
                   Request access <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -308,7 +321,7 @@ export default function ProductPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="#"
+                href="/contact"
                 className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors"
               >
                 Request beta access

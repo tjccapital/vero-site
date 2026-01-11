@@ -81,7 +81,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
-            © 2026 Vero. Digital receipts for the modern world.
+            © 2026 Vero
           </p>
           <div className="flex gap-4">
             <a

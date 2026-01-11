@@ -50,7 +50,7 @@ export function Hero() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
             <a
-              href="#"
+              href="/contact"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
             >
               Join the beta

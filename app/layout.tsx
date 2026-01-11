@@ -2,8 +2,76 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Vero - Digital Receipts for the Modern World",
-  description: "Vero transforms paper receipts into secure, portable digital records. Built on the Digital Receipt Protocol for seamless integration across merchants, payment processors, and consumers.",
+  metadataBase: new URL("https://getvero.com"),
+  title: {
+    default: "Vero - Digital Receipts for the Modern World",
+    template: "%s | Vero",
+  },
+  description:
+    "Vero transforms paper receipts into secure, portable digital records. Reduce friendly fraud by 40% with itemized receipts linked to transactions. Free for merchants, beta for card issuers.",
+  keywords: [
+    "digital receipts",
+    "electronic receipts",
+    "e-receipts",
+    "friendly fraud",
+    "chargeback prevention",
+    "payment receipts",
+    "POS integration",
+    "card issuer",
+    "merchant receipts",
+    "Digital Receipt Protocol",
+    "DRP",
+  ],
+  authors: [{ name: "Vero" }],
+  creator: "Vero",
+  publisher: "Vero",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://getvero.com",
+    siteName: "Vero",
+    title: "Vero - Digital Receipts for the Modern World",
+    description:
+      "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40% with itemized receipts linked to transactions.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Vero - Digital Receipts",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vero - Digital Receipts for the Modern World",
+    description:
+      "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40%.",
+    images: ["/og-image.png"],
+    creator: "@getvero",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -13,9 +81,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        {children}
-      </body>
+      <head>
+        <link rel="canonical" href="https://getvero.com" />
+      </head>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
