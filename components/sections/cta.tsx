@@ -4,27 +4,27 @@ import { ArrowRight } from "lucide-react";
 
 export function CTA() {
   return (
-    <section className="py-24 bg-gray-50 border-t border-gray-200">
+    <section className="py-24 bg-indigo-600">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-          Join the beta program
+        <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
+          Ready to reduce friendly fraud?
         </h2>
-        <p className="text-lg text-gray-600 mb-10 leading-relaxed max-w-2xl mx-auto">
-          Card issuers and merchants can join our beta to reduce friendly fraud and provide real value to their users. Be among the first to deliver digital receipts.
+        <p className="text-lg text-indigo-100 mb-10 leading-relaxed max-w-xl mx-auto">
+          Join our beta program and be among the first to deliver digital receipts.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="#"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 rounded-md hover:bg-gray-800 transition-colors group"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-indigo-600 bg-white rounded-lg hover:bg-indigo-50 transition-colors group shadow-sm"
           >
             Request beta access
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
             href="#"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
           >
-            Read the documentation
+            Read the docs
           </a>
         </div>
       </div>
