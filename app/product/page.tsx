@@ -13,6 +13,10 @@ import {
   Link2,
   Bot,
   FileCode,
+  BarChart3,
+  BookOpen,
+  Wallet,
+  Layers,
 } from "lucide-react";
 
 export default function ProductPage() {
@@ -230,19 +234,19 @@ export default function ProductPage() {
                 </p>
                 <div className="grid grid-cols-4 gap-3">
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <div className="text-xl mb-1">📊</div>
+                    <BarChart3 className="w-5 h-5 text-gray-600 mx-auto mb-1" />
                     <p className="text-[10px] text-gray-500">Expensify</p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <div className="text-xl mb-1">📗</div>
+                    <BookOpen className="w-5 h-5 text-gray-600 mx-auto mb-1" />
                     <p className="text-[10px] text-gray-500">QuickBooks</p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <div className="text-xl mb-1">💰</div>
+                    <Wallet className="w-5 h-5 text-gray-600 mx-auto mb-1" />
                     <p className="text-[10px] text-gray-500">Mint</p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <div className="text-xl mb-1">📱</div>
+                    <Layers className="w-5 h-5 text-gray-600 mx-auto mb-1" />
                     <p className="text-[10px] text-gray-500">Your App</p>
                   </div>
                 </div>
