@@ -220,7 +220,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
         {/* Author & CTA */}
         <section className="py-12 border-t border-gray-200">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-primary-50 rounded-2xl p-8 text-center">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Ready to get started?
@@ -240,7 +240,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
         {/* Related Posts */}
         <section className="py-12 bg-gray-50">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h3 className="text-xl font-semibold text-gray-900 mb-8 text-center">More from the blog</h3>
             <div className="grid md:grid-cols-2 gap-6">
               {Object.entries(posts)
