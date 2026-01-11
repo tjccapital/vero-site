@@ -26,7 +26,7 @@ export function Hero() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Announcement banner */}
           <a
-            href="#"
+            href="/blog"
             className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors border border-blue-100"
           >
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
