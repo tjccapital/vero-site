@@ -34,8 +34,8 @@ export function Encryption() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
-                  <EyeOff className="w-5 h-5 text-yellow-400" />
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <EyeOff className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">Card issuers can&apos;t read it</h4>
@@ -46,8 +46,8 @@ export function Encryption() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0">
-                  <Key className="w-5 h-5 text-green-400" />
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <Key className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">You hold the keys</h4>
@@ -95,7 +95,7 @@ export function Encryption() {
                 </div>
                 <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
                   <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-green-400" />
+                    <Lock className="w-4 h-4 text-blue-400" />
                     <p className="text-sm text-white">
                       <span className="font-medium">Encrypted data</span>
                       <span className="text-gray-400"> travels through Vero</span>
@@ -116,7 +116,7 @@ export function Encryption() {
                 </div>
                 <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
                   <div className="flex items-center gap-2">
-                    <EyeOff className="w-4 h-4 text-yellow-400" />
+                    <EyeOff className="w-4 h-4 text-blue-400" />
                     <p className="text-sm text-white">
                       <span className="font-medium">Card issuer</span>
                       <span className="text-gray-400"> delivers but cannot read</span>
@@ -132,7 +132,7 @@ export function Encryption() {
 
               {/* Step 4 */}
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   4
                 </div>
                 <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
