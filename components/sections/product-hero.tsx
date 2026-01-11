@@ -35,7 +35,7 @@ export function ProductHero() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/contact"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
           >
             Request beta access
             <ArrowRight className="w-4 h-4 ml-2" />

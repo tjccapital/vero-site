@@ -43,7 +43,7 @@ export default function ProductPage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Header */}
             <div className="text-center mb-16">
-              <p className="text-sm font-medium text-blue-600 mb-3">Features</p>
+              <p className="text-sm font-medium text-primary-900 mb-3">Features</p>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
                 Everything you need to go digital
               </h2>
@@ -52,9 +52,9 @@ export default function ProductPage() {
             {/* Row 1 - Main Features */}
             <div className="grid lg:grid-cols-2 gap-6 mb-6">
               {/* Fraud Prevention - Primary */}
-              <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-2xl p-8">
-                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-5">
-                  <Shield className="w-6 h-6 text-blue-600" />
+              <div className="bg-gradient-to-br from-primary-50 to-white border border-primary-100 rounded-2xl p-8">
+                <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center mb-5">
+                  <Shield className="w-6 h-6 text-primary-900" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Reduce friendly fraud by 40%
@@ -143,8 +143,8 @@ export default function ProductPage() {
 
               {/* Card Issuer Beta */}
               <div className="border border-gray-200 rounded-2xl p-7 bg-white hover:shadow-lg hover:border-gray-300 transition-all">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-                  <CreditCard className="w-5 h-5 text-blue-600" />
+                <div className="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center mb-4">
+                  <CreditCard className="w-5 h-5 text-primary-900" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                   Card issuer beta
@@ -152,7 +152,7 @@ export default function ProductPage() {
                 <p className="text-gray-600 text-sm mb-4">
                   Join our free pilot to deliver receipts and reduce disputes.
                 </p>
-                <a href="/contact" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700">
+                <a href="/contact" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-900 hover:text-primary-800">
                   Request access <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -237,7 +237,7 @@ export default function ProductPage() {
                   <p className="text-gray-600 mb-4">
                     RESTful API and SDKs for Node.js, Python, Go, and mobile platforms. Comprehensive documentation and sandbox environment.
                   </p>
-                  <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700">
+                  <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-900 hover:text-primary-800">
                     View documentation <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -261,18 +261,18 @@ await vero.receipts.create({
         </section>
 
         {/* CTA */}
-        <section className="py-20 bg-blue-900">
+        <section className="py-20 bg-primary-900">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Ready to reduce friendly fraud?
             </h2>
-            <p className="text-lg text-blue-100 mb-10">
+            <p className="text-lg text-primary-100 mb-10">
               Card issuers: Join our free beta. Merchants: Get started in 5 minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-blue-900 bg-white rounded-lg hover:bg-blue-50 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-primary-900 bg-white rounded-lg hover:bg-primary-50 transition-colors"
               >
                 Request beta access
                 <ArrowRight className="w-4 h-4 ml-2" />

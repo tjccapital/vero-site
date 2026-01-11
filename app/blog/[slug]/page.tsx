@@ -144,7 +144,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <h1 className="text-3xl font-semibold text-gray-900 mb-4">Post not found</h1>
               <p className="text-gray-500 mb-8">The article you're looking for doesn't exist.</p>
-              <a href="/blog" className="text-blue-600 hover:text-blue-700 font-medium">
+              <a href="/blog" className="text-primary-900 hover:text-blue-700 font-medium">
                 Back to blog
               </a>
             </div>
@@ -171,7 +171,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             </a>
 
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-xs font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+              <span className="text-xs font-medium text-primary-900 bg-primary-50 px-3 py-1 rounded-full">
                 {post.category}
               </span>
             </div>
@@ -203,7 +203,16 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         <section className="py-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div
-              className="prose prose-gray max-w-none prose-headings:font-semibold prose-headings:text-gray-900 prose-p:text-gray-600 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ol:text-gray-600 prose-ul:text-gray-600"
+              className="prose prose-lg prose-gray max-w-none
+                prose-headings:font-semibold prose-headings:text-gray-900
+                prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
+                prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+                prose-p:text-gray-600 prose-p:leading-relaxed prose-p:mb-6
+                prose-a:text-primary-900 prose-a:no-underline hover:prose-a:underline
+                prose-strong:text-gray-900 prose-strong:font-semibold
+                prose-ol:text-gray-600 prose-ol:my-6 prose-ol:pl-6
+                prose-ul:text-gray-600 prose-ul:my-6 prose-ul:pl-6
+                prose-li:mb-2"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
@@ -212,7 +221,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         {/* Author & CTA */}
         <section className="py-12 border-t border-gray-200">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-blue-50 rounded-2xl p-8 text-center">
+            <div className="bg-primary-50 rounded-2xl p-8 text-center">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Ready to get started?
               </h3>
@@ -221,7 +230,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               </p>
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
               >
                 Request beta access
               </a>
@@ -231,8 +240,8 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
         {/* Related Posts */}
         <section className="py-12 bg-gray-50">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-8">More from the blog</h3>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 className="text-xl font-semibold text-gray-900 mb-8 text-center">More from the blog</h3>
             <div className="grid md:grid-cols-2 gap-6">
               {Object.entries(posts)
                 .filter(([key]) => key !== slug)
@@ -243,10 +252,10 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                     href={`/blog/${key}`}
                     className="group block bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all"
                   >
-                    <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-medium text-primary-900 bg-primary-50 px-2.5 py-1 rounded-full">
                       {relatedPost.category}
                     </span>
-                    <h4 className="text-lg font-semibold text-gray-900 mt-3 mb-2 group-hover:text-blue-600 transition-colors">
+                    <h4 className="text-lg font-semibold text-gray-900 mt-3 mb-2 group-hover:text-primary-900 transition-colors">
                       {relatedPost.title}
                     </h4>
                     <p className="text-sm text-gray-500 line-clamp-2">{relatedPost.excerpt}</p>
