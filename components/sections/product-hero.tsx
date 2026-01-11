@@ -41,7 +41,7 @@ export function ProductHero() {
             <ArrowRight className="w-4 h-4 ml-2" />
           </a>
           <a
-            href="#"
+            href="https://www.digitalreceiptprotocol.org"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             View documentation

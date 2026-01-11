@@ -40,17 +40,17 @@ export function Footer() {
             <h4 className="text-gray-900 font-semibold mb-4 text-sm">Resources</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="https://www.digitalreceiptprotocol.org" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Documentation
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="https://www.digitalreceiptprotocol.org" className="text-gray-600 hover:text-gray-900 transition-colors">
                   API Reference
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="https://www.digitalreceiptprotocol.org" className="text-gray-600 hover:text-gray-900 transition-colors">
                   DRP Specification
                 </a>
               </li>

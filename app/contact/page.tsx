@@ -98,7 +98,7 @@ export default function ContactPage() {
                       <ArrowRight className="w-3 h-3" />
                       Read our blog
                     </a>
-                    <a href="#" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
+                    <a href="https://www.digitalreceiptprotocol.org" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
                       <ArrowRight className="w-3 h-3" />
                       API documentation
                     </a>
