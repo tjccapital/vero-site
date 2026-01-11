@@ -21,6 +21,7 @@ export function Hero() {
         waveOpacity={0.3}
         blur={20}
         speed="slow"
+        waveYPosition={0.25}
       >
         <div className="text-center">
           {/* Announcement banner */}
