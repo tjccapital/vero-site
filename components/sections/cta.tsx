@@ -21,7 +21,7 @@ export function CTA() {
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
-            href="#"
+            href="https://www.digitalreceiptprotocol.org"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
           >
             Read the docs

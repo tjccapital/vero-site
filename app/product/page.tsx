@@ -168,7 +168,7 @@ export default function ProductPage() {
                 <p className="text-gray-600 text-sm mb-4">
                   Built on DRP. Card issuers deliver but cannot read receipts.
                 </p>
-                <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-gray-900">
+                <a href="https://www.digitalreceiptprotocol.org" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-gray-900">
                   Learn about DRP <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -237,7 +237,7 @@ export default function ProductPage() {
                   <p className="text-gray-600 mb-4">
                     RESTful API and SDKs for Node.js, Python, Go, and mobile platforms. Comprehensive documentation and sandbox environment.
                   </p>
-                  <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-900 hover:text-primary-800">
+                  <a href="https://www.digitalreceiptprotocol.org" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-900 hover:text-primary-800">
                     View documentation <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -278,7 +278,7 @@ await vero.receipts.create({
                 <ArrowRight className="w-4 h-4 ml-2" />
               </a>
               <a
-                href="#"
+                href="https://www.digitalreceiptprotocol.org"
                 className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
               >
                 View documentation

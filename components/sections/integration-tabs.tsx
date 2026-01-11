@@ -53,7 +53,7 @@ export function IntegrationTabs() {
     <section className="py-24 bg-gradient-to-b from-white to-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="text-sm font-medium text-blue-600 mb-3">Integration</p>
+          <p className="text-sm font-medium text-primary-900 mb-3">Integration</p>
           <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
             Built for everyone in the ecosystem
           </h2>
@@ -82,8 +82,8 @@ export function IntegrationTabs() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left side - Text content */}
           <div className="space-y-6">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-primary-900" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
               {content.headline}
@@ -104,7 +104,7 @@ export function IntegrationTabs() {
               ))}
             </ul>
             <a
-              href="#"
+              href="https://www.digitalreceiptprotocol.org"
               className="inline-flex items-center gap-2 text-gray-900 font-semibold hover:gap-3 transition-all"
             >
               {content.cta}
@@ -113,8 +113,8 @@ export function IntegrationTabs() {
           </div>
 
           {/* Right side - Visual flow */}
-          <div className="hidden lg:block bg-gray-900 rounded-2xl p-8 shadow-2xl overflow-x-auto">
-            <div className="flex items-center justify-between gap-4 min-w-[550px]">
+          <div className="bg-gray-900 rounded-2xl p-6 lg:p-8 shadow-2xl overflow-x-auto">
+            <div className="flex items-center justify-between gap-4 min-w-[520px]">
               {/* POS Receipt */}
               <div className="bg-gray-800 rounded-xl p-4 w-44 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
@@ -169,7 +169,7 @@ export function IntegrationTabs() {
 
               {/* Arrow */}
               <div className="flex-shrink-0">
-                <ArrowRight className="w-5 h-5 text-blue-400" />
+                <ArrowRight className="w-5 h-5 text-primary-400" />
               </div>
 
               {/* API Code */}
@@ -193,7 +193,7 @@ export function IntegrationTabs() {
 
               {/* Arrow */}
               <div className="flex-shrink-0">
-                <ArrowRight className="w-5 h-5 text-blue-400" />
+                <ArrowRight className="w-5 h-5 text-primary-400" />
               </div>
 
               {/* Card App Receipt */}
