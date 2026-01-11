@@ -51,9 +51,9 @@ export default function ProductPage() {
                   Receipts flow from POS to consumer&apos;s card app automatically. No email, no phone number, no friction.
                 </p>
 
-                {/* Visual */}
-                <div className="bg-gray-900 rounded-xl p-6">
-                  <div className="flex items-center justify-between">
+              {/* Visual - hidden on mobile */}
+                <div className="hidden md:block bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                  <div className="flex items-center justify-between min-w-[500px]">
                     {/* POS Receipt */}
                     <div className="bg-gray-800 rounded-lg p-4 w-36">
                       <div className="flex items-center justify-between mb-3">
@@ -232,7 +232,7 @@ export default function ProductPage() {
                 <p className="text-gray-600 text-sm mb-6">
                   Consumers share receipts with expense tools, accounting software, and budgeting apps.
                 </p>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
                     <BarChart3 className="w-5 h-5 text-gray-600 mx-auto mb-1" />
                     <p className="text-[10px] text-gray-500">Expensify</p>

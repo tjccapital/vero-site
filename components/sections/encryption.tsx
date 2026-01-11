@@ -4,22 +4,20 @@ import { Shield, Lock, EyeOff, Key, ArrowRight } from "lucide-react";
 
 export function Encryption() {
   return (
-    <section className="py-24 bg-gray-900">
+    <section className="py-24 bg-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-sm font-medium text-indigo-400 mb-3">Security</p>
+          <h2 className="text-3xl md:text-4xl font-semibold text-white">
+            End-to-end encryption by design
+          </h2>
+        </div>
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left side - Content */}
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/20 text-green-400 rounded-full text-sm font-medium">
-              <Shield className="w-4 h-4" />
-              End-to-end encrypted
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-              Privacy that makes digital receipts possible
-            </h2>
-            <p className="text-gray-400 leading-relaxed">
-              Digital receipts haven&apos;t existed because of privacy concerns.
-              Card issuers seeing your itemized purchases would be a massive breach of trust.
-              Vero solves this with the Digital Receipt Protocol (DRP).
+            <p className="text-gray-400 leading-relaxed text-lg">
+              Digital receipts require privacy. Card issuers deliver but cannot read your receipts.
+              Built on the open Digital Receipt Protocol (DRP).
             </p>
 
             <div className="space-y-4 pt-4">
