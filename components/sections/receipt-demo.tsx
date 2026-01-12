@@ -61,40 +61,40 @@ export function ReceiptDemo() {
                 <div className="flex items-center justify-between pb-4 border-b border-gray-200">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white font-bold text-xs">
-                      M
+                      C
                     </div>
-                    <span className="font-semibold text-gray-900 text-sm">Merchant POS</span>
+                    <span className="font-semibold text-gray-900 text-sm">Coffee Shop</span>
                   </div>
-                  <span className="text-xs text-gray-500">Order #42</span>
+                  <span className="text-xs text-gray-500">Today, 12:30 PM</span>
                 </div>
 
                 <div className="space-y-4">
                   <h3 className="font-semibold text-gray-900">Payment Complete</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between text-gray-600">
-                      <span>Product A</span>
-                      <span>$12.99</span>
+                      <span>Latte</span>
+                      <span>$4.20</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
-                      <span>Product B</span>
-                      <span>$8.50</span>
+                      <span>Croissant</span>
+                      <span>$3.50</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
-                      <span>Product C</span>
-                      <span>$5.25</span>
+                      <span>Espresso</span>
+                      <span>$2.75</span>
                     </div>
                     <div className="pt-3 border-t border-gray-200">
                       <div className="flex justify-between text-gray-600">
                         <span>Subtotal</span>
-                        <span>$26.74</span>
+                        <span>$10.45</span>
                       </div>
                       <div className="flex justify-between text-gray-600 mt-1">
                         <span>Tax</span>
-                        <span>$2.14</span>
+                        <span>$0.84</span>
                       </div>
                       <div className="flex justify-between font-semibold text-gray-900 mt-2">
                         <span>Total</span>
-                        <span>$28.88</span>
+                        <span>$11.29</span>
                       </div>
                     </div>
                   </div>
