@@ -113,10 +113,10 @@ export function IntegrationTabs() {
           </div>
 
           {/* Right side - Visual flow */}
-          <div className="bg-gray-900 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-2 lg:gap-4">
+          <div className="bg-gray-900 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl overflow-hidden">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-2 lg:gap-3">
               {/* POS Receipt */}
-              <div className="bg-gray-800 rounded-xl p-4 w-full sm:w-44 sm:flex-shrink-0">
+              <div className="bg-gray-800 rounded-xl p-4 w-full sm:w-36 lg:w-40 flex-shrink">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-white font-medium text-sm">Payment Complete</span>
                   <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
@@ -173,7 +173,7 @@ export function IntegrationTabs() {
               </div>
 
               {/* API Code */}
-              <div className="bg-gray-800 rounded-xl p-3 w-full sm:w-48 sm:flex-shrink-0">
+              <div className="bg-gray-800 rounded-xl p-3 w-full sm:w-40 lg:w-44 flex-shrink">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
                   <span className="text-gray-400 text-[10px] font-mono">/v1/receipts</span>
@@ -197,7 +197,7 @@ export function IntegrationTabs() {
               </div>
 
               {/* Card App Receipt */}
-              <div className="bg-white rounded-xl p-4 w-full sm:w-44 sm:flex-shrink-0 shadow-lg">
+              <div className="bg-white rounded-xl p-4 w-full sm:w-36 lg:w-40 flex-shrink shadow-lg">
                 <div className="mb-3">
                   <h4 className="font-semibold text-gray-900 text-sm">Coffee Shop</h4>
                   <p className="text-[10px] text-gray-500">123 Main St, New York, NY 10001</p>
