@@ -6,17 +6,17 @@ const useCases = [
   {
     icon: CreditCard,
     title: "For card issuers",
-    description: "Deliver digital receipts directly to cardholders. Reduce friendly fraud, improve customer experience, and provide itemized transaction details in your banking app.",
+    description: "Banks, credit unions, and fintechs: give your cardholders transaction clarity while cutting dispute costs. Reduce friendly fraud and lower call center volume.",
   },
   {
     icon: Store,
     title: "For merchants",
-    description: "Replace paper receipts with secure digital delivery. Reduce chargebacks, build customer loyalty with personalized receipts, and gain insights from purchase data.",
+    description: "Reduce chargebacks with one click. When customers see what they bought, they stop disputing purchases they forgot about. Free forever.",
   },
   {
     icon: Users,
     title: "For consumers",
-    description: "Access all your receipts in one place. Share with expense tools, track spending, and never lose a receipt again. Your data, your control.",
+    description: "See itemized receipts in your banking app instead of cryptic merchant codes. Budget better, track spending, and never wonder what a charge was for.",
   },
 ];
 
@@ -26,7 +26,7 @@ export function UseCases() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Digital receipts that work for everyone
+            Built for everyone in the payment ecosystem
           </h2>
         </div>
 
