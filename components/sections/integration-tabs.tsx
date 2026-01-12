@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Store, Users, ArrowRight, Lock, Shield, Eye, EyeOff } from "lucide-react";
+import { CreditCard, Store, Users, ArrowRight } from "lucide-react";
 
 const tabs = [
   { id: "issuers", label: "Card Issuers", icon: CreditCard },
@@ -112,145 +112,13 @@ export function IntegrationTabs() {
             </a>
           </div>
 
-          {/* Right side - Visual flow */}
-          <div className="bg-gray-900 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl overflow-hidden">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-2 lg:gap-3">
-              {/* POS Receipt */}
-              <div className="bg-gray-800 rounded-xl p-4 w-full sm:w-36 lg:w-40 flex-shrink">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-white font-medium text-sm">Payment Complete</span>
-                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between text-gray-300">
-                    <span>1x Latte</span>
-                    <span>$4.20</span>
-                  </div>
-                  <div className="flex justify-between text-gray-300">
-                    <span>1x Croissant</span>
-                    <span>$3.50</span>
-                  </div>
-                  <div className="flex justify-between text-gray-300">
-                    <span>1x Espresso</span>
-                    <span>$2.75</span>
-                  </div>
-                  <div className="border-t border-gray-700 pt-2 mt-2">
-                    <div className="flex justify-between text-gray-400 text-[10px]">
-                      <span>Subtotal</span>
-                      <span>$10.45</span>
-                    </div>
-                    <div className="flex justify-between text-gray-400 text-[10px]">
-                      <span>Tax</span>
-                      <span>$0.84</span>
-                    </div>
-                    <div className="flex justify-between text-white font-semibold mt-1">
-                      <span>Total</span>
-                      <span>$11.29</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 pt-3 border-t border-gray-700">
-                  <div className="flex items-center gap-2 text-gray-400 text-[10px]">
-                    <CreditCard className="w-3 h-3" />
-                    <span>Visa •••• 4242</span>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-center justify-center gap-1 text-green-400 text-[10px]">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span>Digital Receipt Sent</span>
-                </div>
-              </div>
-
-              {/* Arrow */}
-              <div className="flex-shrink-0">
-                <ArrowRight className="w-5 h-5 text-primary-400 rotate-90 sm:rotate-0" />
-              </div>
-
-              {/* API Code */}
-              <div className="bg-gray-800 rounded-xl p-3 w-full sm:w-40 lg:w-44 flex-shrink">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">POST</span>
-                  <span className="text-gray-400 text-[10px] font-mono">/v1/receipts</span>
-                </div>
-                <pre className="text-[9px] font-mono leading-relaxed overflow-hidden">
-                  <span className="text-gray-500">{"{"}</span>{"\n"}
-                  <span className="text-purple-400">&quot;merchant&quot;</span><span className="text-gray-500">:</span> <span className="text-green-400">&quot;Coffee Shop&quot;</span><span className="text-gray-500">,</span>{"\n"}
-                  <span className="text-purple-400">&quot;total&quot;</span><span className="text-gray-500">:</span> <span className="text-orange-400">11.29</span><span className="text-gray-500">,</span>{"\n"}
-                  <span className="text-purple-400">&quot;items&quot;</span><span className="text-gray-500">: [</span>{"\n"}
-                  <span className="text-gray-500">  {"{"}</span><span className="text-purple-400">&quot;name&quot;</span><span className="text-gray-500">:</span> <span className="text-green-400">&quot;Latte&quot;</span><span className="text-gray-500">{"}"},</span>{"\n"}
-                  <span className="text-gray-500">  {"{"}</span><span className="text-purple-400">&quot;name&quot;</span><span className="text-gray-500">:</span> <span className="text-green-400">&quot;Croissant&quot;</span><span className="text-gray-500">{"}"},</span>{"\n"}
-                  <span className="text-gray-500">],</span>{"\n"}
-                  <span className="text-purple-400">&quot;encrypted&quot;</span><span className="text-gray-500">:</span> <span className="text-orange-400">true</span>{"\n"}
-                  <span className="text-gray-500">{"}"}</span>
-                </pre>
-              </div>
-
-              {/* Arrow */}
-              <div className="flex-shrink-0">
-                <ArrowRight className="w-5 h-5 text-primary-400 rotate-90 sm:rotate-0" />
-              </div>
-
-              {/* Card App Receipt */}
-              <div className="bg-white rounded-xl p-4 w-full sm:w-36 lg:w-40 flex-shrink shadow-lg">
-                <div className="mb-3">
-                  <h4 className="font-semibold text-gray-900 text-sm">Coffee Shop</h4>
-                  <p className="text-[10px] text-gray-500">123 Main St, New York, NY 10001</p>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-gray-500 mb-3">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>12/18/2025, 7:30:00 AM</span>
-                </div>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between text-gray-600">
-                    <span>1x Latte</span>
-                    <span>$4.20</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>1x Croissant</span>
-                    <span>$3.50</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>1x Espresso</span>
-                    <span>$2.75</span>
-                  </div>
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <div className="flex justify-between text-gray-500 text-[10px]">
-                      <span>Subtotal</span>
-                      <span>$10.45</span>
-                    </div>
-                    <div className="flex justify-between text-gray-500 text-[10px]">
-                      <span>Tax</span>
-                      <span>$0.84</span>
-                    </div>
-                    <div className="flex justify-between text-gray-900 font-semibold mt-1">
-                      <span>Total</span>
-                      <span>$11.29</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <div className="flex items-center justify-between text-[10px]">
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <CreditCard className="w-3 h-3" />
-                      <span>Visa •••• 4242</span>
-                    </div>
-                    <button className="text-gray-400 hover:text-gray-600">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Right side - Visual */}
+          <div className="flex items-center justify-center">
+            <img
+              src="/images/receipt-flow.png"
+              alt="Digital receipt flow showing payment complete notification and receipt details"
+              className="max-w-full h-auto"
+            />
           </div>
         </div>
       </div>

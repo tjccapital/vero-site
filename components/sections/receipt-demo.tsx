@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 export function ReceiptDemo() {
   return (
@@ -55,63 +55,66 @@ export function ReceiptDemo() {
           </div>
 
           {/* Right side - Receipt visualization */}
-          <div className="relative">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 max-w-sm mx-auto">
-              <div className="space-y-5">
-                <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white font-bold text-xs">
-                      C
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative">
+              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 w-80">
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white font-bold text-xs">
+                        C
+                      </div>
+                      <span className="font-semibold text-gray-900 text-sm">Coffee Shop</span>
                     </div>
-                    <span className="font-semibold text-gray-900 text-sm">Coffee Shop</span>
+                    <span className="text-xs text-gray-500">Today, 12:30 PM</span>
                   </div>
-                  <span className="text-xs text-gray-500">Today, 12:30 PM</span>
-                </div>
 
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900">Payment Complete</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between text-gray-600">
-                      <span>Latte</span>
-                      <span>$4.20</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>Croissant</span>
-                      <span>$3.50</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>Espresso</span>
-                      <span>$2.75</span>
-                    </div>
-                    <div className="pt-3 border-t border-gray-200">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-900">Payment Complete</h3>
+                    <div className="space-y-2 text-sm">
                       <div className="flex justify-between text-gray-600">
-                        <span>Subtotal</span>
-                        <span>$10.45</span>
+                        <span>Latte</span>
+                        <span>$4.20</span>
                       </div>
-                      <div className="flex justify-between text-gray-600 mt-1">
-                        <span>Tax</span>
-                        <span>$0.84</span>
+                      <div className="flex justify-between text-gray-600">
+                        <span>Croissant</span>
+                        <span>$3.50</span>
                       </div>
-                      <div className="flex justify-between font-semibold text-gray-900 mt-2">
-                        <span>Total</span>
-                        <span>$11.29</span>
+                      <div className="flex justify-between text-gray-600">
+                        <span>Espresso</span>
+                        <span>$2.75</span>
+                      </div>
+                      <div className="pt-3 border-t border-gray-200">
+                        <div className="flex justify-between text-gray-600">
+                          <span>Subtotal</span>
+                          <span>$10.45</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600 mt-1">
+                          <span>Tax</span>
+                          <span>$0.84</span>
+                        </div>
+                        <div className="flex justify-between font-semibold text-gray-900 mt-2">
+                          <span>Total</span>
+                          <span>$11.29</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="flex items-center justify-center gap-2 text-green-600">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-sm font-medium">Digital receipt sent</span>
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-center gap-2 text-green-600">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span className="text-sm font-medium">Digital receipt sent</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Badge */}
-            <div className="absolute -top-3 -right-3 bg-gray-900 text-white px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium">
-              Verified
+              {/* Verified Badge */}
+              <div className="absolute -top-3 -right-3 bg-green-600 text-white px-2.5 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4" />
+                <span className="text-xs font-semibold">Verified</span>
+              </div>
             </div>
           </div>
         </div>
