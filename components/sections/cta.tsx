@@ -7,17 +7,17 @@ export function CTA() {
     <section className="py-24 bg-primary-900">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
-          Ready to reduce friendly fraud?
+          Become a Pilot Partner
         </h2>
         <p className="text-lg text-primary-100 mb-10 leading-relaxed max-w-xl mx-auto">
-          Join our beta program and be among the first to deliver digital receipts.
+          We're working with early partners to prove Vero in production. Shape the product as a founding partner.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/contact"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-primary-900 bg-white rounded-lg hover:bg-primary-50 transition-colors group shadow-sm"
           >
-            Request beta access
+            Join the Pilot
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a

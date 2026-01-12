@@ -26,25 +26,25 @@ export function Hero() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Announcement banner */}
           <a
-            href="/blog"
+            href="/contact"
             className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-primary-50 text-primary-900 rounded-full hover:bg-primary-100 transition-colors border border-primary-100"
           >
             <span className="w-2 h-2 rounded-full bg-primary-900 animate-pulse" />
-            Card issuers and merchants can now join our beta
+            Now seeking pilot partners
             <ArrowRight className="w-4 h-4" />
           </a>
 
           {/* Main headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-gray-900 leading-[1.1] mb-6">
-            Digital receipts for the
+            Receipts that prevent
             <br />
-            <span className="text-primary-900">modern world</span>
+            <span className="text-primary-900">chargebacks</span>
           </h1>
 
           {/* Subtitle */}
           <p className="max-w-xl mx-auto text-lg text-gray-500 leading-relaxed mb-10">
-            One integration to deliver secure, portable digital receipts.
-            Reduce friendly fraud and provide real value to your users.
+            Stop friendly fraud before it starts. Deliver itemized receipts
+            directly to banking apps, so customers see exactly what they bought.
           </p>
 
           {/* CTA buttons */}
@@ -53,7 +53,7 @@ export function Hero() {
               href="/contact"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors shadow-sm shadow-primary-100"
             >
-              Join the beta
+              Become a Pilot Partner
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a

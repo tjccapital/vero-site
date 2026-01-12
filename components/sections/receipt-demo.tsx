@@ -10,37 +10,37 @@ export function ReceiptDemo() {
           {/* Left side - Content */}
           <div className="space-y-8">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Digital receipts that reduce friendly fraud
+              Replace cryptic codes with clear receipts
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Card issuers and merchants can deliver verifiable digital receipts that link to transactions. When customers dispute charges, you have the proof you need.
+              Customers dispute transactions they don't recognize. Vero delivers itemized receipts directly to banking apps, so customers see exactly what they bought instead of cryptic merchant codes.
             </p>
 
             <div className="space-y-5 pt-4">
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">Transaction linking</h4>
+                  <h4 className="font-semibold text-gray-900">Customers recognize transactions</h4>
                   <p className="text-gray-600 text-sm mt-1">
-                    Every receipt is cryptographically linked to its transaction for verification.
+                    When customers see itemized details instead of cryptic codes, they stop disputing purchases.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">Instant delivery</h4>
+                  <h4 className="font-semibold text-gray-900">Instant delivery to banking apps</h4>
                   <p className="text-gray-600 text-sm mt-1">
-                    Receipts arrive in real-time via email, SMS, or push notification.
+                    Receipts arrive in real-time directly in your customers' banking apps.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">Dispute resolution</h4>
+                  <h4 className="font-semibold text-gray-900">Stop friendly fraud</h4>
                   <p className="text-gray-600 text-sm mt-1">
-                    Provide itemized proof of purchase for chargeback defense.
+                    Legitimate purchases disputed by mistake cost billions annually. Vero prevents them.
                   </p>
                 </div>
               </div>
@@ -50,7 +50,7 @@ export function ReceiptDemo() {
               href="/contact"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 rounded-md hover:bg-gray-800 transition-colors"
             >
-              Join the beta program
+              Become a Pilot Partner
             </a>
           </div>
 
