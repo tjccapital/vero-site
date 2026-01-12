@@ -269,7 +269,7 @@ html {
 .drp-sim-grid {
   display: grid;
   grid-template-columns: 1fr;
-  min-height: 650px;
+  min-height: 720px;
 }
 
 @media (min-width: 768px) {
@@ -288,8 +288,8 @@ html {
   padding: 24px;
   border-right: none;
   border-bottom: 1px solid #e5e7eb;
-  min-height: 650px;
-  height: 650px;
+  min-height: 720px;
+  height: 720px;
   overflow-y: auto;
 }
 
@@ -297,8 +297,8 @@ html {
   .drp-sim-left {
     border-right: 1px solid #1e293b;
     border-bottom: none;
-    min-height: 650px;
-    height: 650px;
+    min-height: 720px;
+    height: 720px;
   }
 }
 
@@ -316,8 +316,8 @@ html {
   background: #0f172a;
   display: flex;
   flex-direction: column;
-  min-height: 650px;
-  max-height: 650px;
+  min-height: 720px;
+  max-height: 720px;
   overflow: hidden;
 }
 
