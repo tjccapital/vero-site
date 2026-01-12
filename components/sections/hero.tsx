@@ -57,10 +57,10 @@ export function Hero() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a
-              href="https://www.digitalreceiptprotocol.org"
+              href="/demo"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors"
             >
-              Read the docs
+              Try the Demo
             </a>
           </div>
 
