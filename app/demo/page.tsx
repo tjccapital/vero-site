@@ -5,13 +5,13 @@ import { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "API Demo - Interactive DRP Simulator",
+  title: "API Demo - Interactive Vero Simulator",
   description:
-    "Experience the Digital Receipt Protocol in action. Walk through the complete API flow for generating cryptographically secure digital receipts.",
+    "Experience Vero in action. Walk through the complete API flow for generating cryptographically secure digital receipts.",
   openGraph: {
-    title: "Vero API Demo - Interactive DRP Simulator",
+    title: "Vero API Demo - Interactive Simulator",
     description:
-      "Experience the Digital Receipt Protocol in action with our interactive API simulator.",
+      "Experience Vero in action with our interactive API simulator.",
     type: "website",
   },
 };
@@ -28,7 +28,7 @@ export default function DemoPage() {
               Interactive Demo
             </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-gray-900 leading-[1.15] mb-5">
-              See DRP in Action
+              See Vero in Action
             </h1>
             <p className="max-w-2xl mx-auto text-base md:text-lg text-gray-500 leading-relaxed">
               Walk through the complete API flow for generating secure digital receipts.
