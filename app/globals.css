@@ -27,3 +27,1441 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/* ===========================================
+   API Simulator Styles
+   =========================================== */
+
+.drp-simulator {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.drp-sim-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+@media (min-width: 640px) {
+  .drp-sim-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.drp-sim-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.drp-sim-progress-bar {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.drp-sim-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.drp-sim-progress-text {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.drp-sim-controls {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .drp-sim-controls {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+}
+
+.drp-sim-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.drp-sim-btn-primary {
+  background: #1e3a8a;
+  color: white;
+}
+
+.drp-sim-btn-primary:hover:not(:disabled) {
+  background: #1e40af;
+}
+
+.drp-sim-btn-secondary {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.drp-sim-btn-secondary:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.drp-sim-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile Tab Bar */
+.drp-sim-mobile-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+@media (min-width: 768px) {
+  .drp-sim-mobile-tabs {
+    display: none;
+  }
+}
+
+.drp-sim-mobile-tab {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.drp-sim-mobile-tab.active {
+  color: #1e3a8a;
+  border-bottom-color: #1e3a8a;
+  background: white;
+}
+
+.drp-sim-mobile-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #1e3a8a;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+}
+
+/* Mobile Bottom Controls */
+.drp-sim-mobile-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 40;
+  transition: transform 0.3s ease;
+}
+
+.drp-sim-mobile-controls-hidden {
+  transform: translateY(100%);
+}
+
+@media (min-width: 640px) {
+  .drp-sim-mobile-controls {
+    display: none;
+  }
+}
+
+.drp-sim-mobile-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-mobile-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.drp-sim-mobile-btn-primary {
+  flex: 2;
+  background: #1e3a8a;
+  color: white;
+}
+
+.drp-sim-mobile-btn-primary:hover:not(:disabled) {
+  background: #1e40af;
+}
+
+.drp-sim-mobile-btn-secondary {
+  flex: 1;
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.drp-sim-mobile-btn-secondary:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+/* Main Grid */
+.drp-sim-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 500px;
+}
+
+@media (min-width: 768px) {
+  .drp-sim-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.drp-sim-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.drp-sim-left {
+  background: #f9fafb;
+  padding: 24px;
+  border-right: none;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .drp-sim-left {
+    border-right: 1px solid #e5e7eb;
+    border-bottom: none;
+  }
+}
+
+.drp-sim-mobile-hidden {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .drp-sim-mobile-hidden {
+    display: flex;
+  }
+}
+
+.drp-sim-right {
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.drp-sim-panel-header {
+  margin-bottom: 16px;
+}
+
+.drp-sim-panel-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+/* Intro Screen */
+.drp-sim-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.drp-sim-intro-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.drp-sim-intro-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.drp-sim-intro-desc {
+  font-size: 15px;
+  color: #6b7280;
+  max-width: 320px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.drp-sim-intro-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.drp-sim-step-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #374151;
+  text-align: left;
+}
+
+.drp-sim-step-clickable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-step-clickable:hover {
+  border-color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.drp-sim-step-disabled {
+  opacity: 0.5;
+}
+
+.drp-sim-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #1e3a8a;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.drp-sim-step-disabled .drp-sim-step-num {
+  background: #9ca3af;
+}
+
+/* Card Issuer / Settings Screen */
+.drp-sim-card-issuer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drp-sim-app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.drp-sim-app-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.drp-sim-settings-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.drp-sim-settings-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.drp-sim-header-with-back {
+  gap: 8px;
+}
+
+.drp-sim-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-back-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.drp-sim-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+}
+
+.drp-sim-toggle-clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.drp-sim-toggle-clickable:hover {
+  background: #f9fafb;
+}
+
+.drp-sim-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drp-sim-toggle-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.drp-sim-toggle-desc {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.drp-sim-toggle {
+  width: 44px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.drp-sim-toggle-on {
+  background: #1e3a8a;
+}
+
+.drp-sim-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.drp-sim-toggle-on .drp-sim-toggle-knob {
+  transform: translateX(20px);
+}
+
+.drp-sim-toggle-animate {
+  animation: togglePulse 0.5s ease;
+}
+
+@keyframes togglePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.drp-sim-key-info {
+  padding: 16px;
+}
+
+.drp-sim-key-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.drp-sim-key-row:last-child {
+  border-bottom: none;
+}
+
+.drp-sim-key-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.drp-sim-key-value {
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.drp-sim-status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-radius: 4px;
+}
+
+.drp-sim-status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.drp-sim-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #dcfce7;
+  border-radius: 10px;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.drp-sim-info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border-radius: 10px;
+  color: #1e40af;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.drp-sim-info-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.drp-sim-info-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.drp-sim-success-note {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Merchant POS Screen */
+.drp-sim-merchant-pos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drp-sim-merchant-name {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.drp-sim-pos-terminal {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.drp-sim-terminal-screen {
+  padding: 20px;
+}
+
+.drp-sim-terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.drp-sim-terminal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.drp-sim-terminal-check {
+  color: #22c55e;
+}
+
+.drp-sim-terminal-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.drp-sim-terminal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.drp-sim-item-qty {
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 24px;
+}
+
+.drp-sim-item-name {
+  flex: 1;
+  color: #374151;
+}
+
+.drp-sim-item-price {
+  color: #374151;
+  font-weight: 500;
+}
+
+.drp-sim-terminal-summary {
+  padding-top: 12px;
+  border-top: 1px dashed #e5e7eb;
+  margin-bottom: 8px;
+}
+
+.drp-sim-terminal-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #6b7280;
+  padding: 4px 0;
+}
+
+.drp-sim-terminal-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  padding: 12px 0;
+  border-top: 2px solid #111827;
+  margin-bottom: 16px;
+}
+
+.drp-sim-total-amount {
+  color: #1e3a8a;
+}
+
+.drp-sim-card-used {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.drp-sim-receipt-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Transaction List */
+.drp-sim-transaction-list {
+  padding: 8px;
+}
+
+.drp-sim-transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.drp-sim-transaction-item:hover {
+  background: #f9fafb;
+}
+
+.drp-sim-transaction-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e3a8a;
+  flex-shrink: 0;
+}
+
+.drp-sim-transaction-icon-plain {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.drp-sim-transaction-has-receipt .drp-sim-transaction-icon {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.drp-sim-transaction-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drp-sim-transaction-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.drp-sim-transaction-date {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.drp-sim-transaction-amount {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.drp-sim-transaction-arrow {
+  color: #9ca3af;
+}
+
+/* Transaction Detail */
+.drp-sim-transaction-detail {
+  padding: 20px;
+}
+
+.drp-sim-transaction-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.drp-sim-transaction-merchant-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #166534;
+  flex-shrink: 0;
+}
+
+.drp-sim-icon-plain {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.drp-sim-transaction-detail-info {
+  flex: 1;
+}
+
+.drp-sim-transaction-detail-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.drp-sim-transaction-detail-location {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.drp-sim-transaction-detail-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.drp-sim-amount-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.drp-sim-amount-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.drp-sim-transaction-detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.drp-sim-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drp-sim-detail-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.drp-sim-detail-value {
+  font-size: 13px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.drp-sim-receipt-available {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #dcfce7;
+  border-radius: 10px;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.drp-sim-receipt-available-icon {
+  flex-shrink: 0;
+}
+
+.drp-sim-view-receipt-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.drp-sim-view-receipt-btn:hover {
+  background: #1e40af;
+}
+
+/* Receipt View */
+.drp-sim-wallet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drp-sim-receipt-view {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.drp-sim-receipt-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.drp-sim-merchant-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.drp-sim-merchant-info {
+  flex: 1;
+}
+
+.drp-sim-merchant-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.drp-sim-merchant-address {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.drp-sim-receipt-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  font-size: 12px;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.drp-sim-receipt-items {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.drp-sim-receipt-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drp-sim-receipt-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drp-sim-receipt-item-qty {
+  font-size: 13px;
+  color: #6b7280;
+  min-width: 28px;
+}
+
+.drp-sim-receipt-item-name {
+  font-size: 14px;
+  color: #374151;
+}
+
+.drp-sim-receipt-item-price {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.drp-sim-receipt-summary {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.drp-sim-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.drp-sim-receipt-total {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 4px;
+}
+
+.drp-sim-receipt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #f9fafb;
+}
+
+.drp-sim-receipt-payment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+}
+
+.drp-sim-receipt-card {
+  font-size: 13px;
+}
+
+.drp-sim-download-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-download-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+/* API Logs Panel */
+.drp-sim-logs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.drp-sim-logs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.drp-sim-logs-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.drp-sim-logs-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drp-sim-show-payload-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1e3a8a;
+  background: #eff6ff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-show-payload-btn:hover {
+  background: #dbeafe;
+}
+
+.drp-sim-logs-count {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.drp-sim-logs-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.drp-sim-logs-empty p {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 12px 0 4px;
+  color: #6b7280;
+}
+
+.drp-sim-logs-empty span {
+  font-size: 13px;
+}
+
+.drp-sim-logs-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.drp-sim-log-wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.drp-sim-log-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.drp-sim-log-item:hover {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+}
+
+.drp-sim-log-item.active {
+  border-color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.drp-sim-log-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drp-sim-log-method {
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.drp-sim-method-post {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.drp-sim-method-get {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.drp-sim-log-endpoint {
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drp-sim-log-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drp-sim-log-desc {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.drp-sim-log-time {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.drp-sim-doc-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #9ca3af;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.drp-sim-doc-link:hover {
+  background: #eff6ff;
+  border-color: #1e3a8a;
+  color: #1e3a8a;
+}
+
+/* Payload Panel */
+.drp-sim-payload {
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+}
+
+.drp-sim-payload-resize-handle {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ns-resize;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  touch-action: none;
+}
+
+.drp-sim-payload-resize-handle:hover,
+.drp-sim-payload-resize-handle.dragging {
+  background: #f3f4f6;
+}
+
+.drp-sim-resize-grip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drp-sim-resize-grip span {
+  width: 24px;
+  height: 2px;
+  background: #d1d5db;
+  border-radius: 1px;
+}
+
+.drp-sim-payload-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.drp-sim-payload-close {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.15s ease;
+}
+
+.drp-sim-payload-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.drp-sim-payload-content {
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.drp-sim-payload-section {
+  margin-bottom: 16px;
+}
+
+.drp-sim-payload-section:last-child {
+  margin-bottom: 0;
+}
+
+.drp-sim-payload-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.drp-sim-payload-section code {
+  display: block;
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+  color: #374151;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.drp-sim-payload-section pre {
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: #374151;
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+.drp-sim-info-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  position: relative;
+}
+
+.drp-sim-info-icon {
+  flex-shrink: 0;
+  color: #92400e;
+}
+
+.drp-sim-info-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #92400e;
+}
+
+.drp-sim-info-tooltip {
+  display: block;
+  font-size: 11px;
+  color: #78350f;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Mobile bottom padding for fixed controls */
+@media (max-width: 639px) {
+  .drp-simulator {
+    padding-bottom: 80px;
+  }
+}

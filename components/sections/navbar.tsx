@@ -30,7 +30,7 @@ const resourceItems = [
     icon: Play,
     title: "Demo",
     description: "See Vero in action with an interactive demo.",
-    href: "#",
+    href: "/demo",
   },
   {
     icon: BookOpen,
