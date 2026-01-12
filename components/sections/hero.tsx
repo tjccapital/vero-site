@@ -64,8 +64,8 @@ export function Hero() {
             </a>
           </div>
 
-          {/* Logo cloud */}
-          <div className="pt-10 border-t border-gray-100">
+          {/* Logo cloud - Hidden for now */}
+          {/* <div className="pt-10 border-t border-gray-100">
             <p className="text-xs uppercase tracking-widest text-gray-400 mb-8">Trusted by leading payment providers</p>
             <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
               {logos.map((logo) => (
@@ -77,7 +77,7 @@ export function Hero() {
                 </span>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </WavyBackground>
     </section>
