@@ -20,65 +20,49 @@ export default function DemoPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16">
+      <main className="pt-16 bg-slate-900">
         {/* Hero Section */}
-        <section className="py-16 md:py-20 bg-gradient-to-b from-primary-50 to-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-medium bg-primary-100 text-primary-900 rounded-full">
-              Interactive Demo
+        <section className="pt-16 pb-8 md:pt-20 md:pb-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4 block">
+              HOW IT WORKS
             </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-gray-900 leading-[1.15] mb-5">
-              See Vero in Action
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.15] mb-5">
+              Make your receipts portable
             </h1>
-            <p className="max-w-2xl mx-auto text-base md:text-lg text-gray-500 leading-relaxed">
-              Walk through the complete API flow for generating secure digital receipts.
-              From key generation to receipt decryption, experience every step.
+            <p className="max-w-xl text-base md:text-lg text-slate-400 leading-relaxed">
+              Implement the DRP specification to generate encrypted receipt objects, so that any compatible wallet or application can securely render and display purchase data.
             </p>
           </div>
         </section>
 
         {/* Simulator Section */}
-        <section className="py-8 md:py-12 bg-gray-50">
+        <section className="py-8 md:py-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <ApiSimulator />
           </div>
         </section>
 
-        {/* Info Section - Dark Theme */}
-        <section className="py-16 md:py-20 bg-slate-900">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-slate-800 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-emerald-400">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">End-to-End Encrypted</h3>
-                <p className="text-sm text-slate-400">
-                  Receipts are encrypted with the consumer&apos;s public key. Only they can decrypt and view the contents.
+        {/* Steps Section */}
+        <section className="py-12 md:py-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+              <div>
+                <h3 className="text-base font-semibold text-white mb-3">1. Enable Digital Receipts</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  The card issuer generates a key pair and stores the private key in the consumer&apos;s secure enclave (iOS) or keychain (Android). The public key is registered with the protocol.
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-slate-800 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-amber-400">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">Real-Time Delivery</h3>
-                <p className="text-sm text-slate-400">
-                  Receipts arrive in milliseconds. Customers see itemized details before leaving the store.
+              <div>
+                <h3 className="text-base font-semibold text-white mb-3">2. Create Payment & Encrypt Receipt</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  The merchant POS creates the payment and encrypts the receipt with the user&apos;s public key. Only the consumer&apos;s private key can decrypt it.
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-slate-800 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-blue-400">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">Fraud Prevention</h3>
-                <p className="text-sm text-slate-400">
-                  Itemized receipts help customers recognize charges, reducing friendly fraud by up to 40%.
+              <div>
+                <h3 className="text-base font-semibold text-white mb-3">3. View Receipt</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  The consumer&apos;s private key decrypts the receipt locally on their device. The private key never leaves the secure enclave.
                 </p>
               </div>
             </div>
