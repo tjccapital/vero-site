@@ -278,13 +278,13 @@ export function ApiSimulator() {
   const steps = [
     {
       id: "intro",
-      title: "Welcome to DRP",
-      description: "This simulator walks you through the Digital Receipt Protocol API flow. Click 'Next' to begin.",
+      title: "Welcome to Vero",
+      description: "This simulator walks you through the Vero API flow. Click 'Next' to begin.",
     },
     {
       id: "enable-drp",
       title: "Enable Digital Receipts",
-      description: "When a user enables DRP in their banking app, the card issuer generates keys and registers the user.",
+      description: "When a user enables Vero in their banking app, the card issuer generates keys and registers the user.",
     },
     {
       id: "create-payment",
@@ -689,7 +689,7 @@ export function ApiSimulator() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
               </svg>
             </div>
-            <h3 className="drp-sim-intro-title">Digital Receipt Protocol</h3>
+            <h3 className="drp-sim-intro-title">Vero</h3>
             <p className="drp-sim-intro-desc">
               Experience the complete API flow for generating cryptographically secure digital receipts.
             </p>
@@ -778,7 +778,7 @@ export function ApiSimulator() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
               </svg>
-              <span>Your card is now registered with DRP. Receipts will be encrypted with your public key.</span>
+              <span>Your card is now registered with Vero. Receipts will be encrypted with your public key.</span>
             </div>
           </div>
         );
@@ -1083,7 +1083,7 @@ export function ApiSimulator() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                   </svg>
-                  <span>No itemized receipt available. This is how most transactions appear today without DRP.</span>
+                  <span>No itemized receipt available. This is how most transactions appear today without Vero.</span>
                 </div>
               </>
             )}
@@ -1320,7 +1320,7 @@ export function ApiSimulator() {
             />
           </div>
           <span className="drp-sim-progress-text">
-            {currentStep === 0 ? 'Welcome to DRP' : `Step ${currentStep} of ${steps.length - 1}: ${steps[currentStep].title}`}
+            {currentStep === 0 ? 'Welcome to Vero' : `Step ${currentStep} of ${steps.length - 1}: ${steps[currentStep].title}`}
           </span>
         </div>
 
