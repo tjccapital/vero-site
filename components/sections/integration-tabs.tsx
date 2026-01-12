@@ -115,7 +115,7 @@ export function IntegrationTabs() {
           {/* Right side - Visual */}
           <div className="flex items-center justify-center">
             <img
-              src="/images/receipt-flow.png"
+              src="/receipt-flow.png"
               alt="Digital receipt flow showing payment complete notification and receipt details"
               className="max-w-full h-auto"
             />
