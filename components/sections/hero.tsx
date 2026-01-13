@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { Boxes } from "@/components/ui/boxes";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 
 const logos = [
   { name: "Stripe" },
@@ -30,9 +31,13 @@ export function Hero() {
 
           {/* Main headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-slate-900 leading-[1.1] mb-6">
-            Receipts that prevent
+            Digital Receipts that
             <br />
-            <span className="text-blue-500">chargebacks</span>
+            actually work for{" "}
+            <ContainerTextFlip
+              words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
+              textClassName="text-blue-500"
+            />
           </h1>
 
           {/* Subtitle */}
