@@ -13,30 +13,30 @@ const logos = [
 
 export function Hero() {
   return (
-    <section className="relative bg-slate-900 overflow-hidden">
-      <div className="absolute inset-0 w-full h-full bg-slate-900 z-10 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
+    <section className="relative bg-slate-50 overflow-hidden">
+      <div className="absolute inset-0 w-full h-full bg-slate-50 z-20 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
       <Boxes />
-      <div className="relative z-20 pt-28 pb-20">
+      <div className="relative z-30 pt-28 pb-20 pointer-events-none">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Announcement banner */}
           <a
             href="/contact"
-            className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-slate-800 text-white hover:bg-slate-700 transition-colors border border-slate-700"
+            className="pointer-events-auto inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-white text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             Now seeking pilot partners
             <ArrowRight className="w-4 h-4" />
           </a>
 
           {/* Main headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white leading-[1.1] mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-slate-900 leading-[1.1] mb-6">
             Receipts that prevent
             <br />
-            <span className="text-blue-400">chargebacks</span>
+            <span className="text-blue-500">chargebacks</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="max-w-xl mx-auto text-lg text-slate-300 leading-relaxed mb-10">
+          <p className="max-w-xl mx-auto text-lg text-slate-600 leading-relaxed mb-10">
             Stop friendly fraud before it starts. Deliver itemized receipts
             directly to banking apps, so customers see exactly what they bought.
           </p>
@@ -45,14 +45,14 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
             <a
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-900 bg-white hover:bg-slate-100 transition-colors shadow-sm"
+              className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-sm"
             >
               Become a Pilot Partner
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a
               href="/demo"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-transparent border border-slate-600 hover:bg-slate-800 hover:border-slate-500 transition-colors"
+              className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm"
             >
               Try the Demo
             </a>
