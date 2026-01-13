@@ -34,7 +34,7 @@ export function Features() {
 }
 
 const MerchantPortalHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
     <div className="w-full">
       <div className="flex items-center gap-1.5 px-4 py-2 border-b border-gray-100 bg-gray-50/50">
         <div className="w-2 h-2 rounded-full bg-gray-300" />
@@ -63,7 +63,7 @@ const MerchantPortalHeader = () => (
 );
 
 const FraudPreventionHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gray-900 p-4">
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gray-900 border border-gray-700 p-4">
     <div className="text-xs font-mono w-full">
       <div className="text-gray-500">{"{"}</div>
       <div className="pl-3 text-gray-400">
@@ -81,15 +81,15 @@ const FraudPreventionHeader = () => (
 );
 
 const ConnectedAppsHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 items-center justify-center">
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 items-center justify-center">
     <div className="flex gap-2">
-      <div className="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center">
+      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
         <div className="w-5 h-5 rounded bg-blue-500" />
       </div>
-      <div className="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center">
+      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
         <div className="w-5 h-5 rounded bg-emerald-500" />
       </div>
-      <div className="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center">
+      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
         <div className="w-5 h-5 rounded bg-violet-500" />
       </div>
     </div>
@@ -97,11 +97,11 @@ const ConnectedAppsHeader = () => (
 );
 
 const RealTimeHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 items-center justify-center">
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 items-center justify-center">
     <div className="flex items-center gap-3">
       <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
       <div className="h-0.5 w-12 bg-amber-300" />
-      <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center">
+      <div className="w-8 h-8 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
         <Zap className="w-4 h-4 text-amber-500" />
       </div>
     </div>
@@ -109,7 +109,7 @@ const RealTimeHeader = () => (
 );
 
 const AIAgentHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100 p-4">
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100 p-4">
     <div className="w-full space-y-2">
       <div className="flex items-center gap-2">
         <div className="w-6 h-6 rounded-full bg-violet-200 flex items-center justify-center">
