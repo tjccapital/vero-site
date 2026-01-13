@@ -1123,6 +1123,11 @@ export function ApiSimulator() {
                     {stepData.decryptedReceipt?.merchant.address.street}, {stepData.decryptedReceipt?.merchant.address.city}, {stepData.decryptedReceipt?.merchant.address.state} {stepData.decryptedReceipt?.merchant.address.postalCode}
                   </p>
                 </div>
+                <button className="drp-sim-download-btn" title="Download Receipt" onClick={handleDownloadReceipt}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                </button>
               </div>
 
               <div className="drp-sim-receipt-date">
@@ -1166,11 +1171,6 @@ export function ApiSimulator() {
                   </svg>
                   <span className="drp-sim-receipt-card">{stepData.decryptedReceipt?.payment.brand.charAt(0).toUpperCase()}{stepData.decryptedReceipt?.payment.brand.slice(1)} •••• {stepData.decryptedReceipt?.payment.last4}</span>
                 </div>
-                <button className="drp-sim-download-btn" title="Download Receipt" onClick={handleDownloadReceipt}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                  </svg>
-                </button>
               </div>
             </div>
 
