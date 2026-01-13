@@ -11,7 +11,7 @@ export function Features() {
         <div className="text-center mb-8 sm:mb-12">
           <p className="text-sm font-medium text-blue-600 mb-2">Platform</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
-            Everything you need for digital receipts
+            Paper is no longer the default receipt option
           </h2>
         </div>
 
@@ -155,8 +155,8 @@ const DeveloperAPIHeader = () => (
 
 const items = [
   {
-    title: "Merchant portal",
-    description: "Self-serve receipt configuration, branding, and delivery settings.",
+    title: "Consumer Native Card App",
+    description: "Receipts delivered directly to your customers' banking apps.",
     header: <MerchantPortalHeader />,
     icon: <LayoutDashboard className="h-4 w-4 text-blue-600" />,
   },
@@ -167,7 +167,7 @@ const items = [
     icon: <Shield className="h-4 w-4 text-blue-600" />,
   },
   {
-    title: "Connected apps",
+    title: "Better Data Tracking",
     description: "Share receipts with expense tools, accounting software, and budgeting apps.",
     header: <ConnectedAppsHeader />,
     icon: <Link2 className="h-4 w-4 text-blue-600" />,
@@ -185,8 +185,8 @@ const items = [
     icon: <Bot className="h-4 w-4 text-blue-600" />,
   },
   {
-    title: "Developer API",
-    description: "RESTful API with webhooks, SDKs, and comprehensive documentation.",
+    title: "One Click Integration",
+    description: "Simple setup with RESTful API, webhooks, and SDKs for all major platforms.",
     header: <DeveloperAPIHeader />,
     icon: <Code2 className="h-4 w-4 text-blue-600" />,
   },

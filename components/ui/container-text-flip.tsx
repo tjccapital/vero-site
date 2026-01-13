@@ -32,9 +32,9 @@ export function ContainerTextFlip({
   const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), "");
 
   return (
-    <span className={cn("inline-block relative", className)}>
+    <span className={cn("inline-block relative whitespace-nowrap", className)}>
       {/* Invisible spacer to maintain consistent width */}
-      <span className="invisible" aria-hidden="true">
+      <span className="invisible whitespace-nowrap" aria-hidden="true">
         {longestWord}
       </span>
       <AnimatePresence mode="wait">
@@ -48,7 +48,7 @@ export function ContainerTextFlip({
             ease: "easeInOut",
           }}
           className={cn(
-            "absolute left-0 top-0 inline-block text-primary-900",
+            "absolute left-0 top-0 inline-block whitespace-nowrap text-primary-900",
             textClassName
           )}
         >
