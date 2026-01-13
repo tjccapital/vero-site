@@ -293,13 +293,13 @@ const items = [
     description: "Structured data for AI agents enabling autonomous expense tracking.",
     header: <AIAgentHeader />,
     icon: <Bot className="h-4 w-4 text-primary-600" />,
-    className: "md:col-span-3",
+    className: "md:col-span-2",
   },
   {
     title: "One Click Integration",
     description: "Enable digital receipts for your users with a simple toggle.",
     header: <OneClickToggleHeader />,
     icon: <Code2 className="h-4 w-4 text-primary-600" />,
-    className: "md:col-span-1",
+    className: "md:col-span-2",
   },
 ];
