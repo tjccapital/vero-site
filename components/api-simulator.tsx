@@ -626,7 +626,7 @@ export function ApiSimulator() {
     yPos += 45;
     ctx.fillStyle = '#1E3A8A';
     ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-    ctx.fillText('Powered by Digital Receipt Protocol', canvas.width / 2, yPos);
+    ctx.fillText('Powered by Vero', canvas.width / 2, yPos);
 
     // Download
     const link = document.createElement('a');
