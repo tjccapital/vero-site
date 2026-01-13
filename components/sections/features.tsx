@@ -1,7 +1,8 @@
 "use client";
 
 import { BentoGrid, BentoGridItem } from "../ui/bento-grid";
-import { Zap, Link2, Bot, Shield, Smartphone, Code2, Receipt } from "lucide-react";
+import { Zap, Link2, Bot, Shield, Smartphone, Code2, Receipt, Settings } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function Features() {
   return (
@@ -204,25 +205,59 @@ const AIAgentHeader = () => (
   </div>
 );
 
-const DeveloperAPIHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gray-900 border border-gray-700 p-4">
-    <div className="text-xs font-mono w-full">
-      <div className="text-gray-500">$ curl -X POST https://api.vero.com/receipts</div>
-      <div className="text-gray-400 mt-2">
-        <span className="text-blue-400">{"{"}</span>
-      </div>
-      <div className="pl-3 text-gray-400">
-        <span className="text-blue-300">&quot;status&quot;</span>: <span className="text-blue-300">&quot;delivered&quot;</span>,
-      </div>
-      <div className="pl-3 text-gray-400">
-        <span className="text-blue-300">&quot;receipt_id&quot;</span>: <span className="text-blue-300">&quot;rec_9x2k4&quot;</span>
-      </div>
-      <div className="text-gray-400">
-        <span className="text-blue-400">{"}"}</span>
+const OneClickToggleHeader = () => {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    // Auto-toggle animation
+    const interval = setInterval(() => {
+      setEnabled(prev => !prev);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
+      <div className="w-full p-4">
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-4">
+          <Settings className="w-4 h-4 text-gray-500" />
+          <span className="text-xs font-medium text-gray-700">Digital Receipt Settings</span>
+        </div>
+
+        {/* Toggle Row */}
+        <div className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg">
+          <div>
+            <div className="text-xs font-medium text-gray-900">Enable Digital Receipts</div>
+            <div className="text-[10px] text-gray-400">Receive itemized receipts for all purchases</div>
+          </div>
+          <button
+            onClick={() => setEnabled(!enabled)}
+            className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
+              enabled ? 'bg-[#1e3a8a]' : 'bg-gray-200'
+            }`}
+          >
+            <div
+              className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-300 ${
+                enabled ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Status Info */}
+        <div className={`mt-3 space-y-1.5 transition-opacity duration-300 ${enabled ? 'opacity-100' : 'opacity-40'}`}>
+          <div className="flex items-center justify-between text-[10px]">
+            <span className="text-gray-500">Status</span>
+            <span className={`font-medium ${enabled ? 'text-green-600' : 'text-gray-400'}`}>
+              {enabled ? 'ACTIVE' : 'INACTIVE'}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const items = [
   {
@@ -240,17 +275,17 @@ const items = [
     className: "md:col-span-2",
   },
   {
-    title: "Better Data Tracking",
-    description: "Track spending by category from itemized receipt data.",
-    header: <ExpenseChartHeader />,
-    icon: <Link2 className="h-4 w-4 text-primary-600" />,
-    className: "md:col-span-1",
-  },
-  {
     title: "Real-time delivery",
     description: "Receipts arrive before customers leave the store via webhooks.",
     header: <RealTimeHeader />,
     icon: <Zap className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-1",
+  },
+  {
+    title: "Better Data Tracking",
+    description: "Track spending by category from itemized receipt data.",
+    header: <ExpenseChartHeader />,
+    icon: <Link2 className="h-4 w-4 text-primary-600" />,
     className: "md:col-span-3",
   },
   {
@@ -262,8 +297,8 @@ const items = [
   },
   {
     title: "One Click Integration",
-    description: "Simple setup with RESTful API, webhooks, and SDKs for all major platforms.",
-    header: <DeveloperAPIHeader />,
+    description: "Enable digital receipts for your users with a simple toggle.",
+    header: <OneClickToggleHeader />,
     icon: <Code2 className="h-4 w-4 text-primary-600" />,
     className: "md:col-span-1",
   },
