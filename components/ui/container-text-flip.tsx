@@ -48,7 +48,7 @@ export function ContainerTextFlip({
             ease: "easeInOut",
           }}
           className={cn(
-            "absolute left-0 top-0 inline-block whitespace-nowrap text-primary-900",
+            "absolute inset-0 flex items-center justify-center whitespace-nowrap text-primary-900",
             textClassName
           )}
         >
