@@ -94,15 +94,15 @@ export function Navbar() {
 
               {activeDropdown === "solutions" && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
-                  <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-[400px]">
+                  <div className="bg-white border border-gray-200 shadow-lg p-4 w-[400px]">
                     <div className="space-y-1">
                       {solutionItems.map((item) => (
                         <a
                           key={item.title}
                           href={item.href}
-                          className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                          className="flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center">
+                          <div className="flex-shrink-0 w-10 h-10 bg-primary-50 flex items-center justify-center">
                             <item.icon className="w-5 h-5 text-primary-900" />
                           </div>
                           <div>
@@ -116,7 +116,7 @@ export function Navbar() {
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <a
                         href="/contact"
-                        className="flex items-center justify-center gap-2 py-2.5 bg-primary-50 text-primary-900 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium"
+                        className="flex items-center justify-center gap-2 py-2.5 bg-primary-50 text-primary-900 hover:bg-primary-100 transition-colors text-sm font-medium"
                       >
                         Not sure which solution?
                         <ArrowRight className="w-4 h-4" />
@@ -140,7 +140,7 @@ export function Navbar() {
 
               {activeDropdown === "resources" && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
-                  <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-[400px]">
+                  <div className="bg-white border border-gray-200 shadow-lg p-4 w-[400px]">
                     <div className="space-y-1">
                       {resourceItems.map((item) => (
                         <a
@@ -148,9 +148,9 @@ export function Navbar() {
                           href={item.href}
                           target={item.external ? "_blank" : undefined}
                           rel={item.external ? "noopener noreferrer" : undefined}
-                          className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                          className="flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gray-100 flex items-center justify-center">
                             <item.icon className="w-5 h-5 text-gray-600" />
                           </div>
                           <div>
@@ -180,7 +180,7 @@ export function Navbar() {
             </a>
             <a
               href="#"
-              className="px-4 py-2 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
             >
               Get started
             </a>
@@ -230,7 +230,7 @@ export function Navbar() {
               </a>
               <a
                 href="#"
-                className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
+                className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
               >
                 Get started
               </a>

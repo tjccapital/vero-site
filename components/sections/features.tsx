@@ -48,11 +48,11 @@ const MerchantPortalHeader = () => (
           <span className="hidden sm:inline">Webhooks</span>
         </div>
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center py-1.5 px-2 rounded-lg hover:bg-gray-50">
+          <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
             <span className="text-xs text-gray-700">Email delivery</span>
             <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Active</span>
           </div>
-          <div className="flex justify-between items-center py-1.5 px-2 rounded-lg hover:bg-gray-50">
+          <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
             <span className="text-xs text-gray-700">Card app delivery</span>
             <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Active</span>
           </div>
@@ -84,13 +84,13 @@ const ConnectedAppsHeader = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 items-center justify-center">
     <div className="flex gap-2">
       <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 rounded bg-blue-500" />
+        <div className="w-5 h-5 bg-blue-500" />
       </div>
       <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 rounded bg-emerald-500" />
+        <div className="w-5 h-5 bg-emerald-500" />
       </div>
       <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 rounded bg-violet-500" />
+        <div className="w-5 h-5 bg-violet-500" />
       </div>
     </div>
   </div>
@@ -115,12 +115,12 @@ const AIAgentHeader = () => (
         <div className="w-6 h-6 rounded-full bg-violet-200 flex items-center justify-center">
           <Bot className="w-3 h-3 text-violet-600" />
         </div>
-        <div className="h-2 bg-violet-200 rounded w-20" />
+        <div className="h-2 bg-violet-200 w-20" />
       </div>
       <div className="space-y-1.5 pl-8">
-        <div className="h-2 bg-violet-100 rounded w-full" />
-        <div className="h-2 bg-violet-100 rounded w-3/4" />
-        <div className="h-2 bg-violet-100 rounded w-1/2" />
+        <div className="h-2 bg-violet-100 w-full" />
+        <div className="h-2 bg-violet-100 w-3/4" />
+        <div className="h-2 bg-violet-100 w-1/2" />
       </div>
     </div>
   </div>
