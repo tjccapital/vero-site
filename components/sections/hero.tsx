@@ -17,12 +17,12 @@ export function Hero() {
     <section className="relative bg-slate-50 overflow-hidden">
       <div className="absolute inset-0 w-full h-full bg-slate-50 z-20 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
       <Boxes />
-      <div className="relative z-30 pt-28 pb-20 pointer-events-none">
+      <div className="relative z-30 pt-16 pb-12 sm:pt-24 sm:pb-16 pointer-events-none">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Announcement banner */}
           <a
             href="/contact"
-            className="pointer-events-auto inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-white text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm"
+            className="pointer-events-auto inline-flex items-center gap-2 px-4 py-2 mb-6 sm:mb-8 text-sm font-medium bg-white text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm"
           >
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             Now seeking pilot partners
@@ -30,24 +30,27 @@ export function Hero() {
           </a>
 
           {/* Main headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-slate-900 leading-[1.1] mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-slate-900 leading-[1.15] mb-4 sm:mb-6">
             Digital Receipts that
             <br />
-            actually work for{" "}
-            <ContainerTextFlip
-              words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
-              textClassName="text-blue-500"
-            />
+            actually work for
+            <br className="sm:hidden" />
+            <span className="sm:ml-2">
+              <ContainerTextFlip
+                words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
+                textClassName="text-blue-500"
+              />
+            </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="max-w-xl mx-auto text-lg text-slate-600 leading-relaxed mb-10">
+          <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed mb-6 sm:mb-8">
             Stop friendly fraud before it starts. Deliver itemized receipts
             directly to banking apps, so customers see exactly what they bought.
           </p>
 
           {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8 sm:mb-12">
             <a
               href="/contact"
               className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-sm"

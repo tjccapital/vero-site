@@ -50,16 +50,16 @@ export function IntegrationTabs() {
   const content = tabContent[activeTab as keyof typeof tabContent];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-12 sm:py-20 bg-gradient-to-b from-white to-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <p className="text-sm font-medium text-primary-900 mb-3">Integration</p>
-          <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
+        <div className="text-center mb-8 sm:mb-10">
+          <p className="text-sm font-medium text-primary-900 mb-2">Integration</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900">
             Built for everyone in the ecosystem
           </h2>
         </div>
         {/* Tab navigation */}
-        <div className="flex justify-center mb-16 px-4">
+        <div className="flex justify-center mb-8 sm:mb-12 px-4">
           <div className="inline-flex flex-wrap justify-center bg-white p-1.5 border border-gray-200 shadow-sm">
             {tabs.map((tab) => (
               <button
@@ -79,7 +79,7 @@ export function IntegrationTabs() {
         </div>
 
         {/* Tab content */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left side - Text content */}
           <div className="space-y-6">
             <div className="w-12 h-12 bg-primary-100 flex items-center justify-center">
