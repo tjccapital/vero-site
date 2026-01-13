@@ -17,8 +17,8 @@ export default function Home() {
         <Features />
         <ReceiptDemo />
         <IntegrationTabs />
-        <Encryption />
         <UseCases />
+        <Encryption />
         <CTA />
       </main>
       <Footer />
