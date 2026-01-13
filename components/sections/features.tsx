@@ -1,7 +1,7 @@
 "use client";
 
 import { BentoGrid, BentoGridItem } from "../ui/bento-grid";
-import { Zap, Link2, Bot, Shield, LayoutDashboard, Code2 } from "lucide-react";
+import { Zap, Link2, Bot, Shield, Smartphone, Code2, Receipt } from "lucide-react";
 
 export function Features() {
   return (
@@ -33,28 +33,54 @@ export function Features() {
   );
 }
 
-const MerchantPortalHeader = () => (
+const TransactionListHeader = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
     <div className="w-full">
-      <div className="flex items-center gap-1.5 px-4 py-2 border-b border-gray-100 bg-gray-50/50">
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50">
+        <span className="text-xs font-medium text-gray-700">Recent Transactions</span>
+        <span className="text-[10px] text-gray-400">Today</span>
       </div>
-      <div className="p-4">
-        <div className="flex gap-4 text-xs text-gray-400 border-b border-gray-100 pb-2 mb-3">
-          <span className="text-primary-600 border-b-2 border-blue-600 pb-2 -mb-2 font-medium">Receipts</span>
-          <span>Branding</span>
-          <span className="hidden sm:inline">Webhooks</span>
-        </div>
-        <div className="space-y-1.5">
-          <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
-            <span className="text-xs text-gray-700">Email delivery</span>
-            <span className="text-[10px] text-primary-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+      <div className="p-3 space-y-2">
+        {/* Transaction 1 */}
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+          <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-orange-600">C</span>
           </div>
-          <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
-            <span className="text-xs text-gray-700">Card app delivery</span>
-            <span className="text-[10px] text-primary-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-gray-900">Coffee Shop</div>
+            <div className="text-[10px] text-gray-400">12:30 PM</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-900">-$11.29</span>
+            <Receipt className="w-3.5 h-3.5 text-primary-600" />
+          </div>
+        </div>
+        {/* Transaction 2 */}
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-green-600">G</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-gray-900">Grocery Store</div>
+            <div className="text-[10px] text-gray-400">10:15 AM</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-900">-$47.82</span>
+            <Receipt className="w-3.5 h-3.5 text-primary-600" />
+          </div>
+        </div>
+        {/* Transaction 3 */}
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-blue-600">P</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-gray-900">Pharmacy</div>
+            <div className="text-[10px] text-gray-400">Yesterday</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-900">-$23.50</span>
+            <Receipt className="w-3.5 h-3.5 text-primary-600" />
           </div>
         </div>
       </div>
@@ -157,8 +183,8 @@ const items = [
   {
     title: "Consumer Native Card App",
     description: "Receipts delivered directly to your customers' banking apps.",
-    header: <MerchantPortalHeader />,
-    icon: <LayoutDashboard className="h-4 w-4 text-primary-600" />,
+    header: <TransactionListHeader />,
+    icon: <Smartphone className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Fraud prevention",
