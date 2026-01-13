@@ -62,7 +62,20 @@ html {
 }
 
 .drp-sim-header {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+}
+
+@media (min-width: 640px) {
+  .drp-sim-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 .drp-sim-progress {
@@ -74,7 +87,7 @@ html {
 
 .drp-sim-progress-bar {
   height: 4px;
-  background: #e5e7eb;
+  background: #334155;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -88,7 +101,7 @@ html {
 
 .drp-sim-progress-text {
   font-size: 13px;
-  color: #6b7280;
+  color: #94a3b8;
   font-weight: 500;
 }
 
@@ -132,14 +145,14 @@ html {
 }
 
 .drp-sim-btn-secondary {
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: transparent;
+  color: #e2e8f0;
+  border: 1px solid #475569;
 }
 
 .drp-sim-btn-secondary:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: #1e293b;
+  border-color: #64748b;
 }
 
 .drp-sim-spinner {
