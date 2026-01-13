@@ -5,12 +5,12 @@ import { Zap, Link2, Bot, Shield, LayoutDashboard, Code2 } from "lucide-react";
 
 export function Features() {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-12 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
-        <div className="text-center mb-16">
-          <p className="text-sm font-medium text-blue-600 mb-3">Platform</p>
-          <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-sm font-medium text-blue-600 mb-2">Platform</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
             Everything you need for digital receipts
           </h2>
         </div>

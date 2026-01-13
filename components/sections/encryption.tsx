@@ -4,15 +4,15 @@ import { Shield, Lock, EyeOff, Key, ArrowRight } from "lucide-react";
 
 export function Encryption() {
   return (
-    <section className="py-24 bg-slate-900">
+    <section className="py-12 sm:py-20 bg-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <p className="text-sm font-medium text-blue-400 mb-3">Security</p>
-          <h2 className="text-3xl md:text-4xl font-semibold text-white">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-sm font-medium text-blue-400 mb-2">Security</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white">
             End-to-end encryption by design
           </h2>
         </div>
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left side - Content */}
           <div className="space-y-6">
             <p className="text-gray-400 leading-relaxed text-lg">
@@ -142,7 +142,7 @@ export function Encryption() {
         </div>
 
         {/* CTA Button */}
-        <div className="mt-12 text-center">
+        <div className="mt-8 sm:mt-10 text-center">
           <a
             href="/product"
             className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-primary-600 hover:bg-primary-500 transition-colors"

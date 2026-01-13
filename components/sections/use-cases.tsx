@@ -22,19 +22,19 @@ const useCases = [
 
 export function UseCases() {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-12 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900">
             Built for everyone in the payment ecosystem
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
           {useCases.map((useCase, index) => (
             <div
               key={index}
-              className="bg-white border border-gray-200 p-8 hover:border-gray-300 hover:shadow-sm transition-all"
+              className="bg-white border border-gray-200 p-5 sm:p-8 hover:border-gray-300 hover:shadow-sm transition-all"
             >
               <div className="w-10 h-10 bg-gray-100 flex items-center justify-center mb-5">
                 <useCase.icon className="w-5 h-5 text-gray-700" />
