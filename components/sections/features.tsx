@@ -1,7 +1,7 @@
 "use client";
 
 import { BentoGrid, BentoGridItem } from "../ui/bento-grid";
-import { Zap, Link2, Bot, Shield, LayoutDashboard } from "lucide-react";
+import { Zap, Link2, Bot, Shield, LayoutDashboard, Code2 } from "lucide-react";
 
 export function Features() {
   return (
@@ -16,7 +16,7 @@ export function Features() {
         </div>
 
         {/* Bento Grid */}
-        <BentoGrid className="max-w-5xl mx-auto">
+        <BentoGrid>
           {items.map((item, i) => (
             <BentoGridItem
               key={i}
@@ -24,7 +24,7 @@ export function Features() {
               description={item.description}
               header={item.header}
               icon={item.icon}
-              className={i === 0 || i === 4 ? "md:col-span-2" : ""}
+              className="md:col-span-2"
             />
           ))}
         </BentoGrid>
@@ -50,11 +50,11 @@ const MerchantPortalHeader = () => (
         <div className="space-y-1.5">
           <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
             <span className="text-xs text-gray-700">Email delivery</span>
-            <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
           </div>
           <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
             <span className="text-xs text-gray-700">Card app delivery</span>
-            <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
           </div>
         </div>
       </div>
@@ -67,13 +67,13 @@ const FraudPreventionHeader = () => (
     <div className="text-xs font-mono w-full">
       <div className="text-gray-500">{"{"}</div>
       <div className="pl-3 text-gray-400">
-        <span className="text-purple-400">&quot;txn&quot;</span>: <span className="text-emerald-400">&quot;txn_8x7k2&quot;</span>,
+        <span className="text-blue-400">&quot;txn&quot;</span>: <span className="text-blue-300">&quot;txn_8x7k2&quot;</span>,
       </div>
       <div className="pl-3 text-gray-400">
-        <span className="text-purple-400">&quot;hash&quot;</span>: <span className="text-emerald-400">&quot;0x8f3a...&quot;</span>,
+        <span className="text-blue-400">&quot;hash&quot;</span>: <span className="text-blue-300">&quot;0x8f3a...&quot;</span>,
       </div>
       <div className="pl-3 text-gray-400">
-        <span className="text-purple-400">&quot;verified&quot;</span>: <span className="text-amber-400">true</span>
+        <span className="text-blue-400">&quot;verified&quot;</span>: <span className="text-blue-300">true</span>
       </div>
       <div className="text-gray-500">{"}"}</div>
     </div>
@@ -87,40 +87,67 @@ const ConnectedAppsHeader = () => (
         <div className="w-5 h-5 bg-blue-500" />
       </div>
       <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-emerald-500" />
+        <div className="w-5 h-5 bg-blue-400" />
       </div>
       <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-violet-500" />
+        <div className="w-5 h-5 bg-blue-600" />
       </div>
     </div>
   </div>
 );
 
 const RealTimeHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 items-center justify-center">
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 items-center justify-center">
     <div className="flex items-center gap-3">
-      <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
-      <div className="h-0.5 w-12 bg-amber-300" />
+      <div className="w-3 h-3 rounded-full bg-blue-400 animate-pulse" />
+      <div className="h-0.5 w-12 bg-blue-300" />
       <div className="w-8 h-8 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <Zap className="w-4 h-4 text-amber-500" />
+        <Zap className="w-4 h-4 text-blue-500" />
       </div>
     </div>
   </div>
 );
 
 const AIAgentHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100 p-4">
-    <div className="w-full space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-full bg-violet-200 flex items-center justify-center">
-          <Bot className="w-3 h-3 text-violet-600" />
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-4">
+    <div className="w-full space-y-3">
+      {/* User message */}
+      <div className="flex items-start gap-2">
+        <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+          <span className="text-[8px] text-gray-600 font-medium">U</span>
         </div>
-        <div className="h-2 bg-violet-200 w-20" />
+        <div className="bg-white border border-gray-200 px-2 py-1.5 text-[10px] text-gray-700">
+          How much did I spend on fruits and vegetables last month?
+        </div>
       </div>
-      <div className="space-y-1.5 pl-8">
-        <div className="h-2 bg-violet-100 w-full" />
-        <div className="h-2 bg-violet-100 w-3/4" />
-        <div className="h-2 bg-violet-100 w-1/2" />
+      {/* Agent response */}
+      <div className="flex items-start gap-2">
+        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+          <Bot className="w-3 h-3 text-blue-600" />
+        </div>
+        <div className="bg-blue-50 border border-blue-100 px-2 py-1.5 text-[10px] text-gray-700">
+          Based on your receipts, you spent <span className="font-semibold">$127.43</span> on fruits and vegetables in December.
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const DeveloperAPIHeader = () => (
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gray-900 border border-gray-700 p-4">
+    <div className="text-xs font-mono w-full">
+      <div className="text-gray-500">$ curl -X POST https://api.vero.com/receipts</div>
+      <div className="text-gray-400 mt-2">
+        <span className="text-blue-400">{"{"}</span>
+      </div>
+      <div className="pl-3 text-gray-400">
+        <span className="text-blue-300">&quot;status&quot;</span>: <span className="text-blue-300">&quot;delivered&quot;</span>,
+      </div>
+      <div className="pl-3 text-gray-400">
+        <span className="text-blue-300">&quot;receipt_id&quot;</span>: <span className="text-blue-300">&quot;rec_9x2k4&quot;</span>
+      </div>
+      <div className="text-gray-400">
+        <span className="text-blue-400">{"}"}</span>
       </div>
     </div>
   </div>
@@ -137,7 +164,7 @@ const items = [
     title: "Fraud prevention",
     description: "Verifiable purchase records linked to transactions.",
     header: <FraudPreventionHeader />,
-    icon: <Shield className="h-4 w-4 text-rose-600" />,
+    icon: <Shield className="h-4 w-4 text-blue-600" />,
   },
   {
     title: "Connected apps",
@@ -149,12 +176,18 @@ const items = [
     title: "Real-time delivery",
     description: "Receipts arrive before customers leave the store via webhooks.",
     header: <RealTimeHeader />,
-    icon: <Zap className="h-4 w-4 text-amber-600" />,
+    icon: <Zap className="h-4 w-4 text-blue-600" />,
   },
   {
     title: "AI agent ready",
     description: "Structured data for AI agents enabling autonomous expense tracking.",
     header: <AIAgentHeader />,
-    icon: <Bot className="h-4 w-4 text-violet-600" />,
+    icon: <Bot className="h-4 w-4 text-blue-600" />,
+  },
+  {
+    title: "Developer API",
+    description: "RESTful API with webhooks, SDKs, and comprehensive documentation.",
+    header: <DeveloperAPIHeader />,
+    icon: <Code2 className="h-4 w-4 text-blue-600" />,
   },
 ];
