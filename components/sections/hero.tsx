@@ -34,13 +34,11 @@ export function Hero() {
             Digital Receipts that
             <br />
             actually work for
-            <br className="sm:hidden" />
-            <span className="sm:ml-2">
-              <ContainerTextFlip
-                words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
-                textClassName="text-blue-500"
-              />
-            </span>
+            <br />
+            <ContainerTextFlip
+              words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
+              textClassName="text-blue-500"
+            />
           </h1>
 
           {/* Subtitle */}
