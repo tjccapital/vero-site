@@ -9,7 +9,7 @@ export function Features() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-8 sm:mb-12">
-          <p className="text-sm font-medium text-blue-600 mb-2">Platform</p>
+          <p className="text-sm font-medium text-primary-600 mb-2">Platform</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
             Paper is no longer the default receipt option
           </h2>
@@ -43,18 +43,18 @@ const MerchantPortalHeader = () => (
       </div>
       <div className="p-4">
         <div className="flex gap-4 text-xs text-gray-400 border-b border-gray-100 pb-2 mb-3">
-          <span className="text-blue-600 border-b-2 border-blue-600 pb-2 -mb-2 font-medium">Receipts</span>
+          <span className="text-primary-600 border-b-2 border-blue-600 pb-2 -mb-2 font-medium">Receipts</span>
           <span>Branding</span>
           <span className="hidden sm:inline">Webhooks</span>
         </div>
         <div className="space-y-1.5">
           <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
             <span className="text-xs text-gray-700">Email delivery</span>
-            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+            <span className="text-[10px] text-primary-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
           </div>
           <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
             <span className="text-xs text-gray-700">Card app delivery</span>
-            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+            <span className="text-[10px] text-primary-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
           </div>
         </div>
       </div>
@@ -123,7 +123,7 @@ const AIAgentHeader = () => (
       {/* Agent response */}
       <div className="flex items-start gap-2">
         <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-          <Bot className="w-3 h-3 text-blue-600" />
+          <Bot className="w-3 h-3 text-primary-600" />
         </div>
         <div className="bg-blue-50 border border-blue-100 px-2 py-1.5 text-[10px] text-gray-700">
           Based on your receipts, you spent <span className="font-semibold">$127.43</span> on fruits and vegetables in December.
@@ -158,36 +158,36 @@ const items = [
     title: "Consumer Native Card App",
     description: "Receipts delivered directly to your customers' banking apps.",
     header: <MerchantPortalHeader />,
-    icon: <LayoutDashboard className="h-4 w-4 text-blue-600" />,
+    icon: <LayoutDashboard className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Fraud prevention",
     description: "Verifiable purchase records linked to transactions.",
     header: <FraudPreventionHeader />,
-    icon: <Shield className="h-4 w-4 text-blue-600" />,
+    icon: <Shield className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Better Data Tracking",
     description: "Share receipts with expense tools, accounting software, and budgeting apps.",
     header: <ConnectedAppsHeader />,
-    icon: <Link2 className="h-4 w-4 text-blue-600" />,
+    icon: <Link2 className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Real-time delivery",
     description: "Receipts arrive before customers leave the store via webhooks.",
     header: <RealTimeHeader />,
-    icon: <Zap className="h-4 w-4 text-blue-600" />,
+    icon: <Zap className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "AI agent ready",
     description: "Structured data for AI agents enabling autonomous expense tracking.",
     header: <AIAgentHeader />,
-    icon: <Bot className="h-4 w-4 text-blue-600" />,
+    icon: <Bot className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "One Click Integration",
     description: "Simple setup with RESTful API, webhooks, and SDKs for all major platforms.",
     header: <DeveloperAPIHeader />,
-    icon: <Code2 className="h-4 w-4 text-blue-600" />,
+    icon: <Code2 className="h-4 w-4 text-primary-600" />,
   },
 ];

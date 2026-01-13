@@ -57,16 +57,17 @@ const StaticBoxes = ({ className, ...rest }: { className?: string }) => {
 const InteractiveBoxes = ({ className, ...rest }: { className?: string }) => {
   const rows = new Array(150).fill(1);
   const cols = new Array(100).fill(1);
+  // Primary color scale from globals.css
   const colors = [
-    "#3b82f6", // blue-500
-    "#60a5fa", // blue-400
-    "#2563eb", // blue-600
-    "#93c5fd", // blue-300
-    "#1d4ed8", // blue-700
-    "#3b82f6", // blue-500
-    "#60a5fa", // blue-400
-    "#2563eb", // blue-600
-    "#93c5fd", // blue-300
+    "#1e3a8a", // primary-900 (main brand)
+    "#1e40af", // primary-800
+    "#1d4ed8", // primary-700
+    "#2563eb", // primary-600
+    "#3b82f6", // primary-500
+    "#1e3a8a", // primary-900
+    "#1e40af", // primary-800
+    "#2563eb", // primary-600
+    "#1d4ed8", // primary-700
   ];
   const getRandomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)];
