@@ -46,7 +46,7 @@ export function CodePreview() {
                 href="https://docs.vero.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors rounded-lg group"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors group"
               >
                 View Documentation
                 <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
@@ -55,27 +55,16 @@ export function CodePreview() {
                 href="https://docs.vero.com/sdks"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors rounded-lg"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors"
               >
                 Explore SDKs
               </a>
-            </div>
-
-            <div className="mt-8 pt-8 border-t border-slate-800">
-              <p className="text-sm text-slate-500 mb-4">Available integrations</p>
-              <div className="flex flex-wrap gap-3">
-                <span className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 rounded-full">Node.js</span>
-                <span className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 rounded-full">Python</span>
-                <span className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 rounded-full">Swift</span>
-                <span className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 rounded-full">Kotlin</span>
-                <span className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 rounded-full">REST API</span>
-              </div>
             </div>
           </div>
 
           {/* Right - Code Block */}
           <div className="relative">
-            <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden shadow-2xl">
+            <div className="bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl">
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-slate-900/50 border-b border-slate-800">
                 <div className="flex items-center gap-2">
