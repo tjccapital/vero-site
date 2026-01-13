@@ -15,9 +15,9 @@ export default function Home() {
       <main className="pt-16">
         <Hero />
         <Features />
+        <ReceiptDemo />
         <IntegrationTabs />
         <Encryption />
-        <ReceiptDemo />
         <UseCases />
         <CTA />
       </main>

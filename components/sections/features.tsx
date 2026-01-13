@@ -1,7 +1,7 @@
 "use client";
 
 import { BentoGrid, BentoGridItem } from "../ui/bento-grid";
-import { Zap, Link2, Bot, Shield, LayoutDashboard, Code2 } from "lucide-react";
+import { Zap, Link2, Bot, Shield, Smartphone, Code2, Receipt } from "lucide-react";
 
 export function Features() {
   return (
@@ -9,7 +9,7 @@ export function Features() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-8 sm:mb-12">
-          <p className="text-sm font-medium text-blue-600 mb-2">Platform</p>
+          <p className="text-sm font-medium text-primary-600 mb-2">Platform</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
             Paper is no longer the default receipt option
           </h2>
@@ -33,28 +33,54 @@ export function Features() {
   );
 }
 
-const MerchantPortalHeader = () => (
+const TransactionListHeader = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
     <div className="w-full">
-      <div className="flex items-center gap-1.5 px-4 py-2 border-b border-gray-100 bg-gray-50/50">
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
-        <div className="w-2 h-2 rounded-full bg-gray-300" />
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-gray-50/50">
+        <span className="text-xs font-medium text-gray-700">Recent Transactions</span>
+        <span className="text-[10px] text-gray-400">Today</span>
       </div>
-      <div className="p-4">
-        <div className="flex gap-4 text-xs text-gray-400 border-b border-gray-100 pb-2 mb-3">
-          <span className="text-blue-600 border-b-2 border-blue-600 pb-2 -mb-2 font-medium">Receipts</span>
-          <span>Branding</span>
-          <span className="hidden sm:inline">Webhooks</span>
-        </div>
-        <div className="space-y-1.5">
-          <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
-            <span className="text-xs text-gray-700">Email delivery</span>
-            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+      <div className="p-3 space-y-2">
+        {/* Transaction 1 */}
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-gray-600">C</span>
           </div>
-          <div className="flex justify-between items-center py-1.5 px-2 hover:bg-gray-50">
-            <span className="text-xs text-gray-700">Card app delivery</span>
-            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-gray-900">Coffee Shop</div>
+            <div className="text-[10px] text-gray-400">12:30 PM</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-900">-$11.29</span>
+            <Receipt className="w-3.5 h-3.5 text-primary-600" />
+          </div>
+        </div>
+        {/* Transaction 2 */}
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-gray-600">G</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-gray-900">Grocery Store</div>
+            <div className="text-[10px] text-gray-400">10:15 AM</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-900">-$47.82</span>
+            <Receipt className="w-3.5 h-3.5 text-primary-600" />
+          </div>
+        </div>
+        {/* Transaction 3 */}
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-gray-600">P</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-gray-900">Pharmacy</div>
+            <div className="text-[10px] text-gray-400">Yesterday</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-900">-$23.50</span>
+            <Receipt className="w-3.5 h-3.5 text-primary-600" />
           </div>
         </div>
       </div>
@@ -80,17 +106,46 @@ const FraudPreventionHeader = () => (
   </div>
 );
 
-const ConnectedAppsHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 items-center justify-center">
-    <div className="flex gap-2">
-      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-blue-500" />
+const ExpenseChartHeader = () => (
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
+    <div className="w-full p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-medium text-gray-700">Spending by Category</span>
+        <span className="text-[10px] text-gray-400">This Month</span>
       </div>
-      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-blue-400" />
-      </div>
-      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-blue-600" />
+      <div className="space-y-2">
+        {/* Groceries */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Groceries</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-green-500 rounded-sm" style={{ width: "75%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$284</span>
+        </div>
+        {/* Gas */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Gas</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-amber-500 rounded-sm" style={{ width: "45%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$156</span>
+        </div>
+        {/* Dining */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Dining</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-primary-500 rounded-sm" style={{ width: "35%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$127</span>
+        </div>
+        {/* Clothing */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Clothing</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-purple-500 rounded-sm" style={{ width: "25%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$89</span>
+        </div>
       </div>
     </div>
   </div>
@@ -123,7 +178,7 @@ const AIAgentHeader = () => (
       {/* Agent response */}
       <div className="flex items-start gap-2">
         <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-          <Bot className="w-3 h-3 text-blue-600" />
+          <Bot className="w-3 h-3 text-primary-600" />
         </div>
         <div className="bg-blue-50 border border-blue-100 px-2 py-1.5 text-[10px] text-gray-700">
           Based on your receipts, you spent <span className="font-semibold">$127.43</span> on fruits and vegetables in December.
@@ -157,37 +212,37 @@ const items = [
   {
     title: "Consumer Native Card App",
     description: "Receipts delivered directly to your customers' banking apps.",
-    header: <MerchantPortalHeader />,
-    icon: <LayoutDashboard className="h-4 w-4 text-blue-600" />,
+    header: <TransactionListHeader />,
+    icon: <Smartphone className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Fraud prevention",
     description: "Verifiable purchase records linked to transactions.",
     header: <FraudPreventionHeader />,
-    icon: <Shield className="h-4 w-4 text-blue-600" />,
+    icon: <Shield className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Better Data Tracking",
-    description: "Share receipts with expense tools, accounting software, and budgeting apps.",
-    header: <ConnectedAppsHeader />,
-    icon: <Link2 className="h-4 w-4 text-blue-600" />,
+    description: "Track spending by category from itemized receipt data.",
+    header: <ExpenseChartHeader />,
+    icon: <Link2 className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "Real-time delivery",
     description: "Receipts arrive before customers leave the store via webhooks.",
     header: <RealTimeHeader />,
-    icon: <Zap className="h-4 w-4 text-blue-600" />,
+    icon: <Zap className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "AI agent ready",
     description: "Structured data for AI agents enabling autonomous expense tracking.",
     header: <AIAgentHeader />,
-    icon: <Bot className="h-4 w-4 text-blue-600" />,
+    icon: <Bot className="h-4 w-4 text-primary-600" />,
   },
   {
     title: "One Click Integration",
     description: "Simple setup with RESTful API, webhooks, and SDKs for all major platforms.",
     header: <DeveloperAPIHeader />,
-    icon: <Code2 className="h-4 w-4 text-blue-600" />,
+    icon: <Code2 className="h-4 w-4 text-primary-600" />,
   },
 ];

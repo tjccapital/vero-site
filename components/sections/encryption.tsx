@@ -7,7 +7,7 @@ export function Encryption() {
     <section className="py-12 sm:py-20 bg-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-12">
-          <p className="text-sm font-medium text-blue-400 mb-2">Security</p>
+          <p className="text-sm font-medium text-primary-400 mb-2">Security</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white">
             End-to-end encryption by design
           </h2>
@@ -22,8 +22,8 @@ export function Encryption() {
 
             <div className="space-y-4 pt-4">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                  <Lock className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 bg-primary-600/20 flex items-center justify-center flex-shrink-0">
+                  <Lock className="w-5 h-5 text-primary-400" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">Encrypted at the source</h4>
@@ -34,8 +34,8 @@ export function Encryption() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                  <EyeOff className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 bg-primary-600/20 flex items-center justify-center flex-shrink-0">
+                  <EyeOff className="w-5 h-5 text-primary-400" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">Card issuers can&apos;t read it</h4>
@@ -46,8 +46,8 @@ export function Encryption() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                  <Key className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 bg-primary-600/20 flex items-center justify-center flex-shrink-0">
+                  <Key className="w-5 h-5 text-primary-400" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-white">You hold the keys</h4>
@@ -64,7 +64,7 @@ export function Encryption() {
             <div className="space-y-6">
               {/* Step 1 */}
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   1
                 </div>
                 <div className="flex-1 bg-gray-700/50 p-4">
@@ -82,12 +82,12 @@ export function Encryption() {
 
               {/* Step 2 */}
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   2
                 </div>
                 <div className="flex-1 bg-gray-700/50 p-4">
                   <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-blue-400" />
+                    <Lock className="w-4 h-4 text-primary-400" />
                     <p className="text-sm text-white">
                       <span className="font-medium">Encrypted data</span>
                       <span className="text-gray-400"> travels through Vero</span>
@@ -103,12 +103,12 @@ export function Encryption() {
 
               {/* Step 3 */}
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   3
                 </div>
                 <div className="flex-1 bg-gray-700/50 p-4">
                   <div className="flex items-center gap-2">
-                    <EyeOff className="w-4 h-4 text-blue-400" />
+                    <EyeOff className="w-4 h-4 text-primary-400" />
                     <p className="text-sm text-white">
                       <span className="font-medium">Card issuer</span>
                       <span className="text-gray-400"> delivers but cannot read</span>
@@ -124,12 +124,12 @@ export function Encryption() {
 
               {/* Step 4 */}
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   4
                 </div>
                 <div className="flex-1 bg-gray-700/50 p-4">
                   <div className="flex items-center gap-2">
-                    <Key className="w-4 h-4 text-blue-400" />
+                    <Key className="w-4 h-4 text-primary-400" />
                     <p className="text-sm text-white">
                       <span className="font-medium">Your private key</span>
                       <span className="text-gray-400"> decrypts in your card app</span>
