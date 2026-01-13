@@ -30,39 +30,7 @@ export function CodePreview() {
     <section className="py-16 sm:py-24 bg-slate-900 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Text */}
-          <div>
-            <p className="text-sm font-medium text-blue-400 mb-3">For Developers</p>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-6 leading-tight">
-              Integrate in minutes,<br />not months
-            </h2>
-            <p className="text-lg text-slate-400 mb-8 leading-relaxed">
-              Our SDK handles the complexity of key management and encryption.
-              Card issuers can enable digital receipts for their users with just a few lines of code.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="https://docs.vero.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors group"
-              >
-                View Documentation
-                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-              </a>
-              <a
-                href="https://docs.vero.com/sdks"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors"
-              >
-                Explore SDKs
-              </a>
-            </div>
-          </div>
-
-          {/* Right - Code Block */}
+          {/* Left - Code Block */}
           <div className="relative">
             <div className="bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl">
               {/* Header */}
@@ -160,6 +128,38 @@ export function CodePreview() {
             {/* Decorative elements */}
             <div className="absolute -z-10 top-8 -right-8 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
             <div className="absolute -z-10 -bottom-8 -left-8 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl"></div>
+          </div>
+
+          {/* Right - Text */}
+          <div>
+            <p className="text-sm font-medium text-blue-400 mb-3">For Developers</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-6 leading-tight">
+              Integrate in minutes,<br />not months
+            </h2>
+            <p className="text-lg text-slate-400 mb-8 leading-relaxed">
+              Our SDK handles the complexity of key management and encryption.
+              Card issuers can enable digital receipts for their users with just a few lines of code.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a
+                href="https://docs.vero.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors group"
+              >
+                View Documentation
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+              </a>
+              <a
+                href="https://docs.vero.com/sdks"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors"
+              >
+                Explore SDKs
+              </a>
+            </div>
           </div>
         </div>
       </div>
