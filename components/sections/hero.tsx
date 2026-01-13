@@ -37,7 +37,7 @@ export function Hero() {
             <br />
             <ContainerTextFlip
               words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
-              textClassName="text-primary-600"
+              textClassName="text-primary-900"
             />
           </h1>
 
@@ -51,7 +51,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8 sm:mb-12">
             <a
               href="/contact"
-              className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors shadow-sm"
+              className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors shadow-sm"
             >
               Become a Pilot Partner
               <ArrowRight className="w-4 h-4 ml-2" />
