@@ -43,8 +43,8 @@ const TransactionListHeader = () => (
       <div className="p-3 space-y-2">
         {/* Transaction 1 */}
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-          <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-semibold text-orange-600">C</span>
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-gray-600">C</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-xs font-medium text-gray-900">Coffee Shop</div>
@@ -57,8 +57,8 @@ const TransactionListHeader = () => (
         </div>
         {/* Transaction 2 */}
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-semibold text-green-600">G</span>
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-gray-600">G</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-xs font-medium text-gray-900">Grocery Store</div>
@@ -71,8 +71,8 @@ const TransactionListHeader = () => (
         </div>
         {/* Transaction 3 */}
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-semibold text-blue-600">P</span>
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-semibold text-gray-600">P</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-xs font-medium text-gray-900">Pharmacy</div>
@@ -106,17 +106,46 @@ const FraudPreventionHeader = () => (
   </div>
 );
 
-const ConnectedAppsHeader = () => (
-  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 items-center justify-center">
-    <div className="flex gap-2">
-      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-blue-500" />
+const ExpenseChartHeader = () => (
+  <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
+    <div className="w-full p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-medium text-gray-700">Spending by Category</span>
+        <span className="text-[10px] text-gray-400">This Month</span>
       </div>
-      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-blue-400" />
-      </div>
-      <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 bg-blue-600" />
+      <div className="space-y-2">
+        {/* Groceries */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Groceries</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-green-500 rounded-sm" style={{ width: "75%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$284</span>
+        </div>
+        {/* Gas */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Gas</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-amber-500 rounded-sm" style={{ width: "45%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$156</span>
+        </div>
+        {/* Dining */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Dining</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-primary-500 rounded-sm" style={{ width: "35%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$127</span>
+        </div>
+        {/* Clothing */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Clothing</span>
+          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-purple-500 rounded-sm" style={{ width: "25%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$89</span>
+        </div>
       </div>
     </div>
   </div>
@@ -194,8 +223,8 @@ const items = [
   },
   {
     title: "Better Data Tracking",
-    description: "Share receipts with expense tools, accounting software, and budgeting apps.",
-    header: <ConnectedAppsHeader />,
+    description: "Track spending by category from itemized receipt data.",
+    header: <ExpenseChartHeader />,
     icon: <Link2 className="h-4 w-4 text-primary-600" />,
   },
   {
