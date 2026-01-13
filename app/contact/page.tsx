@@ -218,7 +218,7 @@ export default function ContactPage() {
         </section>
 
         {/* Newsletter Section */}
-        <section className="py-16 bg-primary-900">
+        <section className="py-16 bg-[#1e3a8a]">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-2xl font-semibold text-white mb-3">
               Just want updates?
