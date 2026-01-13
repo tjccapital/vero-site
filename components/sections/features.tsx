@@ -109,42 +109,58 @@ const FraudPreventionHeader = () => (
 const ExpenseChartHeader = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] bg-gradient-to-br from-slate-50 to-white border border-gray-200 overflow-hidden">
     <div className="w-full p-4">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-gray-700">Spending by Category</span>
-        <span className="text-[10px] text-gray-400">This Month</span>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-medium text-gray-700">Grocery Breakdown</span>
+        <span className="text-[10px] text-gray-400">From receipts</span>
       </div>
-      <div className="space-y-2">
-        {/* Groceries */}
+      <div className="space-y-1.5">
+        {/* Produce */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Groceries</span>
-          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-green-500 rounded-sm" style={{ width: "75%" }} />
+          <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Produce</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-green-500 rounded-sm" style={{ width: "70%" }} />
           </div>
-          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$284</span>
+          <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$87</span>
         </div>
-        {/* Gas */}
+        {/* Dairy */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Gas</span>
-          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-amber-500 rounded-sm" style={{ width: "45%" }} />
+          <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Dairy</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-blue-400 rounded-sm" style={{ width: "52%" }} />
           </div>
-          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$156</span>
+          <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$45</span>
         </div>
-        {/* Dining */}
+        {/* Meat */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Dining</span>
-          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-500 rounded-sm" style={{ width: "35%" }} />
+          <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Meat</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-red-400 rounded-sm" style={{ width: "48%" }} />
           </div>
-          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$127</span>
+          <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$42</span>
         </div>
-        {/* Clothing */}
+        {/* Bakery */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-gray-500 w-14 flex-shrink-0">Clothing</span>
-          <div className="flex-1 h-4 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-purple-500 rounded-sm" style={{ width: "25%" }} />
+          <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Bakery</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-amber-400 rounded-sm" style={{ width: "37%" }} />
           </div>
-          <span className="text-[10px] font-medium text-gray-700 w-10 text-right">$89</span>
+          <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$32</span>
+        </div>
+        {/* Snacks */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Snacks</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-purple-400 rounded-sm" style={{ width: "28%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$24</span>
+        </div>
+        {/* Beverages */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Drinks</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
+            <div className="h-full bg-cyan-400 rounded-sm" style={{ width: "22%" }} />
+          </div>
+          <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$19</span>
         </div>
       </div>
     </div>
