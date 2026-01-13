@@ -62,20 +62,7 @@ html {
 }
 
 .drp-sim-header {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fafafa;
-}
-
-@media (min-width: 640px) {
-  .drp-sim-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+  display: none;
 }
 
 .drp-sim-progress {
