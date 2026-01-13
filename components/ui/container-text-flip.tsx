@@ -28,8 +28,15 @@ export function ContainerTextFlip({
     return () => clearInterval(timer);
   }, [next, interval]);
 
+  // Find the longest word to set minimum width and prevent layout shifts
+  const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), "");
+
   return (
     <span className={cn("inline-block relative", className)}>
+      {/* Invisible spacer to maintain consistent width */}
+      <span className="invisible" aria-hidden="true">
+        {longestWord}
+      </span>
       <AnimatePresence mode="wait">
         <motion.span
           key={currentIndex}
@@ -41,7 +48,7 @@ export function ContainerTextFlip({
             ease: "easeInOut",
           }}
           className={cn(
-            "inline-block text-primary-900",
+            "absolute left-0 top-0 inline-block text-primary-900",
             textClassName
           )}
         >
