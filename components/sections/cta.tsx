@@ -15,14 +15,14 @@ export function CTA() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/contact"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-primary-900 bg-white rounded-lg hover:bg-primary-50 transition-colors group shadow-sm"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-primary-900 bg-white hover:bg-primary-50 transition-colors group shadow-sm"
           >
             Join the Pilot
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
             href="/demo"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white border border-white/30 hover:bg-white/10 transition-colors"
           >
             Try the Demo
           </a>

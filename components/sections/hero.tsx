@@ -27,7 +27,7 @@ export function Hero() {
           {/* Announcement banner */}
           <a
             href="/contact"
-            className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-primary-50 text-primary-900 rounded-full hover:bg-primary-100 transition-colors border border-primary-100"
+            className="inline-flex items-center gap-2 px-4 py-2 mb-10 text-sm font-medium bg-primary-50 text-primary-900 hover:bg-primary-100 transition-colors border border-primary-100"
           >
             <span className="w-2 h-2 rounded-full bg-primary-900 animate-pulse" />
             Now seeking pilot partners
@@ -51,14 +51,14 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-20">
             <a
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors shadow-sm shadow-primary-100"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors shadow-sm shadow-primary-100"
             >
               Become a Pilot Partner
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a
               href="/demo"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors"
             >
               Try the Demo
             </a>

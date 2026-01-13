@@ -48,7 +48,7 @@ export function ReceiptDemo() {
 
             <a
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 rounded-md hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 hover:bg-gray-800 transition-colors"
             >
               Become a Pilot Partner
             </a>
@@ -57,11 +57,11 @@ export function ReceiptDemo() {
           {/* Right side - Receipt visualization */}
           <div className="flex justify-center lg:justify-end">
             <div className="relative">
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 w-80">
+              <div className="bg-white shadow-lg border border-gray-200 p-6 w-80">
                 <div className="space-y-5">
                   <div className="flex items-center justify-between pb-4 border-b border-gray-200">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white font-bold text-xs">
+                      <div className="w-8 h-8 bg-gray-900 flex items-center justify-center text-white font-bold text-xs">
                         C
                       </div>
                       <span className="font-semibold text-gray-900 text-sm">Coffee Shop</span>
@@ -111,7 +111,7 @@ export function ReceiptDemo() {
               </div>
 
               {/* Verified Badge */}
-              <div className="absolute -top-3 -right-3 bg-green-600 text-white px-2.5 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+              <div className="absolute -top-3 -right-3 bg-green-600 text-white px-2.5 py-1.5 shadow-lg flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4" />
                 <span className="text-xs font-semibold">Verified</span>
               </div>

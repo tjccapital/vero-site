@@ -34,9 +34,9 @@ export function UseCases() {
           {useCases.map((useCase, index) => (
             <div
               key={index}
-              className="bg-white border border-gray-200 rounded-xl p-8 hover:border-gray-300 hover:shadow-sm transition-all"
+              className="bg-white border border-gray-200 p-8 hover:border-gray-300 hover:shadow-sm transition-all"
             >
-              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-5">
+              <div className="w-10 h-10 bg-gray-100 flex items-center justify-center mb-5">
                 <useCase.icon className="w-5 h-5 text-gray-700" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-3">

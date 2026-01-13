@@ -22,7 +22,7 @@ export function Encryption() {
 
             <div className="space-y-4 pt-4">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-blue-500/20 flex items-center justify-center flex-shrink-0">
                   <Lock className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
@@ -34,7 +34,7 @@ export function Encryption() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-blue-500/20 flex items-center justify-center flex-shrink-0">
                   <EyeOff className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
@@ -46,7 +46,7 @@ export function Encryption() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-blue-500/20 flex items-center justify-center flex-shrink-0">
                   <Key className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
@@ -60,14 +60,14 @@ export function Encryption() {
           </div>
 
           {/* Right side - Visual */}
-          <div className="bg-gray-800 rounded-2xl p-8">
+          <div className="bg-gray-800 p-8">
             <div className="space-y-6">
               {/* Step 1 */}
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   1
                 </div>
-                <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
+                <div className="flex-1 bg-gray-700/50 p-4">
                   <p className="text-sm text-white">
                     <span className="font-medium">Merchant POS</span>
                     <span className="text-gray-400"> encrypts receipt with your public key</span>
@@ -85,7 +85,7 @@ export function Encryption() {
                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   2
                 </div>
-                <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
+                <div className="flex-1 bg-gray-700/50 p-4">
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4 text-blue-400" />
                     <p className="text-sm text-white">
@@ -106,7 +106,7 @@ export function Encryption() {
                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   3
                 </div>
-                <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
+                <div className="flex-1 bg-gray-700/50 p-4">
                   <div className="flex items-center gap-2">
                     <EyeOff className="w-4 h-4 text-blue-400" />
                     <p className="text-sm text-white">
@@ -127,7 +127,7 @@ export function Encryption() {
                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   4
                 </div>
-                <div className="flex-1 bg-gray-700/50 rounded-lg p-4">
+                <div className="flex-1 bg-gray-700/50 p-4">
                   <div className="flex items-center gap-2">
                     <Key className="w-4 h-4 text-blue-400" />
                     <p className="text-sm text-white">
@@ -145,7 +145,7 @@ export function Encryption() {
         <div className="mt-12 text-center">
           <a
             href="/product"
-            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-500 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-primary-600 hover:bg-primary-500 transition-colors"
           >
             Learn more
             <ArrowRight className="w-4 h-4" />

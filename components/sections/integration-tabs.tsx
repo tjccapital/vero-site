@@ -60,12 +60,12 @@ export function IntegrationTabs() {
         </div>
         {/* Tab navigation */}
         <div className="flex justify-center mb-16 px-4">
-          <div className="inline-flex flex-wrap justify-center bg-white rounded-full p-1.5 border border-gray-200 shadow-sm">
+          <div className="inline-flex flex-wrap justify-center bg-white p-1.5 border border-gray-200 shadow-sm">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-medium transition-all ${
                   activeTab === tab.id
                     ? "bg-gray-900 text-white shadow-md"
                     : "text-gray-600 hover:text-gray-900"
@@ -82,7 +82,7 @@ export function IntegrationTabs() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left side - Text content */}
           <div className="space-y-6">
-            <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center">
+            <div className="w-12 h-12 bg-primary-100 flex items-center justify-center">
               <CreditCard className="w-6 h-6 text-primary-900" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
