@@ -118,7 +118,7 @@ const ExpenseChartHeader = () => (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Produce</span>
           <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-600 rounded-sm" style={{ width: "70%" }} />
+            <div className="h-full bg-[#1e3a8a] rounded-sm" style={{ width: "70%" }} />
           </div>
           <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$87</span>
         </div>
@@ -126,7 +126,7 @@ const ExpenseChartHeader = () => (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Dairy</span>
           <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-600 rounded-sm" style={{ width: "52%" }} />
+            <div className="h-full bg-[#1e3a8a] rounded-sm" style={{ width: "52%" }} />
           </div>
           <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$45</span>
         </div>
@@ -134,7 +134,7 @@ const ExpenseChartHeader = () => (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Meat</span>
           <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-600 rounded-sm" style={{ width: "48%" }} />
+            <div className="h-full bg-[#1e3a8a] rounded-sm" style={{ width: "48%" }} />
           </div>
           <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$42</span>
         </div>
@@ -142,7 +142,7 @@ const ExpenseChartHeader = () => (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Bakery</span>
           <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-600 rounded-sm" style={{ width: "37%" }} />
+            <div className="h-full bg-[#1e3a8a] rounded-sm" style={{ width: "37%" }} />
           </div>
           <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$32</span>
         </div>
@@ -150,7 +150,7 @@ const ExpenseChartHeader = () => (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Snacks</span>
           <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-600 rounded-sm" style={{ width: "28%" }} />
+            <div className="h-full bg-[#1e3a8a] rounded-sm" style={{ width: "28%" }} />
           </div>
           <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$24</span>
         </div>
@@ -158,7 +158,7 @@ const ExpenseChartHeader = () => (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">Drinks</span>
           <div className="flex-1 h-3 bg-gray-100 rounded-sm overflow-hidden">
-            <div className="h-full bg-primary-600 rounded-sm" style={{ width: "22%" }} />
+            <div className="h-full bg-[#1e3a8a] rounded-sm" style={{ width: "22%" }} />
           </div>
           <span className="text-[10px] font-medium text-gray-700 w-8 text-right">$19</span>
         </div>
