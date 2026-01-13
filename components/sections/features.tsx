@@ -24,7 +24,7 @@ export function Features() {
               description={item.description}
               header={item.header}
               icon={item.icon}
-              className="md:col-span-2"
+              className={item.className}
             />
           ))}
         </BentoGrid>
@@ -230,35 +230,41 @@ const items = [
     description: "Receipts delivered directly to your customers' banking apps.",
     header: <TransactionListHeader />,
     icon: <Smartphone className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-2",
   },
   {
     title: "Fraud prevention",
     description: "Verifiable purchase records linked to transactions.",
     header: <FraudPreventionHeader />,
     icon: <Shield className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-2",
   },
   {
     title: "Better Data Tracking",
     description: "Track spending by category from itemized receipt data.",
     header: <ExpenseChartHeader />,
     icon: <Link2 className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-1",
   },
   {
     title: "Real-time delivery",
     description: "Receipts arrive before customers leave the store via webhooks.",
     header: <RealTimeHeader />,
     icon: <Zap className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-3",
   },
   {
     title: "AI agent ready",
     description: "Structured data for AI agents enabling autonomous expense tracking.",
     header: <AIAgentHeader />,
     icon: <Bot className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-3",
   },
   {
     title: "One Click Integration",
     description: "Simple setup with RESTful API, webhooks, and SDKs for all major platforms.",
     header: <DeveloperAPIHeader />,
     icon: <Code2 className="h-4 w-4 text-primary-600" />,
+    className: "md:col-span-1",
   },
 ];
