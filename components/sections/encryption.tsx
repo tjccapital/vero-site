@@ -1,8 +1,29 @@
 "use client";
 
-import { Shield, Lock, EyeOff, Key, ArrowRight } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Lock, EyeOff, Key, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { EvervaultCard, Icon } from "@/components/ui/evervault-card";
+
+const rotatingTexts = [
+  "Merchant POS encrypts receipt with your public key",
+  "Encrypted data travels through Vero",
+  "Card issuer delivers but cannot read",
+  "Your private key decrypts in your card app. Voila.",
+];
 
 export function Encryption() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const next = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % rotatingTexts.length);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(next, 1000);
+    return () => clearInterval(timer);
+  }, [next]);
+
   return (
     <section className="py-12 sm:py-20 bg-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,83 +80,32 @@ export function Encryption() {
             </div>
           </div>
 
-          {/* Right side - Visual */}
-          <div className="bg-gray-800 p-8">
-            <div className="space-y-6">
-              {/* Step 1 */}
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  1
-                </div>
-                <div className="flex-1 bg-gray-700/50 p-4">
-                  <p className="text-sm text-white">
-                    <span className="font-medium">Merchant POS</span>
-                    <span className="text-gray-400"> encrypts receipt with your public key</span>
-                  </p>
-                </div>
-              </div>
+          {/* Right side - Evervault Card with rotating text */}
+          <div className="border border-white/[0.2] flex flex-col items-start p-4 relative h-[24rem] bg-slate-900/50">
+            <Icon className="absolute h-6 w-6 -top-3 -left-3 text-white" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 text-white" />
+            <Icon className="absolute h-6 w-6 -top-3 -right-3 text-white" />
+            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 text-white" />
 
-              {/* Connector */}
-              <div className="flex justify-start pl-5">
-                <div className="w-px h-4 bg-gray-700" />
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  2
-                </div>
-                <div className="flex-1 bg-gray-700/50 p-4">
-                  <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-primary-400" />
-                    <p className="text-sm text-white">
-                      <span className="font-medium">Encrypted data</span>
-                      <span className="text-gray-400"> travels through Vero</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Connector */}
-              <div className="flex justify-start pl-5">
-                <div className="w-px h-4 bg-gray-700" />
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  3
-                </div>
-                <div className="flex-1 bg-gray-700/50 p-4">
-                  <div className="flex items-center gap-2">
-                    <EyeOff className="w-4 h-4 text-primary-400" />
-                    <p className="text-sm text-white">
-                      <span className="font-medium">Card issuer</span>
-                      <span className="text-gray-400"> delivers but cannot read</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Connector */}
-              <div className="flex justify-start pl-5">
-                <div className="w-px h-4 bg-gray-700" />
-              </div>
-
-              {/* Step 4 */}
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  4
-                </div>
-                <div className="flex-1 bg-gray-700/50 p-4">
-                  <div className="flex items-center gap-2">
-                    <Key className="w-4 h-4 text-primary-400" />
-                    <p className="text-sm text-white">
-                      <span className="font-medium">Your private key</span>
-                      <span className="text-gray-400"> decrypts in your card app</span>
-                    </p>
-                  </div>
-                </div>
+            <div className="w-full h-full flex items-center justify-center relative">
+              <EvervaultCard />
+              {/* Rotating text overlay */}
+              <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={currentIndex}
+                    initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
+                    transition={{
+                      duration: 0.3,
+                      ease: "easeInOut",
+                    }}
+                    className="text-white text-center font-medium text-base sm:text-lg px-6 max-w-sm"
+                  >
+                    {rotatingTexts[currentIndex]}
+                  </motion.span>
+                </AnimatePresence>
               </div>
             </div>
           </div>
