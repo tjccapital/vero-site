@@ -14,6 +14,7 @@ const tabContent = {
     headline: "Give cardholders transaction clarity while cutting dispute costs",
     description: "Your banking app retrieves itemized receipts via our API. Customers see what they bought instead of cryptic merchant codes. Disputes drop because customers recognize their purchases.",
     cta: "Talk to us about a pilot",
+    image: "/issuer-dashboard.png",
     features: [
       "Reduce friendly fraud",
       "Lower call center volume",
@@ -25,6 +26,7 @@ const tabContent = {
     headline: "One-click install. Free forever.",
     description: "Vero integrates with your existing point-of-sale system. No code changes. No disruption. Your logo and itemized receipts appear in customer bank statements.",
     cta: "Install now",
+    image: "/merchant-dashboard.png",
     features: [
       "Works with Square, Toast, Clover, Shopify",
       "No fees, no subscriptions",
@@ -36,6 +38,7 @@ const tabContent = {
     headline: "See what you bought, not cryptic codes",
     description: "No app to download. No accounts to create. Just use your card and see itemized receipts in your banking app. Budget better and never wonder what a charge was for.",
     cta: "Learn more",
+    image: "/consumer-app.png",
     features: [
       "Zero setup required",
       "Itemized details in your bank app",
@@ -115,8 +118,8 @@ export function IntegrationTabs() {
           {/* Right side - Visual */}
           <div className="flex items-center justify-center">
             <img
-              src="/receipt-flow.png"
-              alt="Digital receipt flow showing payment complete notification and receipt details"
+              src={content.image}
+              alt={content.headline}
               className="max-w-full h-auto"
             />
           </div>
