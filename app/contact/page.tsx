@@ -1,25 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { Mail, MessageSquare, Building2, ArrowRight } from "lucide-react";
 
-export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    company: "",
-    role: "",
-    message: "",
-    newsletter: false,
-  });
+declare global {
+  interface Window {
+    Cal?: any;
+  }
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-  };
+export default function ContactPage() {
+  useEffect(() => {
+    // Load Cal.com embed script
+    (function (C: any, A: string, L: string) {
+      const p = function (a: any, ar: any) { a.q.push(ar); };
+      const d = C.document;
+      C.Cal = C.Cal || function () {
+        const cal = C.Cal;
+        const ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          const script = d.head.appendChild(d.createElement("script"));
+          script.src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === "string") {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ["initNamespace", namespace]);
+          } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, "https://app.cal.com/embed/embed.js", "init");
+
+    window.Cal("init", "30min", { origin: "https://app.cal.com" });
+
+    window.Cal.ns["30min"]("inline", {
+      elementOrSelector: "#my-cal-inline-30min",
+      config: { layout: "month_view", theme: "auto" },
+      calLink: "tommy-cotter-idtw4r/30min",
+    });
+
+    window.Cal.ns["30min"]("ui", {
+      cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
+      hideEventTypeDetails: false,
+      layout: "month_view",
+    });
+  }, []);
 
   return (
     <>
@@ -37,7 +73,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Contact Form Section */}
+        {/* Contact Section */}
         <section className="pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-5 gap-12">
@@ -106,112 +142,14 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Right - Form */}
+              {/* Right - Cal.com Embed */}
               <div className="lg:col-span-3">
-                <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-2xl p-8">
-                  <div className="grid sm:grid-cols-2 gap-5 mb-5">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
-                        placeholder="John Smith"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
-                        placeholder="john@company.com"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-5 mb-5">
-                    <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                        Company
-                      </label>
-                      <input
-                        type="text"
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
-                        placeholder="Acme Inc."
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
-                        I am a...
-                      </label>
-                      <select
-                        id="role"
-                        value={formData.role}
-                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm bg-white"
-                      >
-                        <option value="">Select one...</option>
-                        <option value="card-issuer">Card Issuer</option>
-                        <option value="merchant">Merchant</option>
-                        <option value="developer">Developer</option>
-                        <option value="investor">Investor</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="mb-5">
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      rows={5}
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm resize-none"
-                      placeholder="Tell us about your needs..."
-                      required
-                    />
-                  </div>
-
-                  {/* Newsletter Checkbox */}
-                  <div className="mb-6">
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.newsletter}
-                        onChange={(e) => setFormData({ ...formData, newsletter: e.target.checked })}
-                        className="mt-0.5 w-4 h-4 text-primary-900 border-gray-300 rounded focus:ring-primary-900"
-                      />
-                      <span className="text-sm text-gray-600">
-                        Subscribe to our newsletter for product updates, industry insights, and tips on reducing friendly fraud.
-                      </span>
-                    </label>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full px-6 py-3 bg-primary-900 text-white font-medium rounded-lg hover:bg-primary-800 transition-colors text-sm flex items-center justify-center gap-2"
-                  >
-                    Send message
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </form>
+                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+                  <div
+                    id="my-cal-inline-30min"
+                    style={{ width: "100%", height: "600px", overflow: "auto" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
