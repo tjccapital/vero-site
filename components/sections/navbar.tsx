@@ -150,8 +150,8 @@ export function Navbar() {
                           rel={item.external ? "noopener noreferrer" : undefined}
                           className="flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors"
                         >
-                          <div className="flex-shrink-0 w-10 h-10 bg-gray-100 flex items-center justify-center">
-                            <item.icon className="w-5 h-5 text-gray-600" />
+                          <div className="flex-shrink-0 w-10 h-10 bg-primary-50 flex items-center justify-center">
+                            <item.icon className="w-5 h-5 text-primary-900" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
