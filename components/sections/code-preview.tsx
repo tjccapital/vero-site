@@ -31,8 +31,8 @@ export function CodePreview() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Code Block - Second on mobile, first on desktop */}
-          <div className="relative order-2 lg:order-1">
-            <div className="bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl">
+          <div className="relative order-2 lg:order-1 min-w-0">
+            <div className="bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl max-w-full">
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-slate-900/50 border-b border-slate-800">
                 <div className="flex items-center gap-2">
@@ -55,8 +55,8 @@ export function CodePreview() {
               </div>
 
               {/* Code */}
-              <div className="p-4 overflow-x-auto">
-                <pre className="text-sm font-mono leading-relaxed">
+              <div className="p-3 sm:p-4 overflow-x-auto">
+                <pre className="text-xs sm:text-sm font-mono leading-relaxed">
                   <code>
                     <span className="text-purple-400">import</span>
                     <span className="text-slate-300"> {"{"} </span>
@@ -131,7 +131,7 @@ export function CodePreview() {
           </div>
 
           {/* Text - First on mobile, second on desktop */}
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 min-w-0">
             <p className="text-sm font-medium text-blue-400 mb-3">For Developers</p>
             <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-6 leading-tight">
               Integrate in minutes,<br />not months
@@ -141,12 +141,12 @@ export function CodePreview() {
               Card issuers can enable digital receipts for their users with just a few lines of code.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <a
                 href="https://docs.vero.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors group"
+                className="inline-flex items-center justify-center px-5 sm:px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors group w-full sm:w-auto"
               >
                 View Documentation
                 <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
@@ -155,7 +155,7 @@ export function CodePreview() {
                 href="https://docs.vero.com/sdks"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors"
+                className="inline-flex items-center justify-center px-5 sm:px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors w-full sm:w-auto"
               >
                 Explore SDKs
               </a>
