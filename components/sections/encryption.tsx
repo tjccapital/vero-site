@@ -20,7 +20,7 @@ export function Encryption() {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 1000);
+    const timer = setInterval(next, 2000);
     return () => clearInterval(timer);
   }, [next]);
 
@@ -39,6 +39,10 @@ export function Encryption() {
             <p className="text-gray-400 leading-relaxed text-lg">
               Digital receipts require privacy. Card issuers deliver but cannot read your receipts.
               Built on the open Digital Receipt Protocol (DRP).
+            </p>
+
+            <p className="text-white font-medium text-lg">
+              Only you and the merchant know what was purchased.
             </p>
 
             <div className="space-y-4 pt-4">
@@ -101,7 +105,7 @@ export function Encryption() {
                       duration: 0.3,
                       ease: "easeInOut",
                     }}
-                    className="text-white text-center font-medium text-base sm:text-lg px-6 max-w-sm"
+                    className="text-white text-center font-medium text-base sm:text-lg px-6 max-w-sm drop-shadow-[0_0_10px_rgba(0,0,0,0.8)] [text-shadow:0_0_20px_rgba(0,0,0,0.9),0_0_40px_rgba(0,0,0,0.6)]"
                   >
                     {rotatingTexts[currentIndex]}
                   </motion.span>

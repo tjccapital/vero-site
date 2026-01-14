@@ -46,12 +46,14 @@ export function ReceiptDemo() {
               </div>
             </div>
 
-            <a
-              href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 hover:bg-gray-800 transition-colors"
-            >
-              Become a Pilot Partner
-            </a>
+            <div className="flex justify-center">
+              <a
+                href="/contact"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-gray-900 hover:bg-gray-800 transition-colors"
+              >
+                Become a Pilot Partner
+              </a>
+            </div>
           </div>
 
           {/* Right side - Receipt visualization */}
