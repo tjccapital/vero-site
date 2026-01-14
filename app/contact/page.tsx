@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
-import { Mail, MessageSquare, Building2, ArrowRight } from "lucide-react";
 
 export default function ContactPage() {
   useEffect(() => {
@@ -31,7 +30,7 @@ export default function ContactPage() {
             <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
               Get in touch
             </h1>
-            <p className="text-lg text-gray-500 max-w-2xl">
+            <p className="text-lg text-gray-500">
               Have questions about Vero? Want to join our beta program? We&apos;d love to hear from you.
             </p>
           </div>
@@ -40,83 +39,13 @@ export default function ContactPage() {
         {/* Contact Section */}
         <section className="pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-5 gap-12">
-              {/* Left - Contact Info */}
-              <div className="lg:col-span-2 space-y-8">
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    Let&apos;s talk
-                  </h2>
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    Whether you&apos;re a card issuer looking to reduce friendly fraud,
-                    a merchant wanting to go paperless, or just curious about digital receipts,
-                    we&apos;re here to help.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-5 h-5 text-primary-900" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-900 text-sm">Email us</h3>
-                      <p className="text-gray-500 text-sm">hello@getvero.com</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0">
-                      <MessageSquare className="w-5 h-5 text-primary-900" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-900 text-sm">Sales inquiries</h3>
-                      <p className="text-gray-500 text-sm">sales@getvero.com</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-5 h-5 text-primary-900" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-900 text-sm">Partnerships</h3>
-                      <p className="text-gray-500 text-sm">partners@getvero.com</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Quick Links */}
-                <div className="pt-6 border-t border-gray-200">
-                  <h3 className="font-medium text-gray-900 text-sm mb-3">Quick links</h3>
-                  <div className="space-y-2">
-                    <a href="/product" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
-                      <ArrowRight className="w-3 h-3" />
-                      View product details
-                    </a>
-                    <a href="/blog" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
-                      <ArrowRight className="w-3 h-3" />
-                      Read our blog
-                    </a>
-                    <a href="https://www.digitalreceiptprotocol.org" className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-900 transition-colors">
-                      <ArrowRight className="w-3 h-3" />
-                      API documentation
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right - Cal.com Embed */}
-              <div className="lg:col-span-3">
-                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden" style={{ height: "600px" }}>
-                  <Cal
-                    namespace="30min"
-                    calLink="tommy-cotter-idtw4r/30min"
-                    style={{ width: "100%", height: "100%", overflow: "scroll" }}
-                    config={{ layout: "month_view" }}
-                  />
-                </div>
-              </div>
+            <div className="bg-white border border-gray-200 overflow-hidden" style={{ height: "600px" }}>
+              <Cal
+                namespace="30min"
+                calLink="tommy-cotter-idtw4r/30min"
+                style={{ width: "100%", height: "100%", overflow: "scroll" }}
+                config={{ layout: "month_view" }}
+              />
             </div>
           </div>
         </section>
