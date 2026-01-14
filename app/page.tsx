@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Hero } from "@/components/sections/hero";
 import { Features } from "@/components/sections/features";
+import { UseCases } from "@/components/sections/use-cases";
 import { IntegrationTabs } from "@/components/sections/integration-tabs";
 import { Encryption } from "@/components/sections/encryption";
 import { ReceiptDemo } from "@/components/sections/receipt-demo";
@@ -15,6 +16,7 @@ export default function Home() {
       <main className="pt-16">
         <Hero />
         <Features />
+        <UseCases />
         <ReceiptDemo />
         <CodePreview />
         <IntegrationTabs />
