@@ -29,9 +29,9 @@ export function CodePreview() {
   return (
     <section className="py-16 sm:py-24 bg-slate-900 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Code Block */}
-          <div className="relative">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* Code Block - Second on mobile, first on desktop */}
+          <div className="relative order-2 lg:order-1">
             <div className="bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl">
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-slate-900/50 border-b border-slate-800">
@@ -130,8 +130,8 @@ export function CodePreview() {
             <div className="absolute -z-10 -bottom-8 -left-8 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl"></div>
           </div>
 
-          {/* Right - Text */}
-          <div>
+          {/* Text - First on mobile, second on desktop */}
+          <div className="order-1 lg:order-2">
             <p className="text-sm font-medium text-blue-400 mb-3">For Developers</p>
             <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-6 leading-tight">
               Integrate in minutes,<br />not months
