@@ -1,6 +1,5 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Hero } from "@/components/sections/hero";
-import { WhyNow } from "@/components/sections/why-now";
 import { Features } from "@/components/sections/features";
 import { IntegrationTabs } from "@/components/sections/integration-tabs";
 import { Encryption } from "@/components/sections/encryption";
@@ -15,7 +14,6 @@ export default function Home() {
       <Navbar />
       <main className="pt-16">
         <Hero />
-        <WhyNow />
         <Features />
         <ReceiptDemo />
         <CodePreview />
