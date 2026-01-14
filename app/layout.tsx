@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://getvero.com"),
@@ -84,7 +85,10 @@ export default function RootLayout({
       <head>
         <link rel="canonical" href="https://getvero.com" />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <ScrollToTop />
+      </body>
     </html>
   );
 }
