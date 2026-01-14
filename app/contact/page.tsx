@@ -1,37 +1,25 @@
 "use client";
 
-import Script from "next/script";
+import { useEffect } from "react";
+import Cal, { getCalApi } from "@calcom/embed-react";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { Mail, MessageSquare, Building2, ArrowRight } from "lucide-react";
 
 export default function ContactPage() {
-  const initCal = () => {
-    const Cal = (window as any).Cal;
-    if (!Cal) return;
-
-    Cal("init", "30min", { origin: "https://app.cal.com" });
-
-    Cal.ns["30min"]("inline", {
-      elementOrSelector: "#my-cal-inline-30min",
-      config: { layout: "month_view", theme: "auto" },
-      calLink: "tommy-cotter-idtw4r/30min",
-    });
-
-    Cal.ns["30min"]("ui", {
-      cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
-      hideEventTypeDetails: false,
-      layout: "month_view",
-    });
-  };
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({ namespace: "30min" });
+      cal("ui", {
+        cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
+        hideEventTypeDetails: false,
+        layout: "month_view",
+      });
+    })();
+  }, []);
 
   return (
     <>
-      <Script
-        src="https://app.cal.com/embed/embed.js"
-        strategy="afterInteractive"
-        onLoad={initCal}
-      />
       <Navbar />
       <main className="pt-16">
         {/* Hero */}
@@ -117,10 +105,12 @@ export default function ContactPage() {
 
               {/* Right - Cal.com Embed */}
               <div className="lg:col-span-3">
-                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-                  <div
-                    id="my-cal-inline-30min"
-                    style={{ width: "100%", height: "600px", overflow: "auto" }}
+                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden" style={{ height: "600px" }}>
+                  <Cal
+                    namespace="30min"
+                    calLink="tommy-cotter-idtw4r/30min"
+                    style={{ width: "100%", height: "100%", overflow: "scroll" }}
+                    config={{ layout: "month_view" }}
                   />
                 </div>
               </div>
