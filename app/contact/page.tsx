@@ -39,7 +39,7 @@ export default function ContactPage() {
         {/* Contact Section */}
         <section className="pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white border border-gray-200 overflow-hidden" style={{ height: "600px" }}>
+            <div className="bg-white border border-gray-200 overflow-hidden h-[750px] sm:h-[650px]">
               <Cal
                 namespace="30min"
                 calLink="tommy-cotter-idtw4r/30min"
