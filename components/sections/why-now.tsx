@@ -1,23 +1,29 @@
 "use client";
 
-import { X, Check, AlertTriangle, Layers, Lock, Zap } from "lucide-react";
+import { useState } from "react";
+import { Layers, Lock, Zap } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const problems = [
   {
     title: "No universal standard",
     description: "Every POS system, bank, and merchant uses different data formats. There's no common language.",
+    image: "/reason-1.png",
   },
   {
     title: "Privacy was an afterthought",
     description: "Previous attempts exposed purchase data to intermediaries. Consumers didn't trust it.",
+    image: "/reason-2.png",
   },
   {
     title: "Infrastructure didn't exist",
     description: "No secure way to route receipts from merchants to the right banking app in real-time.",
+    image: "/reason-3.png",
   },
   {
     title: "Misaligned incentives",
     description: "Merchants wouldn't pay for it. Banks didn't see the ROI. Consumers had no voice.",
+    image: "/reason-4.png",
   },
 ];
 
@@ -40,6 +46,8 @@ const solutions = [
 ];
 
 export function WhyNow() {
+  const [selectedProblem, setSelectedProblem] = useState(0);
+
   return (
     <section className="py-16 sm:py-24 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,24 +62,51 @@ export function WhyNow() {
           </p>
         </div>
 
-        {/* Problems grid */}
-        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-16 sm:mb-20">
-          {problems.map((problem, index) => (
-            <div
-              key={index}
-              className="flex gap-4 p-5 bg-gray-50 border border-gray-100"
-            >
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-red-100 flex items-center justify-center">
-                  <X className="w-4 h-4 text-red-600" />
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-1">{problem.title}</h3>
-                <p className="text-sm text-gray-600">{problem.description}</p>
-              </div>
-            </div>
-          ))}
+        {/* Interactive Problems Section */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-16 sm:mb-20">
+          {/* Left side - Clickable list */}
+          <div className="space-y-2">
+            {problems.map((problem, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedProblem(index)}
+                className={`w-full text-left p-4 sm:p-5 transition-all border ${
+                  selectedProblem === index
+                    ? "bg-gray-50 border-gray-200"
+                    : "bg-white border-transparent hover:bg-gray-50"
+                }`}
+              >
+                <h3 className={`font-semibold mb-1 ${
+                  selectedProblem === index ? "text-gray-900" : "text-gray-700"
+                }`}>
+                  {problem.title}
+                </h3>
+                <p className={`text-sm transition-all ${
+                  selectedProblem === index
+                    ? "text-gray-600 max-h-20 opacity-100"
+                    : "text-gray-400 max-h-0 opacity-0 overflow-hidden"
+                }`}>
+                  {problem.description}
+                </p>
+              </button>
+            ))}
+          </div>
+
+          {/* Right side - Image */}
+          <div className="flex items-center justify-center bg-gray-50 p-8 min-h-[300px] lg:min-h-[400px]">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={selectedProblem}
+                src={problems[selectedProblem].image}
+                alt={problems[selectedProblem].title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="max-w-full max-h-[300px] object-contain"
+              />
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Solution header */}
