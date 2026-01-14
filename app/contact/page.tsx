@@ -1,65 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
-import Script from "next/script";
+import Cal, { getCalApi } from "@calcom/embed-react";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { Mail, MessageSquare, Building2, ArrowRight } from "lucide-react";
 
-declare global {
-  interface Window {
-    Cal?: {
-      (action: string, ...args: unknown[]): void;
-      ns?: Record<string, (action: string, ...args: unknown[]) => void>;
-    };
-  }
-}
-
 export default function ContactPage() {
   useEffect(() => {
-    // Initialize Cal after script loads
-    const initCal = () => {
-      if (window.Cal) {
-        window.Cal("init", "30min", { origin: "https://app.cal.com" });
-
-        if (window.Cal.ns?.["30min"]) {
-          window.Cal.ns["30min"]("inline", {
-            elementOrSelector: "#my-cal-inline-30min",
-            config: { layout: "month_view", theme: "auto" },
-            calLink: "tommy-cotter-idtw4r/30min",
-          });
-
-          window.Cal.ns["30min"]("ui", {
-            cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
-            hideEventTypeDetails: false,
-            layout: "month_view",
-          });
-        }
-      }
-    };
-
-    // Check if Cal is already loaded
-    if (window.Cal) {
-      initCal();
-    } else {
-      // Wait for script to load
-      const checkCal = setInterval(() => {
-        if (window.Cal) {
-          clearInterval(checkCal);
-          initCal();
-        }
-      }, 100);
-
-      return () => clearInterval(checkCal);
-    }
+    (async function () {
+      const cal = await getCalApi({ namespace: "30min" });
+      cal("ui", {
+        cssVarsPerTheme: {
+          light: { "cal-brand": "#1e3a8a" },
+          dark: { "cal-brand": "#1e3a8a" },
+        },
+        hideEventTypeDetails: false,
+        layout: "month_view",
+      });
+    })();
   }, []);
 
   return (
     <>
-      <Script
-        src="https://app.cal.com/embed/embed.js"
-        strategy="lazyOnload"
-      />
       <Navbar />
       <main className="pt-16">
         {/* Hero */}
@@ -145,10 +108,12 @@ export default function ContactPage() {
 
               {/* Right - Cal.com Embed */}
               <div className="lg:col-span-3">
-                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-                  <div
-                    id="my-cal-inline-30min"
-                    style={{ width: "100%", height: "600px", overflow: "auto" }}
+                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden" style={{ height: "600px" }}>
+                  <Cal
+                    namespace="30min"
+                    calLink="tommy-cotter-idtw4r/30min"
+                    style={{ width: "100%", height: "100%", overflow: "scroll" }}
+                    config={{ layout: "month_view" }}
                   />
                 </div>
               </div>
