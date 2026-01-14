@@ -1,64 +1,65 @@
 "use client";
 
 import { useEffect } from "react";
+import Script from "next/script";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { Mail, MessageSquare, Building2, ArrowRight } from "lucide-react";
 
 declare global {
   interface Window {
-    Cal?: any;
+    Cal?: {
+      (action: string, ...args: unknown[]): void;
+      ns?: Record<string, (action: string, ...args: unknown[]) => void>;
+    };
   }
 }
 
 export default function ContactPage() {
   useEffect(() => {
-    // Load Cal.com embed script
-    (function (C: any, A: string, L: string) {
-      const p = function (a: any, ar: any) { a.q.push(ar); };
-      const d = C.document;
-      C.Cal = C.Cal || function () {
-        const cal = C.Cal;
-        const ar = arguments;
-        if (!cal.loaded) {
-          cal.ns = {};
-          cal.q = cal.q || [];
-          const script = d.head.appendChild(d.createElement("script"));
-          script.src = A;
-          cal.loaded = true;
+    // Initialize Cal after script loads
+    const initCal = () => {
+      if (window.Cal) {
+        window.Cal("init", "30min", { origin: "https://app.cal.com" });
+
+        if (window.Cal.ns?.["30min"]) {
+          window.Cal.ns["30min"]("inline", {
+            elementOrSelector: "#my-cal-inline-30min",
+            config: { layout: "month_view", theme: "auto" },
+            calLink: "tommy-cotter-idtw4r/30min",
+          });
+
+          window.Cal.ns["30min"]("ui", {
+            cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
+            hideEventTypeDetails: false,
+            layout: "month_view",
+          });
         }
-        if (ar[0] === L) {
-          const api = function () { p(api, arguments); };
-          const namespace = ar[1];
-          api.q = api.q || [];
-          if (typeof namespace === "string") {
-            cal.ns[namespace] = cal.ns[namespace] || api;
-            p(cal.ns[namespace], ar);
-            p(cal, ["initNamespace", namespace]);
-          } else p(cal, ar);
-          return;
+      }
+    };
+
+    // Check if Cal is already loaded
+    if (window.Cal) {
+      initCal();
+    } else {
+      // Wait for script to load
+      const checkCal = setInterval(() => {
+        if (window.Cal) {
+          clearInterval(checkCal);
+          initCal();
         }
-        p(cal, ar);
-      };
-    })(window, "https://app.cal.com/embed/embed.js", "init");
+      }, 100);
 
-    window.Cal("init", "30min", { origin: "https://app.cal.com" });
-
-    window.Cal.ns["30min"]("inline", {
-      elementOrSelector: "#my-cal-inline-30min",
-      config: { layout: "month_view", theme: "auto" },
-      calLink: "tommy-cotter-idtw4r/30min",
-    });
-
-    window.Cal.ns["30min"]("ui", {
-      cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
-      hideEventTypeDetails: false,
-      layout: "month_view",
-    });
+      return () => clearInterval(checkCal);
+    }
   }, []);
 
   return (
     <>
+      <Script
+        src="https://app.cal.com/embed/embed.js"
+        strategy="lazyOnload"
+      />
       <Navbar />
       <main className="pt-16">
         {/* Hero */}
