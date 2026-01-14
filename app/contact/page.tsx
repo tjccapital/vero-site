@@ -11,7 +11,10 @@ export default function ContactPage() {
     (async function () {
       const cal = await getCalApi({ namespace: "30min" });
       cal("ui", {
-        cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
+        cssVarsPerTheme: {
+          light: { "cal-brand": "#1e3a8a" },
+          dark: { "cal-brand": "#1e3a8a" },
+        },
         hideEventTypeDetails: false,
         layout: "month_view",
       });
