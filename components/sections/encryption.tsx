@@ -20,7 +20,7 @@ export function Encryption() {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 2000);
+    const timer = setInterval(next, 2500);
     return () => clearInterval(timer);
   }, [next]);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Store, Users, ArrowRight } from "lucide-react";
+import { CreditCard, Store, Users, ArrowRight, CheckCircle2 } from "lucide-react";
 
 const tabs = [
   { id: "issuers", label: "Card Issuers", icon: CreditCard },
@@ -85,9 +85,6 @@ export function IntegrationTabs() {
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left side - Text content */}
           <div className="space-y-6">
-            <div className="w-12 h-12 bg-primary-100 flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-primary-900" />
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
               {content.headline}
             </h2>
@@ -97,11 +94,7 @@ export function IntegrationTabs() {
             <ul className="space-y-3 pt-2">
               {content.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3 text-gray-700">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
+                  <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
                   {feature}
                 </li>
               ))}
@@ -115,8 +108,8 @@ export function IntegrationTabs() {
             </a>
           </div>
 
-          {/* Right side - Visual */}
-          <div className="flex items-center justify-center">
+          {/* Right side - Visual (hidden on mobile) */}
+          <div className="hidden lg:flex items-center justify-center">
             <img
               src={content.image}
               alt={content.headline}
