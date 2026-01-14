@@ -85,9 +85,6 @@ export function IntegrationTabs() {
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left side - Text content */}
           <div className="space-y-6">
-            <div className="w-12 h-12 bg-primary-100 flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-primary-900" />
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
               {content.headline}
             </h2>
@@ -115,8 +112,8 @@ export function IntegrationTabs() {
             </a>
           </div>
 
-          {/* Right side - Visual */}
-          <div className="flex items-center justify-center">
+          {/* Right side - Visual (hidden on mobile) */}
+          <div className="hidden lg:flex items-center justify-center">
             <img
               src={content.image}
               alt={content.headline}
