@@ -1,64 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
 import Script from "next/script";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { Mail, MessageSquare, Building2, ArrowRight } from "lucide-react";
 
-declare global {
-  interface Window {
-    Cal?: {
-      (action: string, ...args: unknown[]): void;
-      ns?: Record<string, (action: string, ...args: unknown[]) => void>;
-    };
-  }
-}
-
 export default function ContactPage() {
-  useEffect(() => {
-    // Initialize Cal after script loads
-    const initCal = () => {
-      if (window.Cal) {
-        window.Cal("init", "30min", { origin: "https://app.cal.com" });
+  const initCal = () => {
+    const Cal = (window as any).Cal;
+    if (!Cal) return;
 
-        if (window.Cal.ns?.["30min"]) {
-          window.Cal.ns["30min"]("inline", {
-            elementOrSelector: "#my-cal-inline-30min",
-            config: { layout: "month_view", theme: "auto" },
-            calLink: "tommy-cotter-idtw4r/30min",
-          });
+    Cal("init", "30min", { origin: "https://app.cal.com" });
 
-          window.Cal.ns["30min"]("ui", {
-            cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
-            hideEventTypeDetails: false,
-            layout: "month_view",
-          });
-        }
-      }
-    };
+    Cal.ns["30min"]("inline", {
+      elementOrSelector: "#my-cal-inline-30min",
+      config: { layout: "month_view", theme: "auto" },
+      calLink: "tommy-cotter-idtw4r/30min",
+    });
 
-    // Check if Cal is already loaded
-    if (window.Cal) {
-      initCal();
-    } else {
-      // Wait for script to load
-      const checkCal = setInterval(() => {
-        if (window.Cal) {
-          clearInterval(checkCal);
-          initCal();
-        }
-      }, 100);
-
-      return () => clearInterval(checkCal);
-    }
-  }, []);
+    Cal.ns["30min"]("ui", {
+      cssVarsPerTheme: { light: { "cal-brand": "#1e3a8a" } },
+      hideEventTypeDetails: false,
+      layout: "month_view",
+    });
+  };
 
   return (
     <>
       <Script
         src="https://app.cal.com/embed/embed.js"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
+        onLoad={initCal}
       />
       <Navbar />
       <main className="pt-16">
