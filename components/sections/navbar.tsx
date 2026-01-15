@@ -25,6 +25,23 @@ const solutionItems = [
   },
 ];
 
+const handleSolutionClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  e.preventDefault();
+  const hash = href.replace("/#", "");
+
+  // Update URL hash
+  window.history.pushState(null, "", `/#${hash}`);
+
+  // Scroll to integration section
+  const section = document.getElementById("integration");
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+
+  // Dispatch hashchange event to trigger tab switch
+  window.dispatchEvent(new HashChangeEvent("hashchange"));
+};
+
 const resourceItems = [
   {
     icon: Play,
@@ -133,6 +150,7 @@ export function Navbar() {
                         <a
                           key={item.title}
                           href={item.href}
+                          onClick={(e) => handleSolutionClick(e, item.href)}
                           className="flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex-shrink-0 w-10 h-10 bg-primary-50 flex items-center justify-center">
@@ -241,7 +259,7 @@ export function Navbar() {
               <p className="text-xs uppercase tracking-wider text-gray-400 mb-2">Solutions</p>
               <div className="space-y-1 pl-2">
                 {solutionItems.map((item) => (
-                  <a key={item.title} href={item.href} onClick={() => setIsOpen(false)} className="block text-gray-600 hover:text-gray-900 transition-colors py-1.5 text-sm">
+                  <a key={item.title} href={item.href} onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }} className="block text-gray-600 hover:text-gray-900 transition-colors py-1.5 text-sm">
                     {item.title}
                   </a>
                 ))}

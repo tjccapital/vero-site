@@ -129,7 +129,7 @@ export function WhyNow() {
         {/* Interactive Problems Section - Desktop */}
         <div className="hidden lg:grid lg:grid-cols-2 gap-8 lg:gap-12 mb-16 sm:mb-20">
           {/* Left side - Clickable list */}
-          <div className="space-y-2">
+          <div className="space-y-2 min-h-[400px]">
             {problems.map((problem, index) => (
               <button
                 key={index}
@@ -145,13 +145,15 @@ export function WhyNow() {
                 }`}>
                   {problem.title}
                 </h3>
-                <p className={`text-sm transition-all ${
-                  selectedProblem === index
-                    ? "text-gray-600 max-h-20 opacity-100"
-                    : "text-gray-400 max-h-0 opacity-0 overflow-hidden"
-                }`}>
-                  {problem.description}
-                </p>
+                <div className="overflow-hidden">
+                  <p className={`text-sm transition-all duration-200 ${
+                    selectedProblem === index
+                      ? "text-gray-600 max-h-20 opacity-100"
+                      : "text-gray-400 max-h-0 opacity-0"
+                  }`}>
+                    {problem.description}
+                  </p>
+                </div>
               </button>
             ))}
           </div>
@@ -180,51 +182,58 @@ export function WhyNow() {
           </div>
         </div>
 
-        {/* Interactive Problems Section - Mobile (Accordion style) */}
-        <div className="lg:hidden space-y-3 mb-16">
-          {problems.map((problem, index) => (
-            <div key={index} className="border border-gray-200 overflow-hidden">
+        {/* Interactive Problems Section - Mobile */}
+        <div className="lg:hidden mb-16">
+          {/* Clickable list */}
+          <div className="space-y-2 mb-4">
+            {problems.map((problem, index) => (
               <button
+                key={index}
                 onClick={() => handleProblemClick(index)}
-                className={`w-full text-left p-4 transition-all ${
-                  selectedProblem === index ? "bg-gray-50" : "bg-white"
+                className={`w-full text-left p-4 transition-all border ${
+                  selectedProblem === index
+                    ? "bg-gray-50 border-gray-200"
+                    : "bg-white border-gray-100"
                 }`}
               >
-                <h3 className="font-semibold text-gray-900">
+                <h3 className={`font-semibold ${
+                  selectedProblem === index ? "text-gray-900" : "text-gray-600"
+                }`}>
                   {problem.title}
                 </h3>
               </button>
-              <AnimatePresence>
-                {selectedProblem === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-4 pt-1 pb-5">
-                      <p className="text-sm text-gray-600 mb-5 leading-relaxed">
-                        {problem.description}
-                      </p>
-                      <div className="bg-gray-50 p-4 flex items-center justify-center">
-                        <div className="relative w-full h-[200px]">
-                          <Image
-                            src={problem.image}
-                            alt={problem.title}
-                            fill
-                            sizes="100vw"
-                            className="object-contain"
-                            priority={index === 0}
-                          />
-                        </div>
-                      </div>
+            ))}
+          </div>
+          {/* Content area - fixed height */}
+          <div className="border border-gray-200 bg-white">
+            <div className="p-4">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedProblem}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                    {problems[selectedProblem].description}
+                  </p>
+                  <div className="bg-gray-50 p-4 flex items-center justify-center">
+                    <div className="relative w-full h-[200px]">
+                      <Image
+                        src={problems[selectedProblem].image}
+                        alt={problems[selectedProblem].title}
+                        fill
+                        sizes="100vw"
+                        className="object-contain"
+                        priority
+                      />
                     </div>
-                  </motion.div>
-                )}
+                  </div>
+                </motion.div>
               </AnimatePresence>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Solution header */}
@@ -264,7 +273,7 @@ export function WhyNow() {
           </div>
 
           {/* Right side - Clickable list */}
-          <div className="space-y-2">
+          <div className="space-y-2 min-h-[400px]">
             {solutions.map((solution, index) => (
               <button
                 key={index}
@@ -280,63 +289,72 @@ export function WhyNow() {
                 }`}>
                   {solution.title}
                 </h3>
-                <p className={`text-sm transition-all ${
-                  selectedSolution === index
-                    ? "text-gray-600 max-h-20 opacity-100"
-                    : "text-gray-400 max-h-0 opacity-0 overflow-hidden"
-                }`}>
-                  {solution.description}
-                </p>
+                <div className="overflow-hidden">
+                  <p className={`text-sm transition-all duration-200 ${
+                    selectedSolution === index
+                      ? "text-gray-600 max-h-20 opacity-100"
+                      : "text-gray-400 max-h-0 opacity-0"
+                  }`}>
+                    {solution.description}
+                  </p>
+                </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Interactive Solutions Section - Mobile (Accordion style) */}
-        <div className="lg:hidden space-y-3">
-          {solutions.map((solution, index) => (
-            <div key={index} className="border border-gray-200 overflow-hidden">
+        {/* Interactive Solutions Section - Mobile */}
+        <div className="lg:hidden">
+          {/* Clickable list */}
+          <div className="space-y-2 mb-4">
+            {solutions.map((solution, index) => (
               <button
+                key={index}
                 onClick={() => handleSolutionClick(index)}
-                className={`w-full text-left p-4 transition-all ${
-                  selectedSolution === index ? "bg-gray-50" : "bg-white"
+                className={`w-full text-left p-4 transition-all border ${
+                  selectedSolution === index
+                    ? "bg-gray-50 border-gray-200"
+                    : "bg-white border-gray-100"
                 }`}
               >
-                <h3 className="font-semibold text-gray-900">
+                <h3 className={`font-semibold ${
+                  selectedSolution === index ? "text-gray-900" : "text-gray-600"
+                }`}>
                   {solution.title}
                 </h3>
               </button>
-              <AnimatePresence>
-                {selectedSolution === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-4 pt-1 pb-5">
-                      <p className="text-sm text-gray-600 mb-5 leading-relaxed">
-                        {solution.description}
-                      </p>
-                      <div className="bg-gray-50 p-4 flex items-center justify-center">
-                        <div className="relative w-full h-[200px]">
-                          <Image
-                            src={solution.image}
-                            alt={solution.title}
-                            fill
-                            sizes="100vw"
-                            className="object-contain"
-                            loading="eager"
-                          />
-                        </div>
-                      </div>
+            ))}
+          </div>
+          {/* Content area - fixed height */}
+          <div className="border border-gray-200 bg-white">
+            <div className="p-4">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedSolution}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                    {solutions[selectedSolution].description}
+                  </p>
+                  <div className="bg-gray-50 p-4 flex items-center justify-center">
+                    <div className="relative w-full h-[200px]">
+                      <Image
+                        src={solutions[selectedSolution].image}
+                        alt={solutions[selectedSolution].title}
+                        fill
+                        sizes="100vw"
+                        className="object-contain"
+                        loading="eager"
+                      />
                     </div>
-                  </motion.div>
-                )}
+                  </div>
+                </motion.div>
               </AnimatePresence>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
