@@ -110,11 +110,11 @@ export function IntegrationTabs() {
         {/* Tab content */}
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-start min-h-[500px]">
           {/* Left side - Text content */}
-          <div className="space-y-6 min-h-[450px] flex flex-col">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight min-h-[120px]">
+          <div className="space-y-4 lg:space-y-6 min-h-[450px] flex flex-col">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight lg:min-h-[120px]">
               {content.headline}
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed min-h-[80px]">
+            <p className="text-lg text-gray-600 leading-relaxed lg:min-h-[80px]">
               {content.description}
             </p>
 
