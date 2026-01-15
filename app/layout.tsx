@@ -39,21 +39,12 @@ export const metadata: Metadata = {
     title: "Vero - Digital Receipts for the Modern World",
     description:
       "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40% with itemized receipts linked to transactions.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Vero - Digital Receipts",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vero - Digital Receipts for the Modern World",
     description:
       "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40%.",
-    images: ["/og-image.png"],
     creator: "@getvero",
   },
   robots: {
