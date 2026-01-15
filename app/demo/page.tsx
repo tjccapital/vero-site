@@ -87,7 +87,7 @@ export default function DemoPage() {
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
               <a
-                href="https://docs.digitalreceiptprotocol.org"
+                href="https://vero-80b6ce5c.mintlify.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
