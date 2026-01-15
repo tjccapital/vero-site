@@ -89,9 +89,9 @@ export default function BlogPage() {
         {featuredPost && (
           <section className="pb-12">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <a href={`/blog/${featuredPost.slug}`} className="group block bg-primary-900 rounded-2xl p-8 md:p-12 hover:bg-primary-800 transition-colors">
+              <a href={`/blog/${featuredPost.slug}`} className="group block bg-primary-900 p-8 md:p-12 hover:bg-primary-800 transition-colors">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-xs font-medium text-primary-400 bg-primary-800 px-3 py-1 rounded-full">
+                  <span className="text-xs font-medium text-primary-400 bg-primary-800 px-3 py-1">
                     {featuredPost.category}
                   </span>
                   <span className="text-xs text-primary-400">{featuredPost.date}</span>
@@ -119,10 +119,10 @@ export default function BlogPage() {
                 <a
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="group block bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all"
+                  className="group block bg-white border border-gray-200 p-6 hover:shadow-lg hover:border-gray-300 transition-all"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xs font-medium text-primary-900 bg-primary-50 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-medium text-primary-900 bg-primary-50 px-2.5 py-1">
                       {post.category}
                     </span>
                   </div>
@@ -155,11 +155,11 @@ export default function BlogPage() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
+                className="flex-1 px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:border-transparent text-sm"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-primary-900 text-white font-medium rounded-lg hover:bg-primary-800 transition-colors text-sm"
+                className="px-6 py-3 bg-primary-900 text-white font-medium hover:bg-primary-800 transition-colors text-sm"
               >
                 Subscribe
               </button>

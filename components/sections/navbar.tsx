@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/logo";
-import { Menu, X, ChevronDown, CreditCard, Store, Users, Play, BookOpen, FileText, History, Mail, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, CreditCard, Store, Users, Play, BookOpen, FileText, Mail } from "lucide-react";
 
 const solutionItems = [
   {
@@ -61,12 +61,6 @@ const resourceItems = [
     title: "Blog",
     description: "News, updates, and insights from the team.",
     href: "/blog",
-  },
-  {
-    icon: History,
-    title: "Changelog",
-    description: "Latest product updates and releases.",
-    href: "#",
   },
   {
     icon: Mail,
@@ -162,16 +156,6 @@ export function Navbar() {
                           </div>
                         </a>
                       ))}
-                    </div>
-                    {/* Bottom CTA bar */}
-                    <div className="mt-3 pt-3 border-t border-gray-100">
-                      <a
-                        href="/contact"
-                        className="flex items-center justify-center gap-2 py-2.5 bg-primary-50 text-primary-900 hover:bg-primary-100 transition-colors text-sm font-medium"
-                      >
-                        Not sure which solution?
-                        <ArrowRight className="w-4 h-4" />
-                      </a>
                     </div>
                   </div>
                 </div>

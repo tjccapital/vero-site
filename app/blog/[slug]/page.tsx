@@ -172,7 +172,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             </a>
 
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-xs font-medium text-primary-900 bg-primary-50 px-3 py-1 rounded-full">
+              <span className="text-xs font-medium text-primary-900 bg-primary-50 px-3 py-1">
                 {post.category}
               </span>
             </div>
@@ -208,7 +208,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         {/* Author & CTA */}
         <section className="py-12 border-t border-gray-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-primary-50 rounded-2xl p-8 text-center">
+            <div className="bg-primary-50 p-8 text-center">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Ready to get started?
               </h3>
@@ -217,7 +217,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               </p>
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
               >
                 Get Involved with Beta
               </a>
@@ -237,9 +237,9 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                   <a
                     key={key}
                     href={`/blog/${key}`}
-                    className="group block bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all"
+                    className="group block bg-white border border-gray-200 p-6 hover:shadow-lg hover:border-gray-300 transition-all"
                   >
-                    <span className="text-xs font-medium text-primary-900 bg-primary-50 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-medium text-primary-900 bg-primary-50 px-2.5 py-1">
                       {relatedPost.category}
                     </span>
                     <h4 className="text-lg font-semibold text-gray-900 mt-3 mb-2 group-hover:text-primary-900 transition-colors">
