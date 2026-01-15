@@ -62,8 +62,8 @@ export function WhyNow() {
           </p>
         </div>
 
-        {/* Interactive Problems Section */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-16 sm:mb-20">
+        {/* Interactive Problems Section - Desktop */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-8 lg:gap-12 mb-16 sm:mb-20">
           {/* Left side - Clickable list */}
           <div className="space-y-2">
             {problems.map((problem, index) => (
@@ -93,7 +93,7 @@ export function WhyNow() {
           </div>
 
           {/* Right side - Image */}
-          <div className="flex items-center justify-center bg-gray-50 p-8 min-h-[300px] lg:min-h-[400px]">
+          <div className="flex items-center justify-center bg-gray-50 p-8 min-h-[400px]">
             <AnimatePresence mode="wait">
               <motion.img
                 key={selectedProblem}
@@ -107,6 +107,48 @@ export function WhyNow() {
               />
             </AnimatePresence>
           </div>
+        </div>
+
+        {/* Interactive Problems Section - Mobile (Accordion style) */}
+        <div className="lg:hidden space-y-3 mb-16">
+          {problems.map((problem, index) => (
+            <div key={index} className="border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => setSelectedProblem(index)}
+                className={`w-full text-left p-4 transition-all ${
+                  selectedProblem === index ? "bg-gray-50" : "bg-white"
+                }`}
+              >
+                <h3 className="font-semibold text-gray-900">
+                  {problem.title}
+                </h3>
+              </button>
+              <AnimatePresence>
+                {selectedProblem === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-4">
+                      <p className="text-sm text-gray-600 mb-4">
+                        {problem.description}
+                      </p>
+                      <div className="bg-gray-50 p-4 flex items-center justify-center">
+                        <img
+                          src={problem.image}
+                          alt={problem.title}
+                          className="max-w-full max-h-[200px] object-contain"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
         </div>
 
         {/* Solution header */}
