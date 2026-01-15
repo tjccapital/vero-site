@@ -38,7 +38,7 @@ export function Hero() {
             <ContainerTextFlip
               words={["Card Issuers", "Merchants", "Consumers", "POS Systems", "Banks", "Credit Unions", "Fintechs"]}
               textClassName="text-primary-900"
-              interval={1000}
+              interval={2000}
             />
           </h1>
 
