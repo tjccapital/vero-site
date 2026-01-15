@@ -35,14 +35,14 @@ export function ProductHero() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/contact"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 rounded-lg hover:bg-primary-800 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 hover:bg-primary-800 transition-colors"
           >
             Request beta access
             <ArrowRight className="w-4 h-4 ml-2" />
           </a>
           <a
             href="https://www.digitalreceiptprotocol.org"
-            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
           >
             View documentation
           </a>
