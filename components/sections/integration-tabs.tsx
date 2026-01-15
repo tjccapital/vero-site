@@ -111,15 +111,18 @@ export function IntegrationTabs() {
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-start min-h-[500px]">
           {/* Left side - Text content */}
           <div className="space-y-4 lg:space-y-6 min-h-[450px] flex flex-col">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight lg:min-h-[120px]">
-              {content.headline}
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed lg:min-h-[80px]">
-              {content.description}
-            </p>
+            {/* Text container with fixed min-height on mobile for consistency */}
+            <div className="min-h-[200px] lg:min-h-0 space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight lg:min-h-[120px]">
+                {content.headline}
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed lg:min-h-[80px]">
+                {content.description}
+              </p>
+            </div>
 
             {/* Image on mobile (replaces checklist) */}
-            <div className="lg:hidden relative w-full h-[250px] my-4">
+            <div className="lg:hidden relative w-full h-[250px]">
               <Image
                 src={content.image}
                 alt={content.headline}
