@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const problems = [
@@ -47,6 +47,15 @@ const solutions = [
 export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
   const [selectedSolution, setSelectedSolution] = useState(0);
+
+  // Preload all images on mount to prevent layout shift
+  useEffect(() => {
+    const allImages = [...problems, ...solutions].map(item => item.image);
+    allImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   return (
     <section className="py-16 sm:py-24 bg-white">
@@ -136,11 +145,12 @@ export function WhyNow() {
                       <p className="text-sm text-gray-600 mb-4">
                         {problem.description}
                       </p>
-                      <div className="bg-gray-50 p-4 flex items-center justify-center">
+                      <div className="bg-gray-50 p-4 flex items-center justify-center min-h-[200px]">
                         <img
                           src={problem.image}
                           alt={problem.title}
                           className="max-w-full max-h-[200px] object-contain"
+                          loading="eager"
                         />
                       </div>
                     </div>
@@ -236,11 +246,12 @@ export function WhyNow() {
                       <p className="text-sm text-gray-600 mb-4">
                         {solution.description}
                       </p>
-                      <div className="bg-gray-50 p-4 flex items-center justify-center">
+                      <div className="bg-gray-50 p-4 flex items-center justify-center min-h-[200px]">
                         <img
                           src={solution.image}
                           alt={solution.title}
                           className="max-w-full max-h-[200px] object-contain"
+                          loading="eager"
                         />
                       </div>
                     </div>
