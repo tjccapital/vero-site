@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/logo";
-import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, FileText, Mail } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, Mail } from "lucide-react";
 
 const solutionItems = [
   {
@@ -41,12 +41,6 @@ const resourceItems = [
     description: "API reference and integration guides.",
     href: "https://docs.digitalreceiptprotocol.org/api-reference/introduction",
     external: true,
-  },
-  {
-    icon: FileText,
-    title: "Blog",
-    description: "News, updates, and insights from the team.",
-    href: "/blog",
   },
   {
     icon: Mail,
@@ -246,7 +240,9 @@ export function Navbar() {
               Contact
             </a>
             <a
-              href="#"
+              href="https://docs.digitalreceiptprotocol.org/api-reference/technical-flow"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
             >
               Get started
@@ -273,7 +269,7 @@ export function Navbar() {
               <a href="/contact" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
                 Contact
               </a>
-              <a href="#" className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
+              <a href="https://docs.digitalreceiptprotocol.org/api-reference/technical-flow" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
                 Get started
               </a>
             </div>
