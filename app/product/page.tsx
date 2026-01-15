@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { ProductHero } from "@/components/sections/product-hero";
-import { WhyNow } from "@/components/sections/why-now";
 import { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 
@@ -24,9 +23,6 @@ export default function ProductPage() {
       <main className="pt-16">
         {/* Hero with Grid Background */}
         <ProductHero />
-
-        {/* Why Now Section */}
-        <WhyNow />
 
         {/* CTA */}
         <section className="py-20 bg-primary-900">
