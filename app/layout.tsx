@@ -5,7 +5,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top";
 export const metadata: Metadata = {
   metadataBase: new URL("https://getvero.com"),
   title: {
-    default: "Vero - Digital Receipts for the Modern World",
+    default: "Vero - Digital Receipts",
     template: "%s | Vero",
   },
   description:
