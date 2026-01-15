@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 
@@ -49,29 +49,54 @@ export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
   const [selectedSolution, setSelectedSolution] = useState(0);
   const [isProblemAutoRotating, setIsProblemAutoRotating] = useState(true);
-  const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(true);
+  const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(false);
+  const [isSolutionVisible, setIsSolutionVisible] = useState(false);
+  const solutionSectionRef = useRef<HTMLDivElement>(null);
 
-  // Auto-rotate problems every 2 seconds (unless user has clicked)
+  // Observe when solution section comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isSolutionVisible) {
+          setIsSolutionVisible(true);
+          setIsSolutionAutoRotating(true);
+        }
+      },
+      { threshold: 0.3 } // Trigger when 30% of solution section is visible
+    );
+
+    if (solutionSectionRef.current) {
+      observer.observe(solutionSectionRef.current);
+    }
+
+    return () => {
+      if (solutionSectionRef.current) {
+        observer.unobserve(solutionSectionRef.current);
+      }
+    };
+  }, [isSolutionVisible]);
+
+  // Auto-rotate problems every 3 seconds (unless user has clicked)
   useEffect(() => {
     if (!isProblemAutoRotating) return;
 
     const interval = setInterval(() => {
       setSelectedProblem((prev) => (prev + 1) % problems.length);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isProblemAutoRotating]);
 
-  // Auto-rotate solutions every 2 seconds (unless user has clicked)
+  // Auto-rotate solutions every 3 seconds (only when visible and unless user has clicked)
   useEffect(() => {
-    if (!isSolutionAutoRotating) return;
+    if (!isSolutionAutoRotating || !isSolutionVisible) return;
 
     const interval = setInterval(() => {
       setSelectedSolution((prev) => (prev + 1) % solutions.length);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, [isSolutionAutoRotating]);
+  }, [isSolutionAutoRotating, isSolutionVisible]);
 
   const handleProblemClick = (index: number) => {
     setSelectedProblem(index);
@@ -144,7 +169,7 @@ export function WhyNow() {
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain"
-                  loading="lazy"
+                  priority
                 />
               </motion.div>
             </AnimatePresence>
@@ -186,7 +211,7 @@ export function WhyNow() {
                             fill
                             sizes="100vw"
                             className="object-contain"
-                            loading="lazy"
+                            priority={index === 0}
                           />
                         </div>
                       </div>
@@ -199,7 +224,7 @@ export function WhyNow() {
         </div>
 
         {/* Solution header */}
-        <div className="text-center mb-10 sm:mb-12">
+        <div ref={solutionSectionRef} className="text-center mb-10 sm:mb-12">
           <p className="text-sm font-medium text-primary-900 mb-2">The Solution</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
             How Vero changes everything
@@ -228,7 +253,7 @@ export function WhyNow() {
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain"
-                  loading="lazy"
+                  loading="eager"
                 />
               </motion.div>
             </AnimatePresence>
@@ -298,7 +323,7 @@ export function WhyNow() {
                             fill
                             sizes="100vw"
                             className="object-contain"
-                            loading="lazy"
+                            loading="eager"
                           />
                         </div>
                       </div>
