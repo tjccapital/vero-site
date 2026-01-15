@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/logo";
 import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, FileText, Mail } from "lucide-react";
-import Image from "next/image";
 
 const solutionItems = [
   {
@@ -57,7 +56,7 @@ const resourceItems = [
     icon: BookOpen,
     title: "Docs",
     description: "API reference and integration guides.",
-    href: "#",
+    href: "https://docs.digitalreceiptprotocol.org/api-reference/introduction",
     external: true,
   },
   {
@@ -291,27 +290,20 @@ export function Navbar() {
               </button>
 
               {mobileSection === 'solutions' && (
-                <div className="pb-4 space-y-3">
+                <div className="pb-4 space-y-2">
                   {solutionItems.map((item) => (
                     <a
                       key={item.title}
                       href={item.href}
                       onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }}
-                      className="block bg-gray-50 p-4 hover:bg-gray-100 transition-colors"
+                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="relative w-16 h-16 flex-shrink-0 bg-gray-200 overflow-hidden">
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.description}</p>
-                        </div>
+                      <div className="w-10 h-10 bg-white flex items-center justify-center border border-gray-200">
+                        <item.icon className="w-5 h-5 text-primary-900" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{item.title}</h3>
+                        <p className="text-xs text-gray-500">{item.description}</p>
                       </div>
                     </a>
                   ))}

@@ -49,8 +49,8 @@ export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
   const [selectedSolution, setSelectedSolution] = useState(0);
   const [isProblemAutoRotating, setIsProblemAutoRotating] = useState(true);
-  const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(false);
-  const [isSolutionVisible, setIsSolutionVisible] = useState(false);
+  const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(true);
+  const [isSolutionVisible, setIsSolutionVisible] = useState(true);
 
   // Start solution rotation when user is 30% from the bottom of the page
   useEffect(() => {
