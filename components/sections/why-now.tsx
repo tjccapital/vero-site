@@ -203,8 +203,8 @@ export function WhyNow() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 pb-4">
-                      <p className="text-sm text-gray-600 mb-4">
+                    <div className="px-4 pt-1 pb-5">
+                      <p className="text-sm text-gray-600 mb-5 leading-relaxed">
                         {problem.description}
                       </p>
                       <div className="bg-gray-50 p-4 flex items-center justify-center">
@@ -315,8 +315,8 @@ export function WhyNow() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 pb-4">
-                      <p className="text-sm text-gray-600 mb-4">
+                    <div className="px-4 pt-1 pb-5">
+                      <p className="text-sm text-gray-600 mb-5 leading-relaxed">
                         {solution.description}
                       </p>
                       <div className="bg-gray-50 p-4 flex items-center justify-center">
