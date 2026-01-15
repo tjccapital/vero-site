@@ -57,7 +57,6 @@ html {
   max-width: 1200px;
   margin: 0 auto;
   background: #ffffff;
-  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -310,6 +309,8 @@ html {
   min-height: 720px;
   height: 720px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {
@@ -321,16 +322,6 @@ html {
   }
 }
 
-.drp-sim-mobile-hidden {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .drp-sim-mobile-hidden {
-    display: flex;
-  }
-}
-
 .drp-sim-right {
   background: #0f172a;
   display: flex;
@@ -338,6 +329,16 @@ html {
   min-height: 720px;
   max-height: 720px;
   overflow: hidden;
+}
+
+.drp-sim-mobile-hidden {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .drp-sim-mobile-hidden {
+    display: flex !important;
+  }
 }
 
 .drp-sim-panel-header {
@@ -1489,7 +1490,12 @@ html {
 
 /* Mobile bottom padding for fixed controls */
 @media (max-width: 639px) {
-  .drp-simulator {
+  .drp-sim-grid {
     padding-bottom: 80px;
+  }
+
+  .drp-sim-left,
+  .drp-sim-right {
+    padding-bottom: 24px;
   }
 }
