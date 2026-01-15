@@ -250,33 +250,33 @@ export function Navbar() {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-4 py-4 space-y-3">
-            <a href="/product" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
+        <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200">
+          <div className="px-4 py-4 space-y-1">
+            <a href="/product" className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
               Product
             </a>
             <div className="py-2">
-              <p className="text-xs uppercase tracking-wider text-gray-400 mb-2">Solutions</p>
-              <div className="space-y-1 pl-2">
+              <p className="text-xs uppercase tracking-wider text-gray-400 mb-2 px-2">Solutions</p>
+              <div className="space-y-1">
                 {solutionItems.map((item) => (
-                  <a key={item.title} href={item.href} onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }} className="block text-gray-600 hover:text-gray-900 transition-colors py-1.5 text-sm">
+                  <a key={item.title} href={item.href} onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }} className="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
                     {item.title}
                   </a>
                 ))}
               </div>
             </div>
             <div className="py-2">
-              <p className="text-xs uppercase tracking-wider text-gray-400 mb-2">Resources</p>
-              <div className="space-y-1 pl-2">
+              <p className="text-xs uppercase tracking-wider text-gray-400 mb-2 px-2">Resources</p>
+              <div className="space-y-1">
                 {resourceItems.map((item) => (
-                  <a key={item.title} href={item.href} className="block text-gray-600 hover:text-gray-900 transition-colors py-1.5 text-sm">
+                  <a key={item.title} href={item.href} className="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
                     {item.title}
                   </a>
                 ))}
               </div>
             </div>
             <div className="pt-4 space-y-2 border-t border-gray-200">
-              <a href="/contact" className="block text-gray-700 hover:text-gray-900 transition-colors py-2">
+              <a href="/contact" className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
                 Contact
               </a>
               <a
