@@ -38,6 +38,7 @@ export const WavyBackground = ({
     ctx: CanvasRenderingContext2D | null,
     canvas: HTMLCanvasElement | null;
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const getSpeed = () => {
     switch (speed) {
       case "slow":
@@ -77,11 +78,14 @@ export const WavyBackground = ({
   const drawWave = (n: number) => {
     if (!ctx) return;
     nt += getSpeed();
-    for (i = 0; i < n; i++) {
+    // Reduce waves and detail on mobile for better performance
+    const waveCount = isMobile ? Math.min(n, 3) : n;
+    const step = isMobile ? 10 : 5;
+    for (i = 0; i < waveCount; i++) {
       ctx.beginPath();
       ctx.lineWidth = waveWidth || 50;
       ctx.strokeStyle = waveColors[i % waveColors.length];
-      for (x = 0; x < w; x += 5) {
+      for (x = 0; x < w; x += step) {
         const y = noise(x / 800, 0.3 * i, nt) * 100;
         ctx.lineTo(x, y + h * waveYPosition);
       }
@@ -101,6 +105,9 @@ export const WavyBackground = ({
   };
 
   useEffect(() => {
+    // Detect mobile on mount
+    setIsMobile(window.innerWidth < 768);
+
     init();
     return () => {
       cancelAnimationFrame(animationId);

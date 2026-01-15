@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 
 // Static grid for mobile - much lighter weight
 const StaticBoxes = ({ className, ...rest }: { className?: string }) => {
-  const rows = new Array(80).fill(1);
-  const cols = new Array(50).fill(1);
+  const rows = new Array(40).fill(1);
+  const cols = new Array(25).fill(1);
 
   return (
     <div

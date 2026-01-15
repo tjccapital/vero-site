@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CreditCard, Store, Users, ArrowRight, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 const tabs = [
   { id: "issuers", label: "Card Issuers", icon: CreditCard },
@@ -109,11 +110,14 @@ export function IntegrationTabs() {
           </div>
 
           {/* Right side - Visual (hidden on mobile) */}
-          <div className="hidden lg:flex items-center justify-center">
-            <img
+          <div className="hidden lg:flex items-center justify-center relative w-full h-[400px]">
+            <Image
               src={content.image}
               alt={content.headline}
-              className="max-w-full h-auto"
+              fill
+              sizes="50vw"
+              className="object-contain"
+              loading="lazy"
             />
           </div>
         </div>
