@@ -65,8 +65,8 @@ export function WhyNow() {
       const maxScroll = documentHeight - windowHeight;
       const scrollPercentage = maxScroll > 0 ? scrollPosition / maxScroll : 0;
 
-      // Trigger when user is 30% from bottom (70% from top)
-      if (scrollPercentage >= 0.7) {
+      // Trigger when user is 60% from bottom (40% from top)
+      if (scrollPercentage >= 0.4) {
         setIsSolutionVisible(true);
         setIsSolutionAutoRotating(true);
       }

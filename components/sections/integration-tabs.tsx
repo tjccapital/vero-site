@@ -94,14 +94,14 @@ export function IntegrationTabs() {
               <button
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
-                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-medium transition-all ${
+                className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 text-sm font-medium transition-all ${
                   activeTab === tab.id
                     ? "bg-gray-900 text-white shadow-md"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="text-[10px] sm:text-sm">{tab.label}</span>
               </button>
             ))}
           </div>
