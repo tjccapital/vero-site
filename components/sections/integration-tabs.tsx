@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreditCard, Store, Users, ArrowRight, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
@@ -9,6 +9,8 @@ const tabs = [
   { id: "merchants", label: "Merchants", icon: Store },
   { id: "consumers", label: "Consumers", icon: Users },
 ];
+
+const validTabIds = tabs.map(t => t.id);
 
 const tabContent = {
   issuers: {
@@ -53,8 +55,31 @@ export function IntegrationTabs() {
   const [activeTab, setActiveTab] = useState("issuers");
   const content = tabContent[activeTab as keyof typeof tabContent];
 
+  // Sync tab state with URL hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (validTabIds.includes(hash)) {
+        setActiveTab(hash);
+      }
+    };
+
+    // Check hash on mount
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    // Update URL hash without scrolling
+    window.history.replaceState(null, "", `#${tabId}`);
+  };
+
   return (
-    <section className="py-12 sm:py-20 bg-gradient-to-b from-white to-slate-50">
+    <section id="integration" className="py-12 sm:py-20 bg-gradient-to-b from-white to-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-10">
           <p className="text-sm font-medium text-primary-900 mb-2">Integration</p>
@@ -68,7 +93,7 @@ export function IntegrationTabs() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-medium transition-all ${
                   activeTab === tab.id
                     ? "bg-gray-900 text-white shadow-md"

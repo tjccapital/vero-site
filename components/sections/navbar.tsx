@@ -241,7 +241,7 @@ export function Navbar() {
               <p className="text-xs uppercase tracking-wider text-gray-400 mb-2">Solutions</p>
               <div className="space-y-1 pl-2">
                 {solutionItems.map((item) => (
-                  <a key={item.title} href={item.href} className="block text-gray-600 hover:text-gray-900 transition-colors py-1.5 text-sm">
+                  <a key={item.title} href={item.href} onClick={() => setIsOpen(false)} className="block text-gray-600 hover:text-gray-900 transition-colors py-1.5 text-sm">
                     {item.title}
                   </a>
                 ))}
