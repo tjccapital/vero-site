@@ -255,11 +255,11 @@ export function Navbar() {
 
       {/* Mobile Navigation - Full Screen Overlay */}
       {isOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-white/98 backdrop-blur-xl z-40 overflow-y-auto">
+        <div className="md:hidden absolute left-0 right-0 top-16 bottom-0 h-[calc(100vh-4rem)] bg-white overflow-y-auto border-t border-gray-100">
           <div className="px-4 py-6">
             {/* CTA Buttons */}
             <div className="flex gap-3 mb-6">
-              <a href="/contact" className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
+              <a href="/contact" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
                 Contact
               </a>
               <a href="#" className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
