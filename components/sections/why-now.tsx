@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 
@@ -48,6 +48,24 @@ const solutions = [
 export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
   const [selectedSolution, setSelectedSolution] = useState(0);
+
+  // Auto-rotate problems every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectedProblem((prev) => (prev + 1) % problems.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Auto-rotate solutions every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectedSolution((prev) => (prev + 1) % solutions.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="py-16 sm:py-24 bg-white">
