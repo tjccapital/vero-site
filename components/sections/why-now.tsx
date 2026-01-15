@@ -52,7 +52,7 @@ export function WhyNow() {
   const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(false);
   const [isSolutionVisible, setIsSolutionVisible] = useState(false);
 
-  // Start solution rotation when user scrolls 40% down the page
+  // Start solution rotation when user scrolls 30% down the page
   useEffect(() => {
     const handleScroll = () => {
       if (isSolutionVisible) return; // Already triggered, no need to check again
@@ -64,8 +64,8 @@ export function WhyNow() {
       // Calculate scroll percentage
       const scrollPercentage = (scrollPosition + windowHeight) / documentHeight;
 
-      // Trigger when user has scrolled past 40% of the page
-      if (scrollPercentage >= 0.4) {
+      // Trigger when user has scrolled past 30% of the page
+      if (scrollPercentage >= 0.3) {
         setIsSolutionVisible(true);
         setIsSolutionAutoRotating(true);
       }
