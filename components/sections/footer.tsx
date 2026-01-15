@@ -80,9 +80,19 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">
-            © 2026 Vero
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <p className="text-sm text-gray-500">
+              © 2026 Vero
+            </p>
+            <div className="flex gap-4 text-sm">
+              <a href="/privacy" className="text-gray-500 hover:text-gray-900 transition-colors">
+                Privacy Policy
+              </a>
+              <a href="/terms" className="text-gray-500 hover:text-gray-900 transition-colors">
+                Terms of Service
+              </a>
+            </div>
+          </div>
           <div className="flex gap-4">
             <a
               href="#"
