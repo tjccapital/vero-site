@@ -28,23 +28,6 @@ const solutionItems = [
   },
 ];
 
-const handleSolutionClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-  e.preventDefault();
-  const hash = href.replace("/#", "");
-
-  // Update URL hash
-  window.history.pushState(null, "", `/#${hash}`);
-
-  // Scroll to integration section
-  const section = document.getElementById("integration");
-  if (section) {
-    section.scrollIntoView({ behavior: "smooth" });
-  }
-
-  // Dispatch hashchange event to trigger tab switch
-  window.dispatchEvent(new HashChangeEvent("hashchange"));
-};
-
 const resourceItems = [
   {
     icon: Play,
@@ -125,6 +108,35 @@ export function Navbar() {
 
   const toggleMobileSection = (section: string) => {
     setMobileSection(mobileSection === section ? null : section);
+  };
+
+  const handleSolutionClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, isMobile: boolean = false) => {
+    e.preventDefault();
+    const hash = href.replace("/#", "");
+
+    // Update URL hash
+    window.history.pushState(null, "", `/#${hash}`);
+
+    // Dispatch hashchange event to trigger tab switch
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+
+    if (isMobile) {
+      // Close menu first to restore body scroll
+      setIsOpen(false);
+      // Wait for menu to close and overflow to be restored, then scroll
+      setTimeout(() => {
+        const section = document.getElementById("integration");
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 50);
+    } else {
+      // Desktop: scroll immediately
+      const section = document.getElementById("integration");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   return (
@@ -295,7 +307,7 @@ export function Navbar() {
                     <a
                       key={item.title}
                       href={item.href}
-                      onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }}
+                      onClick={(e) => handleSolutionClick(e, item.href, true)}
                       className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
                     >
                       <div className="w-10 h-10 bg-white flex items-center justify-center border border-gray-200">
