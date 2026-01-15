@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 
 const problems = [
   {
@@ -47,15 +48,40 @@ const solutions = [
 export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
   const [selectedSolution, setSelectedSolution] = useState(0);
+  const [isProblemAutoRotating, setIsProblemAutoRotating] = useState(true);
+  const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(true);
 
-  // Preload all images on mount to prevent layout shift
+  // Auto-rotate problems every 2 seconds (unless user has clicked)
   useEffect(() => {
-    const allImages = [...problems, ...solutions].map(item => item.image);
-    allImages.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+    if (!isProblemAutoRotating) return;
+
+    const interval = setInterval(() => {
+      setSelectedProblem((prev) => (prev + 1) % problems.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isProblemAutoRotating]);
+
+  // Auto-rotate solutions every 2 seconds (unless user has clicked)
+  useEffect(() => {
+    if (!isSolutionAutoRotating) return;
+
+    const interval = setInterval(() => {
+      setSelectedSolution((prev) => (prev + 1) % solutions.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isSolutionAutoRotating]);
+
+  const handleProblemClick = (index: number) => {
+    setSelectedProblem(index);
+    setIsProblemAutoRotating(false);
+  };
+
+  const handleSolutionClick = (index: number) => {
+    setSelectedSolution(index);
+    setIsSolutionAutoRotating(false);
+  };
 
   return (
     <section className="py-16 sm:py-24 bg-white">
@@ -78,7 +104,7 @@ export function WhyNow() {
             {problems.map((problem, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedProblem(index)}
+                onClick={() => handleProblemClick(index)}
                 className={`w-full text-left p-4 sm:p-5 transition-all border ${
                   selectedProblem === index
                     ? "bg-gray-50 border-gray-200"
@@ -104,16 +130,23 @@ export function WhyNow() {
           {/* Right side - Image */}
           <div className="flex items-center justify-center bg-gray-50 p-8 min-h-[400px]">
             <AnimatePresence mode="wait">
-              <motion.img
+              <motion.div
                 key={selectedProblem}
-                src={problems[selectedProblem].image}
-                alt={problems[selectedProblem].title}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="max-w-full max-h-[300px] object-contain"
-              />
+                className="relative w-full h-[300px]"
+              >
+                <Image
+                  src={problems[selectedProblem].image}
+                  alt={problems[selectedProblem].title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-contain"
+                  loading="lazy"
+                />
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
@@ -123,7 +156,7 @@ export function WhyNow() {
           {problems.map((problem, index) => (
             <div key={index} className="border border-gray-200 overflow-hidden">
               <button
-                onClick={() => setSelectedProblem(index)}
+                onClick={() => handleProblemClick(index)}
                 className={`w-full text-left p-4 transition-all ${
                   selectedProblem === index ? "bg-gray-50" : "bg-white"
                 }`}
@@ -145,13 +178,17 @@ export function WhyNow() {
                       <p className="text-sm text-gray-600 mb-4">
                         {problem.description}
                       </p>
-                      <div className="bg-gray-50 p-4 flex items-center justify-center min-h-[200px]">
-                        <img
-                          src={problem.image}
-                          alt={problem.title}
-                          className="max-w-full max-h-[200px] object-contain"
-                          loading="eager"
-                        />
+                      <div className="bg-gray-50 p-4 flex items-center justify-center">
+                        <div className="relative w-full h-[200px]">
+                          <Image
+                            src={problem.image}
+                            alt={problem.title}
+                            fill
+                            sizes="100vw"
+                            className="object-contain"
+                            loading="lazy"
+                          />
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -177,16 +214,23 @@ export function WhyNow() {
           {/* Left side - Image */}
           <div className="flex items-center justify-center bg-gray-50 p-8 min-h-[400px]">
             <AnimatePresence mode="wait">
-              <motion.img
+              <motion.div
                 key={selectedSolution}
-                src={solutions[selectedSolution].image}
-                alt={solutions[selectedSolution].title}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="max-w-full max-h-[300px] object-contain"
-              />
+                className="relative w-full h-[300px]"
+              >
+                <Image
+                  src={solutions[selectedSolution].image}
+                  alt={solutions[selectedSolution].title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-contain"
+                  loading="lazy"
+                />
+              </motion.div>
             </AnimatePresence>
           </div>
 
@@ -195,7 +239,7 @@ export function WhyNow() {
             {solutions.map((solution, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedSolution(index)}
+                onClick={() => handleSolutionClick(index)}
                 className={`w-full text-left p-4 sm:p-5 transition-all border ${
                   selectedSolution === index
                     ? "bg-gray-50 border-gray-200"
@@ -224,7 +268,7 @@ export function WhyNow() {
           {solutions.map((solution, index) => (
             <div key={index} className="border border-gray-200 overflow-hidden">
               <button
-                onClick={() => setSelectedSolution(index)}
+                onClick={() => handleSolutionClick(index)}
                 className={`w-full text-left p-4 transition-all ${
                   selectedSolution === index ? "bg-gray-50" : "bg-white"
                 }`}
@@ -246,13 +290,17 @@ export function WhyNow() {
                       <p className="text-sm text-gray-600 mb-4">
                         {solution.description}
                       </p>
-                      <div className="bg-gray-50 p-4 flex items-center justify-center min-h-[200px]">
-                        <img
-                          src={solution.image}
-                          alt={solution.title}
-                          className="max-w-full max-h-[200px] object-contain"
-                          loading="eager"
-                        />
+                      <div className="bg-gray-50 p-4 flex items-center justify-center">
+                        <div className="relative w-full h-[200px]">
+                          <Image
+                            src={solution.image}
+                            alt={solution.title}
+                            fill
+                            sizes="100vw"
+                            className="object-contain"
+                            loading="lazy"
+                          />
+                        </div>
                       </div>
                     </div>
                   </motion.div>
