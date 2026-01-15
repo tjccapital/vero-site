@@ -48,24 +48,40 @@ const solutions = [
 export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
   const [selectedSolution, setSelectedSolution] = useState(0);
+  const [isProblemAutoRotating, setIsProblemAutoRotating] = useState(true);
+  const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(true);
 
-  // Auto-rotate problems every 2 seconds
+  // Auto-rotate problems every 2 seconds (unless user has clicked)
   useEffect(() => {
+    if (!isProblemAutoRotating) return;
+
     const interval = setInterval(() => {
       setSelectedProblem((prev) => (prev + 1) % problems.length);
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isProblemAutoRotating]);
 
-  // Auto-rotate solutions every 2 seconds
+  // Auto-rotate solutions every 2 seconds (unless user has clicked)
   useEffect(() => {
+    if (!isSolutionAutoRotating) return;
+
     const interval = setInterval(() => {
       setSelectedSolution((prev) => (prev + 1) % solutions.length);
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isSolutionAutoRotating]);
+
+  const handleProblemClick = (index: number) => {
+    setSelectedProblem(index);
+    setIsProblemAutoRotating(false);
+  };
+
+  const handleSolutionClick = (index: number) => {
+    setSelectedSolution(index);
+    setIsSolutionAutoRotating(false);
+  };
 
   return (
     <section className="py-16 sm:py-24 bg-white">
@@ -88,7 +104,7 @@ export function WhyNow() {
             {problems.map((problem, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedProblem(index)}
+                onClick={() => handleProblemClick(index)}
                 className={`w-full text-left p-4 sm:p-5 transition-all border ${
                   selectedProblem === index
                     ? "bg-gray-50 border-gray-200"
@@ -140,7 +156,7 @@ export function WhyNow() {
           {problems.map((problem, index) => (
             <div key={index} className="border border-gray-200 overflow-hidden">
               <button
-                onClick={() => setSelectedProblem(index)}
+                onClick={() => handleProblemClick(index)}
                 className={`w-full text-left p-4 transition-all ${
                   selectedProblem === index ? "bg-gray-50" : "bg-white"
                 }`}
@@ -223,7 +239,7 @@ export function WhyNow() {
             {solutions.map((solution, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedSolution(index)}
+                onClick={() => handleSolutionClick(index)}
                 className={`w-full text-left p-4 sm:p-5 transition-all border ${
                   selectedSolution === index
                     ? "bg-gray-50 border-gray-200"
@@ -252,7 +268,7 @@ export function WhyNow() {
           {solutions.map((solution, index) => (
             <div key={index} className="border border-gray-200 overflow-hidden">
               <button
-                onClick={() => setSelectedSolution(index)}
+                onClick={() => handleSolutionClick(index)}
                 className={`w-full text-left p-4 transition-all ${
                   selectedSolution === index ? "bg-gray-50" : "bg-white"
                 }`}
