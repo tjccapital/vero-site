@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Layers, Lock, Zap } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const problems = [
@@ -29,24 +28,25 @@ const problems = [
 
 const solutions = [
   {
-    icon: Layers,
     title: "Open standard (DRP)",
     description: "The Digital Receipt Protocol creates a universal format that works across all systems.",
+    image: "/solution-1.png",
   },
   {
-    icon: Lock,
     title: "Privacy-first architecture",
     description: "End-to-end encryption means only you and the merchant see your purchase data.",
+    image: "/solution-2.png",
   },
   {
-    icon: Zap,
     title: "Zero-friction integration",
     description: "Works with existing POS systems. No code changes. No disruption to checkout.",
+    image: "/solution-3.png",
   },
 ];
 
 export function WhyNow() {
   const [selectedProblem, setSelectedProblem] = useState(0);
+  const [selectedSolution, setSelectedSolution] = useState(0);
 
   return (
     <section className="py-16 sm:py-24 bg-white">
@@ -162,15 +162,91 @@ export function WhyNow() {
           </p>
         </div>
 
-        {/* Solutions */}
-        <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+        {/* Interactive Solutions Section - Desktop (Image left, text right) */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-8 lg:gap-12">
+          {/* Left side - Image */}
+          <div className="flex items-center justify-center bg-gray-50 p-8 min-h-[400px]">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={selectedSolution}
+                src={solutions[selectedSolution].image}
+                alt={solutions[selectedSolution].title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="max-w-full max-h-[300px] object-contain"
+              />
+            </AnimatePresence>
+          </div>
+
+          {/* Right side - Clickable list */}
+          <div className="space-y-2">
+            {solutions.map((solution, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedSolution(index)}
+                className={`w-full text-left p-4 sm:p-5 transition-all border ${
+                  selectedSolution === index
+                    ? "bg-gray-50 border-gray-200"
+                    : "bg-white border-transparent hover:bg-gray-50"
+                }`}
+              >
+                <h3 className={`font-semibold mb-1 ${
+                  selectedSolution === index ? "text-gray-900" : "text-gray-700"
+                }`}>
+                  {solution.title}
+                </h3>
+                <p className={`text-sm transition-all ${
+                  selectedSolution === index
+                    ? "text-gray-600 max-h-20 opacity-100"
+                    : "text-gray-400 max-h-0 opacity-0 overflow-hidden"
+                }`}>
+                  {solution.description}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Interactive Solutions Section - Mobile (Accordion style) */}
+        <div className="lg:hidden space-y-3">
           {solutions.map((solution, index) => (
-            <div key={index} className="text-center">
-              <div className="w-12 h-12 bg-primary-100 flex items-center justify-center mx-auto mb-4">
-                <solution.icon className="w-6 h-6 text-primary-900" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">{solution.title}</h3>
-              <p className="text-sm text-gray-600">{solution.description}</p>
+            <div key={index} className="border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => setSelectedSolution(index)}
+                className={`w-full text-left p-4 transition-all ${
+                  selectedSolution === index ? "bg-gray-50" : "bg-white"
+                }`}
+              >
+                <h3 className="font-semibold text-gray-900">
+                  {solution.title}
+                </h3>
+              </button>
+              <AnimatePresence>
+                {selectedSolution === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-4">
+                      <p className="text-sm text-gray-600 mb-4">
+                        {solution.description}
+                      </p>
+                      <div className="bg-gray-50 p-4 flex items-center justify-center">
+                        <img
+                          src={solution.image}
+                          alt={solution.title}
+                          className="max-w-full max-h-[200px] object-contain"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
