@@ -83,13 +83,13 @@ export function IntegrationTabs() {
         </div>
 
         {/* Tab content */}
-        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-start min-h-[500px]">
           {/* Left side - Text content */}
-          <div className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+          <div className="space-y-6 min-h-[450px] flex flex-col">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight min-h-[120px]">
               {content.headline}
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed min-h-[80px]">
               {content.description}
             </p>
             <ul className="space-y-3 pt-2">
@@ -102,7 +102,7 @@ export function IntegrationTabs() {
             </ul>
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 text-gray-900 font-semibold hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-gray-900 font-semibold hover:gap-3 transition-all pt-2"
             >
               {content.cta}
               <ArrowRight className="w-4 h-4" />
