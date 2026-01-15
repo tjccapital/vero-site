@@ -92,7 +92,21 @@ export function IntegrationTabs() {
             <p className="text-lg text-gray-600 leading-relaxed min-h-[80px]">
               {content.description}
             </p>
-            <ul className="space-y-3 pt-2">
+
+            {/* Image on mobile (replaces checklist) */}
+            <div className="lg:hidden relative w-full h-[250px] my-4">
+              <Image
+                src={content.image}
+                alt={content.headline}
+                fill
+                sizes="100vw"
+                className="object-contain"
+                loading="lazy"
+              />
+            </div>
+
+            {/* Checklist - hidden on mobile, shown on desktop */}
+            <ul className="hidden lg:flex lg:flex-col space-y-3 pt-2">
               {content.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3 text-gray-700">
                   <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
@@ -109,7 +123,7 @@ export function IntegrationTabs() {
             </a>
           </div>
 
-          {/* Right side - Visual (hidden on mobile) */}
+          {/* Right side - Visual (desktop only) */}
           <div className="hidden lg:flex items-center justify-center relative w-full h-[400px]">
             <Image
               src={content.image}

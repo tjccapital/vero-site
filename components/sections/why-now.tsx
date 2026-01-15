@@ -57,12 +57,13 @@ export function WhyNow() {
     const handleScroll = () => {
       if (isSolutionVisible) return; // Already triggered, no need to check again
 
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
+      const scrollPosition = window.scrollY || window.pageYOffset;
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
       const documentHeight = document.documentElement.scrollHeight;
 
-      // Calculate scroll percentage
-      const scrollPercentage = (scrollPosition + windowHeight) / documentHeight;
+      // Calculate scroll percentage (how far down the scrollable area)
+      const maxScroll = documentHeight - windowHeight;
+      const scrollPercentage = maxScroll > 0 ? scrollPosition / maxScroll : 0;
 
       // Trigger when user has scrolled past 30% of the page
       if (scrollPercentage >= 0.3) {
