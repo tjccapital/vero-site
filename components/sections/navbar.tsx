@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/logo";
-import { Menu, X, ChevronDown, CreditCard, Store, Users, Play, BookOpen, FileText, Mail } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, FileText, Mail } from "lucide-react";
+import Image from "next/image";
 
 const solutionItems = [
   {
@@ -10,18 +11,21 @@ const solutionItems = [
     title: "Card Issuers",
     description: "Deliver digital receipts to cardholders and reduce friendly fraud.",
     href: "/#issuers",
+    image: "/issuer-dashboard.png",
   },
   {
     icon: Store,
     title: "Merchants",
     description: "Free plugin for your POS. Send receipts in minutes.",
     href: "/#merchants",
+    image: "/merchant-dashboard.png",
   },
   {
     icon: Users,
     title: "Consumers",
     description: "Your receipts, automatically in your card app.",
     href: "/#consumers",
+    image: "/consumer-app.png",
   },
 ];
 
@@ -73,8 +77,21 @@ const resourceItems = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileSection, setMobileSection] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,6 +123,10 @@ export function Navbar() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [lastScrollY]);
+
+  const toggleMobileSection = (section: string) => {
+    setMobileSection(mobileSection === section ? null : section);
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 bg-white md:bg-white/80 md:backdrop-blur-lg border-b border-gray-100 transition-transform duration-300 ${!isVisible ? '-translate-y-full' : 'translate-y-0'}`}>
@@ -232,43 +253,108 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Full Screen Overlay */}
       {isOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200">
-          <div className="px-4 py-4 space-y-1">
-            <a href="/product" className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
-              Product
-            </a>
-            <div className="py-2">
-              <p className="text-xs uppercase tracking-wider text-gray-400 mb-2 px-2">Solutions</p>
-              <div className="space-y-1">
-                {solutionItems.map((item) => (
-                  <a key={item.title} href={item.href} onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }} className="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
-                    {item.title}
-                  </a>
-                ))}
-              </div>
-            </div>
-            <div className="py-2">
-              <p className="text-xs uppercase tracking-wider text-gray-400 mb-2 px-2">Resources</p>
-              <div className="space-y-1">
-                {resourceItems.map((item) => (
-                  <a key={item.title} href={item.href} className="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
-                    {item.title}
-                  </a>
-                ))}
-              </div>
-            </div>
-            <div className="pt-4 space-y-2 border-t border-gray-200">
-              <a href="/contact" className="block text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors py-3 px-2 -mx-2 text-base">
+        <div className="md:hidden fixed inset-0 top-16 bg-white/98 backdrop-blur-xl z-40 overflow-y-auto">
+          <div className="px-4 py-6">
+            {/* CTA Buttons */}
+            <div className="flex gap-3 mb-6">
+              <a href="/contact" className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
                 Contact
               </a>
-              <a
-                href="#"
-                className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
-              >
+              <a href="#" className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
                 Get started
               </a>
+            </div>
+
+            {/* Product Link */}
+            <a
+              href="/product"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-between py-4 border-b border-gray-100 text-gray-900 font-medium"
+            >
+              Product
+            </a>
+
+            {/* Solutions Section */}
+            <div className="border-b border-gray-100">
+              <button
+                onClick={() => toggleMobileSection('solutions')}
+                className="flex items-center justify-between w-full py-4 text-gray-900 font-medium"
+              >
+                Solutions
+                {mobileSection === 'solutions' ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+
+              {mobileSection === 'solutions' && (
+                <div className="pb-4 space-y-3">
+                  {solutionItems.map((item) => (
+                    <a
+                      key={item.title}
+                      href={item.href}
+                      onClick={(e) => { handleSolutionClick(e, item.href); setIsOpen(false); }}
+                      className="block bg-gray-50 p-4 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="relative w-16 h-16 flex-shrink-0 bg-gray-200 overflow-hidden">
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900">{item.title}</h3>
+                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.description}</p>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Resources Section */}
+            <div className="border-b border-gray-100">
+              <button
+                onClick={() => toggleMobileSection('resources')}
+                className="flex items-center justify-between w-full py-4 text-gray-900 font-medium"
+              >
+                Resources
+                {mobileSection === 'resources' ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+
+              {mobileSection === 'resources' && (
+                <div className="pb-4 space-y-2">
+                  {resourceItems.map((item) => (
+                    <a
+                      key={item.title}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="w-10 h-10 bg-white flex items-center justify-center border border-gray-200">
+                        <item.icon className="w-5 h-5 text-primary-900" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{item.title}</h3>
+                        <p className="text-xs text-gray-500">{item.description}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
