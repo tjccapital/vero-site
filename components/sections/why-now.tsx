@@ -53,9 +53,9 @@ export function WhyNow() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-12 sm:mb-16">
-          <p className="text-sm font-medium text-primary-900 mb-2">Features</p>
+          <p className="text-sm font-medium text-primary-900 mb-2">The Problem</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
-            Everything you need to go digital
+            Why doesn&apos;t this exist already?
           </h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Here&apos;s what&apos;s been holding the industry back—and how Vero solves it.
