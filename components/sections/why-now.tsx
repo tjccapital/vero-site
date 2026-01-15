@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 
@@ -51,28 +51,31 @@ export function WhyNow() {
   const [isProblemAutoRotating, setIsProblemAutoRotating] = useState(true);
   const [isSolutionAutoRotating, setIsSolutionAutoRotating] = useState(false);
   const [isSolutionVisible, setIsSolutionVisible] = useState(false);
-  const solutionSectionRef = useRef<HTMLDivElement>(null);
 
-  // Observe when solution section comes into view
+  // Start solution rotation when user scrolls 40% down the page
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isSolutionVisible) {
-          setIsSolutionVisible(true);
-          setIsSolutionAutoRotating(true);
-        }
-      },
-      { threshold: 0.3 } // Trigger when 30% of solution section is visible
-    );
+    const handleScroll = () => {
+      if (isSolutionVisible) return; // Already triggered, no need to check again
 
-    if (solutionSectionRef.current) {
-      observer.observe(solutionSectionRef.current);
-    }
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      // Calculate scroll percentage
+      const scrollPercentage = (scrollPosition + windowHeight) / documentHeight;
+
+      // Trigger when user has scrolled past 40% of the page
+      if (scrollPercentage >= 0.4) {
+        setIsSolutionVisible(true);
+        setIsSolutionAutoRotating(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check on mount in case already scrolled
 
     return () => {
-      if (solutionSectionRef.current) {
-        observer.unobserve(solutionSectionRef.current);
-      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [isSolutionVisible]);
 
@@ -224,7 +227,7 @@ export function WhyNow() {
         </div>
 
         {/* Solution header */}
-        <div ref={solutionSectionRef} className="text-center mb-10 sm:mb-12">
+        <div className="text-center mb-10 sm:mb-12">
           <p className="text-sm font-medium text-primary-900 mb-2">The Solution</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
             How Vero changes everything
