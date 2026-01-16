@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -30,6 +32,11 @@ export function ScrollToTop() {
       behavior: "smooth",
     });
   };
+
+  // Hide on demo page
+  if (pathname === "/demo") {
+    return null;
+  }
 
   return (
     <AnimatePresence>
