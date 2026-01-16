@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://getvero.com";
+  const baseUrl = "https://seevero.com";
 
   const staticPages = [
     {
