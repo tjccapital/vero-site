@@ -36,13 +36,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://seevero.com",
     siteName: "Vero",
-    title: "Vero - Digital Receipts for the Modern World",
+    title: "Vero - Digital Receipts",
     description:
       "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40% with itemized receipts linked to transactions.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vero - Digital Receipts for the Modern World",
+    title: "Vero - Digital Receipts",
     description:
       "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40%.",
     creator: "@seevero",
