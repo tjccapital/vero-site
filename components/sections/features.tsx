@@ -8,14 +8,6 @@ export function Features() {
   return (
     <section className="py-12 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <p className="text-sm font-medium text-primary-600 mb-2">Platform</p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 leading-tight">
-            Paper is no longer the default receipt option
-          </h2>
-        </div>
-
         {/* Bento Grid */}
         <BentoGrid>
           {items.map((item, i) => (

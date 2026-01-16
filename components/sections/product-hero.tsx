@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 import { ArrowRight } from "lucide-react";
 
 export function ProductHero() {
@@ -21,13 +20,9 @@ export function ProductHero() {
       {/* Content */}
       <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
-          Digital Receipts that
+          Paper is no longer the
           <br />
-          work for{" "}
-          <ContainerTextFlip
-            words={["Merchants", "Card Issuers", "POS Systems", "Consumers", "Enterprises"]}
-            interval={2500}
-          />
+          default receipt option
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
           Free for merchants. Free beta for card issuers. Reduce friendly fraud that costs the industry billions.
