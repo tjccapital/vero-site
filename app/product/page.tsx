@@ -40,7 +40,7 @@ export default function ProductPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-primary-900 bg-white rounded-lg hover:bg-primary-50 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-primary-900 bg-white hover:bg-primary-50 transition-colors"
               >
                 Request beta access
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -49,7 +49,7 @@ export default function ProductPage() {
                 href="https://docs.seevero.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors"
               >
                 View documentation
               </a>
