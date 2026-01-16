@@ -240,7 +240,7 @@ export function Navbar() {
               Contact
             </a>
             <a
-              href="https://vero-80b6ce5c.mintlify.app/api-reference/introduction"
+              href="https://docs.seevero.com"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
@@ -269,7 +269,7 @@ export function Navbar() {
               <a href="/contact" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
                 Contact
               </a>
-              <a href="https://vero-80b6ce5c.mintlify.app/api-reference/introduction" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
+              <a href="https://docs.seevero.com" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
                 Get started
               </a>
             </div>
