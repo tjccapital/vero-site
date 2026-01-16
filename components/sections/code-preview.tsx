@@ -143,7 +143,7 @@ export function CodePreview() {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <a
-                href="https://docs.vero.com"
+                href="https://docs.seevero.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-5 sm:px-6 py-3 text-sm font-medium text-white bg-[#1e3a8a] hover:bg-blue-800 transition-colors group w-full sm:w-auto"
@@ -152,7 +152,7 @@ export function CodePreview() {
                 <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
               </a>
               <a
-                href="https://docs.vero.com/sdks"
+                href="https://docs.seevero.com/sdks"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-5 sm:px-6 py-3 text-sm font-medium text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition-colors w-full sm:w-auto"

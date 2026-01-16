@@ -46,7 +46,7 @@ export default function ProductPage() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </a>
               <a
-                href="https://vero-80b6ce5c.mintlify.app"
+                href="https://docs.seevero.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors"
