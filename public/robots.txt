@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://getvero.com/sitemap.xml
+Sitemap: https://seevero.com/sitemap.xml

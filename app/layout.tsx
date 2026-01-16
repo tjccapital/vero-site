@@ -3,7 +3,7 @@ import "./globals.css";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://getvero.com"),
+  metadataBase: new URL("https://seevero.com"),
   title: {
     default: "Vero - Digital Receipts",
     template: "%s | Vero",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://getvero.com",
+    url: "https://seevero.com",
     siteName: "Vero",
     title: "Vero - Digital Receipts for the Modern World",
     description:
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     title: "Vero - Digital Receipts for the Modern World",
     description:
       "Transform paper receipts into secure, portable digital records. Reduce friendly fraud by 40%.",
-    creator: "@getvero",
+    creator: "@seevero",
   },
   robots: {
     index: true,
@@ -74,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="canonical" href="https://getvero.com" />
+        <link rel="canonical" href="https://seevero.com" />
       </head>
       <body className="antialiased">
         {children}
