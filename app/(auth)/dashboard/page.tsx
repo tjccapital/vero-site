@@ -31,7 +31,7 @@ import {
   CreditCard,
   Info,
 } from "lucide-react"
-import { VeroLogo } from "@/components/ui/vero-logo"
+import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -188,11 +188,8 @@ export default function DashboardPage() {
       {/* Sidebar */}
       <aside className="hidden w-[240px] flex-col border-r border-[var(--border)] lg:flex">
         {/* Logo */}
-        <div className="flex h-14 items-center gap-2 px-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)]">
-            <VeroLogo size={18} />
-          </div>
-          <span className="text-sm font-semibold">Vero Merchant</span>
+        <div className="flex h-14 items-center px-4">
+          <VeroLogoFull height={20} className="text-[var(--foreground)]" />
         </div>
 
         {/* Main Navigation */}
@@ -283,10 +280,7 @@ export default function DashboardPage() {
       <div className="flex flex-1 flex-col">
         {/* Header */}
         <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-6">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[var(--muted-foreground)]" />
-            <span className="text-sm font-medium">Dashboard</span>
-          </div>
+          <span className="text-sm font-medium">Merchant Dashboard</span>
           <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
             Back to Site
           </Link>

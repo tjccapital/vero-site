@@ -30,7 +30,7 @@ import {
   Building2,
   MapPin,
 } from "lucide-react"
-import { VeroLogo } from "@/components/ui/vero-logo"
+import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -104,11 +104,8 @@ export default function PaymentsPage() {
       {/* Sidebar */}
       <aside className="hidden w-[240px] flex-col border-r border-[var(--border)] lg:flex">
         {/* Logo */}
-        <div className="flex h-14 items-center gap-2 px-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)]">
-            <VeroLogo size={18} />
-          </div>
-          <span className="text-sm font-semibold">Vero Merchant</span>
+        <div className="flex h-14 items-center px-4">
+          <VeroLogoFull height={20} className="text-[var(--foreground)]" />
         </div>
 
         {/* Main Navigation */}
