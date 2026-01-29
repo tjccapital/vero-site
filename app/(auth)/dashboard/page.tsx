@@ -189,19 +189,6 @@ export default function DashboardPage() {
           <span className="text-sm font-semibold">Vero Merchant</span>
         </div>
 
-        {/* Quick Create Button */}
-        <div className="px-3 py-2">
-          <div className="flex items-center gap-2">
-            <button className="flex flex-1 items-center gap-2 rounded-md bg-[var(--primary)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--primary)]/90">
-              <Plus className="h-4 w-4" />
-              Quick Create
-            </button>
-            <button className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] hover:bg-[var(--muted)]">
-              <Mail className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-
         {/* Main Navigation */}
         <nav className="flex-1 space-y-1 px-3 py-2">
           {mainNavItems.map((item) => (
@@ -294,8 +281,8 @@ export default function DashboardPage() {
             <FileText className="h-4 w-4 text-[var(--muted-foreground)]" />
             <span className="text-sm font-medium">Dashboard</span>
           </div>
-          <Link href="https://docs.seevero.com" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
-            API Docs
+          <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+            Back to Site
           </Link>
         </header>
 
