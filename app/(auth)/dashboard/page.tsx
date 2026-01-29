@@ -1,34 +1,40 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import {
   Receipt,
-  DollarSign,
-  TrendingUp,
-  ArrowUpRight,
-  ArrowDownRight,
-  CreditCard,
-  Settings,
-  LogOut,
-  Home,
+  LayoutDashboard,
+  Cable,
+  BarChart3,
   FileText,
-  Wallet,
-  Bell,
-  ChevronDown,
+  Settings,
+  CircleHelp,
   Search,
+  MoreVertical,
+  TrendingUp,
+  TrendingDown,
+  Plus,
+  Mail,
+  Database,
+  FileBarChart,
+  Code,
   MoreHorizontal,
+  ChevronDown,
+  LogOut,
+  Columns3,
+  Check,
+  Clock,
 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { VeroLogo } from "@/components/ui/vero-logo"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -41,83 +47,110 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts"
 
-// Sample data for the dashboard
-const recentReceipts = [
+// Chart data for receipts over time
+const chartData = [
+  { date: "Jan 3", receipts: 186 },
+  { date: "Jan 9", receipts: 305 },
+  { date: "Jan 15", receipts: 237 },
+  { date: "Jan 21", receipts: 273 },
+  { date: "Jan 27", receipts: 209 },
+  { date: "Feb 3", receipts: 314 },
+  { date: "Feb 9", receipts: 278 },
+  { date: "Feb 15", receipts: 189 },
+  { date: "Feb 21", receipts: 339 },
+  { date: "Feb 28", receipts: 287 },
+  { date: "Mar 3", receipts: 321 },
+  { date: "Mar 9", receipts: 256 },
+  { date: "Mar 15", receipts: 412 },
+  { date: "Mar 21", receipts: 378 },
+  { date: "Mar 27", receipts: 289 },
+  { date: "Apr 3", receipts: 345 },
+]
+
+// POS Integration data
+const posIntegrations = [
   {
-    id: "REC-001",
-    merchant: "Coffee Shop Downtown",
-    amount: 15.50,
-    date: "2025-01-29",
-    status: "processed",
+    id: "int_001",
+    name: "Main Store POS",
+    type: "Square",
+    status: "active",
+    receipts: 1842,
+    transactions: 2156,
+    lastSync: "2 min ago",
   },
   {
-    id: "REC-002",
-    merchant: "Tech Store",
-    amount: 299.99,
-    date: "2025-01-28",
+    id: "int_002",
+    name: "Downtown Location",
+    type: "Clover",
+    status: "active",
+    receipts: 956,
+    transactions: 1203,
+    lastSync: "5 min ago",
+  },
+  {
+    id: "int_003",
+    name: "Airport Kiosk",
+    type: "Toast",
     status: "pending",
+    receipts: 0,
+    transactions: 0,
+    lastSync: "Pending setup",
   },
   {
-    id: "REC-003",
-    merchant: "Restaurant & Bar",
-    amount: 87.25,
-    date: "2025-01-28",
-    status: "processed",
+    id: "int_004",
+    name: "Online Store",
+    type: "Shopify",
+    status: "active",
+    receipts: 3421,
+    transactions: 4102,
+    lastSync: "1 min ago",
   },
   {
-    id: "REC-004",
-    merchant: "Gas Station",
-    amount: 45.00,
-    date: "2025-01-27",
-    status: "processed",
-  },
-  {
-    id: "REC-005",
-    merchant: "Grocery Market",
-    amount: 156.78,
-    date: "2025-01-27",
-    status: "processed",
+    id: "int_005",
+    name: "Food Truck",
+    type: "Square",
+    status: "inactive",
+    receipts: 234,
+    transactions: 289,
+    lastSync: "3 days ago",
   },
 ]
 
-const recentPayouts = [
-  {
-    id: "PAY-001",
-    amount: 1250.00,
-    date: "2025-01-25",
-    status: "completed",
-    receipts: 42,
-  },
-  {
-    id: "PAY-002",
-    amount: 890.50,
-    date: "2025-01-18",
-    status: "completed",
-    receipts: 31,
-  },
-  {
-    id: "PAY-003",
-    amount: 2100.75,
-    date: "2025-01-11",
-    status: "completed",
-    receipts: 68,
-  },
-]
-
-const navItems = [
-  { name: "Dashboard", href: "/dashboard", icon: Home, active: true },
+const mainNavItems = [
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, active: true },
+  { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Receipts", href: "/dashboard/receipts", icon: Receipt },
-  { name: "Payouts", href: "/dashboard/payouts", icon: Wallet },
   { name: "Transactions", href: "/dashboard/transactions", icon: FileText },
+]
+
+const documentNavItems = [
+  { name: "Data Library", href: "/dashboard/data", icon: Database },
+  { name: "Reports", href: "/dashboard/reports", icon: FileBarChart },
+  { name: "API Docs", href: "/dashboard/api-docs", icon: Code },
+  { name: "More", href: "/dashboard/more", icon: MoreHorizontal },
+]
+
+const bottomNavItems = [
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Get Help", href: "/dashboard/help", icon: CircleHelp },
+  { name: "Search", href: "/dashboard/search", icon: Search },
 ]
 
 export default function DashboardPage() {
   const { user, isLoading, logout } = useAuth()
   const router = useRouter()
+  const [activeTab, setActiveTab] = useState("all")
+  const [chartRange, setChartRange] = useState("3months")
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -129,7 +162,7 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary)] border-t-transparent" />
+          <VeroLogo size={48} spinning className="text-[var(--primary)]" />
           <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
         </div>
       </div>
@@ -140,25 +173,45 @@ export default function DashboardPage() {
     return null
   }
 
+  const filteredIntegrations = activeTab === "all"
+    ? posIntegrations
+    : posIntegrations.filter(i => i.status === activeTab)
+
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full bg-white">
       {/* Sidebar */}
-      <aside className="hidden w-64 flex-col border-r border-[var(--border)] bg-[var(--card)] lg:flex">
-        <div className="flex h-16 items-center gap-2 border-b border-[var(--border)] px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)]">
-            <Receipt className="h-4 w-4" />
+      <aside className="hidden w-[240px] flex-col border-r border-[var(--border)] lg:flex">
+        {/* Logo */}
+        <div className="flex h-14 items-center gap-2 px-4">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)]">
+            <VeroLogo size={18} />
           </div>
-          <span className="text-lg font-bold">Vero</span>
+          <span className="text-sm font-semibold">Vero Merchant</span>
         </div>
-        <nav className="flex-1 space-y-1 p-4">
-          {navItems.map((item) => (
+
+        {/* Quick Create Button */}
+        <div className="px-3 py-2">
+          <div className="flex items-center gap-2">
+            <button className="flex flex-1 items-center gap-2 rounded-md bg-[var(--primary)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--primary)]/90">
+              <Plus className="h-4 w-4" />
+              Quick Create
+            </button>
+            <button className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] hover:bg-[var(--muted)]">
+              <Mail className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Main Navigation */}
+        <nav className="flex-1 space-y-1 px-3 py-2">
+          {mainNavItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 item.active
-                  ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
+                  ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
                   : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
               )}
             >
@@ -166,12 +219,44 @@ export default function DashboardPage() {
               {item.name}
             </Link>
           ))}
+
+          {/* Documents Section */}
+          <div className="pt-4">
+            <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
+              Documents
+            </p>
+            {documentNavItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+              >
+                <item.icon className="h-4 w-4" />
+                {item.name}
+              </Link>
+            ))}
+          </div>
         </nav>
-        <div className="border-t border-[var(--border)] p-4">
+
+        {/* Bottom Navigation */}
+        <div className="border-t border-[var(--border)] px-3 py-2">
+          {bottomNavItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+            >
+              <item.icon className="h-4 w-4" />
+              {item.name}
+            </Link>
+          ))}
+        </div>
+
+        {/* User Profile */}
+        <div className="border-t border-[var(--border)] p-3">
           <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="" alt={user.name} />
-              <AvatarFallback className="bg-[var(--primary)] text-[var(--primary-foreground)] text-sm">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="bg-[var(--muted)] text-sm">
                 {user.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
@@ -181,13 +266,11 @@ export default function DashboardPage() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-md p-1.5 hover:bg-[var(--muted)]">
-                  <MoreHorizontal className="h-4 w-4" />
+                <button className="rounded-md p-1 hover:bg-[var(--muted)]">
+                  <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
@@ -206,34 +289,29 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="flex flex-1 flex-col">
         {/* Header */}
-        <header className="flex h-16 items-center gap-4 border-b border-[var(--border)] bg-[var(--card)] px-6">
-          <div className="flex lg:hidden">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)]">
-                <Receipt className="h-4 w-4" />
-              </div>
-              <span className="text-lg font-bold">Vero</span>
-            </Link>
+        <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-6">
+          <div className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-[var(--muted-foreground)]" />
+            <span className="text-sm font-medium">Dashboard</span>
           </div>
-          <div className="flex-1">
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
-              <Input
-                type="search"
-                placeholder="Search receipts, transactions..."
-                className="pl-9"
-              />
+          <Link href="https://docs.seevero.com" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+            API Docs
+          </Link>
+        </header>
+
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)]">
+              <VeroLogo size={18} />
             </div>
+            <span className="text-sm font-semibold">Vero</span>
           </div>
-          <button className="relative rounded-md p-2 hover:bg-[var(--muted)]">
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
-          </button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-md p-2 hover:bg-[var(--muted)] lg:hidden">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-[var(--primary)] text-[var(--primary-foreground)] text-sm">
+              <button className="flex items-center gap-2 rounded-md p-2 hover:bg-[var(--muted)]">
+                <Avatar className="h-7 w-7">
+                  <AvatarFallback className="bg-[var(--muted)] text-xs">
                     {user.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -241,9 +319,7 @@ export default function DashboardPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {navItems.map((item) => (
+              {mainNavItems.map((item) => (
                 <DropdownMenuItem key={item.name} asChild>
                   <Link href={item.href}>
                     <item.icon className="mr-2 h-4 w-4" />
@@ -258,246 +334,294 @@ export default function DashboardPage() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </header>
+        </div>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-[var(--muted)] p-6">
-          <div className="mx-auto max-w-7xl space-y-6">
-            {/* Page Title */}
-            <div>
-              <h1 className="text-2xl font-bold">Dashboard</h1>
-              <p className="text-[var(--muted-foreground)]">
-                Welcome back, {user.name}. Here&apos;s your business overview.
-              </p>
-            </div>
-
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="mx-auto max-w-6xl space-y-6">
             {/* Stats Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Receipts</CardTitle>
-                  <Receipt className="h-4 w-4 text-[var(--muted-foreground)]" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">1,284</div>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    <span className="inline-flex items-center text-green-600">
-                      <ArrowUpRight className="mr-1 h-3 w-3" />
-                      +12.5%
-                    </span>{" "}
-                    from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                  <DollarSign className="h-4 w-4 text-[var(--muted-foreground)]" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    <span className="inline-flex items-center text-green-600">
-                      <ArrowUpRight className="mr-1 h-3 w-3" />
-                      +20.1%
-                    </span>{" "}
-                    from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
-                  <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">$2,350.00</div>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    <span className="inline-flex items-center text-red-600">
-                      <ArrowDownRight className="mr-1 h-3 w-3" />
-                      -4.5%
-                    </span>{" "}
-                    from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Rate</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-[var(--muted-foreground)]" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">98.5%</div>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    <span className="inline-flex items-center text-green-600">
-                      <ArrowUpRight className="mr-1 h-3 w-3" />
-                      +2.1%
-                    </span>{" "}
-                    from last month
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Tables Section */}
-            <div className="grid gap-6 lg:grid-cols-2">
-              {/* Recent Receipts */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Receipts</CardTitle>
-                  <CardDescription>Your latest processed receipts</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Merchant</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentReceipts.map((receipt) => (
-                        <TableRow key={receipt.id}>
-                          <TableCell className="font-medium">{receipt.id}</TableCell>
-                          <TableCell>{receipt.merchant}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                receipt.status === "processed" ? "success" : "warning"
-                              }
-                            >
-                              {receipt.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            ${receipt.amount.toFixed(2)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-
-              {/* Recent Payouts */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Payouts</CardTitle>
-                  <CardDescription>Your latest payout transactions</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Receipts</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentPayouts.map((payout) => (
-                        <TableRow key={payout.id}>
-                          <TableCell className="font-medium">{payout.id}</TableCell>
-                          <TableCell>{payout.receipts} receipts</TableCell>
-                          <TableCell>
-                            <Badge variant="success">{payout.status}</Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            ${payout.amount.toFixed(2)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Merchant Configuration Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Merchant Configuration</CardTitle>
-                <CardDescription>
-                  Configure your merchant details and payout settings
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-medium">Business Information</h4>
-                    <div className="space-y-3 rounded-lg border border-[var(--border)] p-4">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">
-                          Merchant ID
-                        </span>
-                        <span className="text-sm font-mono">{user.merchantId}</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">
-                          Business Name
-                        </span>
-                        <span className="text-sm">{user.name}</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">Email</span>
-                        <span className="text-sm">{user.email}</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">Status</span>
-                        <Badge variant="success">Active</Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-medium">Payout Settings</h4>
-                    <div className="space-y-3 rounded-lg border border-[var(--border)] p-4">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">
-                          Payout Schedule
-                        </span>
-                        <span className="text-sm">Weekly (Every Monday)</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">
-                          Bank Account
-                        </span>
-                        <span className="text-sm font-mono">****4242</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">
-                          Minimum Payout
-                        </span>
-                        <span className="text-sm">$100.00</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-[var(--muted-foreground)]">
-                          Next Payout
-                        </span>
-                        <span className="text-sm">Feb 3, 2025</span>
-                      </div>
-                    </div>
-                  </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Total Receipts */}
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[var(--muted-foreground)]">Total Receipts</p>
+                  <span className="flex items-center gap-1 text-xs text-green-600">
+                    <TrendingUp className="h-3 w-3" />
+                    +12.5%
+                  </span>
                 </div>
-                <div className="mt-6 flex justify-end">
-                  <Link
-                    href="/dashboard/settings"
-                    className="inline-flex items-center gap-2 rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-medium text-[var(--primary-foreground)] hover:opacity-90 transition-opacity"
+                <p className="mt-2 text-2xl font-semibold">6,453</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  <span className="text-green-600">Trending up this month</span>
+                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                </p>
+                <p className="text-xs text-[var(--muted-foreground)]">Receipts for the last 6 months</p>
+              </div>
+
+              {/* Transactions */}
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[var(--muted-foreground)]">Transactions</p>
+                  <span className="flex items-center gap-1 text-xs text-red-600">
+                    <TrendingDown className="h-3 w-3" />
+                    -20%
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-semibold">7,750</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  <span className="text-red-600">Down 20% this period</span>
+                  <TrendingDown className="ml-1 inline h-3 w-3 text-red-600" />
+                </p>
+                <p className="text-xs text-[var(--muted-foreground)]">Acquisition needs attention</p>
+              </div>
+
+              {/* Active Integrations */}
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[var(--muted-foreground)]">Active Integrations</p>
+                  <span className="flex items-center gap-1 text-xs text-green-600">
+                    <TrendingUp className="h-3 w-3" />
+                    +12.5%
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-semibold">4</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  <span className="text-green-600">Strong POS coverage</span>
+                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                </p>
+                <p className="text-xs text-[var(--muted-foreground)]">Engagement exceed targets</p>
+              </div>
+
+              {/* Payout Rate */}
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[var(--muted-foreground)]">Payout Rate</p>
+                  <span className="flex items-center gap-1 text-xs text-green-600">
+                    <TrendingUp className="h-3 w-3" />
+                    +4.5%
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-semibold">4.5%</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  <span className="text-green-600">Steady performance increase</span>
+                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                </p>
+                <p className="text-xs text-[var(--muted-foreground)]">Meets growth projections</p>
+              </div>
+            </div>
+
+            {/* Chart Section */}
+            <div className="rounded-lg border border-[var(--border)] p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">Total Receipts</h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">Total for the last 3 months</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setChartRange("3months")}
+                    className={cn(
+                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      chartRange === "3months"
+                        ? "bg-[var(--foreground)] text-white"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                    )}
                   >
-                    <Settings className="h-4 w-4" />
-                    Edit Settings
-                  </Link>
+                    Last 3 months
+                  </button>
+                  <button
+                    onClick={() => setChartRange("30days")}
+                    className={cn(
+                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      chartRange === "30days"
+                        ? "bg-[var(--foreground)] text-white"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                    )}
+                  >
+                    Last 30 days
+                  </button>
+                  <button
+                    onClick={() => setChartRange("7days")}
+                    className={cn(
+                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      chartRange === "7days"
+                        ? "bg-[var(--foreground)] text-white"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                    )}
+                  >
+                    Last 7 days
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="mt-6 h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id="colorReceipts" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#e5e7eb" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#e5e7eb" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#6b7280' }}
+                      dy={10}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#6b7280' }}
+                      dx={-10}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="receipts"
+                      stroke="#1f2937"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorReceipts)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* POS Integrations Table */}
+            <div className="rounded-lg border border-[var(--border)]">
+              {/* Tabs */}
+              <div className="flex items-center justify-between border-b border-[var(--border)] px-4">
+                <div className="flex">
+                  <button
+                    onClick={() => setActiveTab("all")}
+                    className={cn(
+                      "border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      activeTab === "all"
+                        ? "border-[var(--foreground)] text-[var(--foreground)]"
+                        : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                    )}
+                  >
+                    All Integrations
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("active")}
+                    className={cn(
+                      "flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      activeTab === "active"
+                        ? "border-[var(--foreground)] text-[var(--foreground)]"
+                        : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                    )}
+                  >
+                    Active
+                    <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">3</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("pending")}
+                    className={cn(
+                      "flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      activeTab === "pending"
+                        ? "border-[var(--foreground)] text-[var(--foreground)]"
+                        : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                    )}
+                  >
+                    Pending
+                    <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">1</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("inactive")}
+                    className={cn(
+                      "border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      activeTab === "inactive"
+                        ? "border-[var(--foreground)] text-[var(--foreground)]"
+                        : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                    )}
+                  >
+                    Inactive
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
+                    <Columns3 className="h-4 w-4" />
+                    Customize Columns
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                  <button className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
+                    <Plus className="h-4 w-4" />
+                    Add Integration
+                  </button>
+                </div>
+              </div>
+
+              {/* Table */}
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-12">
+                      <input type="checkbox" className="rounded border-[var(--border)]" />
+                    </TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>POS Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Receipts</TableHead>
+                    <TableHead className="text-right">Transactions</TableHead>
+                    <TableHead>Last Sync</TableHead>
+                    <TableHead className="w-12"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredIntegrations.map((integration) => (
+                    <TableRow key={integration.id}>
+                      <TableCell>
+                        <input type="checkbox" className="rounded border-[var(--border)]" />
+                      </TableCell>
+                      <TableCell className="font-medium">{integration.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="font-normal">
+                          {integration.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {integration.status === "active" && (
+                          <div className="flex items-center gap-1.5">
+                            <Check className="h-3.5 w-3.5 text-green-600" />
+                            <span className="text-sm text-green-600">Active</span>
+                          </div>
+                        )}
+                        {integration.status === "pending" && (
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="h-3.5 w-3.5 text-yellow-600" />
+                            <span className="text-sm text-yellow-600">Pending</span>
+                          </div>
+                        )}
+                        {integration.status === "inactive" && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="h-2 w-2 rounded-full bg-gray-400" />
+                            <span className="text-sm text-gray-500">Inactive</span>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">{integration.receipts.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{integration.transactions.toLocaleString()}</TableCell>
+                      <TableCell className="text-[var(--muted-foreground)]">{integration.lastSync}</TableCell>
+                      <TableCell>
+                        <button className="rounded-md p-1 hover:bg-[var(--muted)]">
+                          <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </main>
       </div>
