@@ -111,19 +111,6 @@ export default function PaymentsPage() {
           <span className="text-sm font-semibold">Vero Merchant</span>
         </div>
 
-        {/* Quick Create Button */}
-        <div className="px-3 py-2">
-          <div className="flex items-center gap-2">
-            <button className="flex flex-1 items-center gap-2 rounded-md bg-[var(--primary)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--primary)]/90">
-              <Plus className="h-4 w-4" />
-              Quick Create
-            </button>
-            <button className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] hover:bg-[var(--muted)]">
-              <Mail className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-
         {/* Main Navigation */}
         <nav className="flex-1 space-y-1 px-3 py-2">
           {mainNavItems.map((item) => (
@@ -216,8 +203,8 @@ export default function PaymentsPage() {
             <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
             <span className="text-sm font-medium">Payments</span>
           </div>
-          <Link href="https://docs.seevero.com" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
-            API Docs
+          <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+            Back to Site
           </Link>
         </header>
 
@@ -265,7 +252,7 @@ export default function PaymentsPage() {
             <div>
               <h1 className="text-2xl font-bold">Payment Configuration</h1>
               <p className="mt-1 text-[var(--muted-foreground)]">
-                Manage your subscription, payment methods, and payout settings.
+                Manage your payout settings and access the payment portal.
               </p>
             </div>
 
@@ -290,7 +277,7 @@ export default function PaymentsPage() {
                 className="inline-flex items-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
               >
                 <ExternalLink className="h-4 w-4" />
-                Open Billing Portal
+                Open Payments Portal
               </Link>
             </div>
 
@@ -358,9 +345,9 @@ export default function PaymentsPage() {
 
             {/* Help Section */}
             <div className="rounded-xl border border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent p-6">
-              <h3 className="text-lg font-semibold">Need help with billing?</h3>
+              <h3 className="text-lg font-semibold">Need help with payments?</h3>
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                Our support team is available to help with any billing questions or concerns.
+                Our support team is available to help with any payment questions or concerns.
               </p>
               <Link
                 href="/contact"
