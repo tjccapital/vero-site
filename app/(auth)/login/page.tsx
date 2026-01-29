@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Receipt, Eye, EyeOff } from "lucide-react"
+import { VeroLogo } from "@/components/ui/vero-logo"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -42,7 +43,7 @@ export default function LoginPage() {
             <CardHeader className="text-center">
               <Link href="/" className="flex items-center justify-center gap-2 mb-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)]">
-                  <Receipt className="h-5 w-5" />
+                  <VeroLogo size={22} />
                 </div>
                 <span className="text-xl font-bold">Vero</span>
               </Link>
