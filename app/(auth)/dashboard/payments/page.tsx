@@ -27,6 +27,8 @@ import {
   ExternalLink,
   Info,
   CheckCircle,
+  Building2,
+  MapPin,
 } from "lucide-react"
 import { VeroLogo } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -60,32 +62,13 @@ const bottomNavItems = [
   { name: "Search", href: "/dashboard/search", icon: Search },
 ]
 
-// Merchant tiers configuration
-const merchantTiers = {
-  starter: {
-    name: "Starter",
-    price: "Free",
-    receiptsPerMonth: "Up to 500",
-    payoutRate: "3%",
-  },
-  growth: {
-    name: "Growth",
-    price: "$49/mo",
-    receiptsPerMonth: "Up to 5,000",
-    payoutRate: "4%",
-  },
-  professional: {
-    name: "Professional",
-    price: "$149/mo",
-    receiptsPerMonth: "Up to 25,000",
-    payoutRate: "4.5%",
-  },
-  enterprise: {
-    name: "Enterprise",
-    price: "Custom",
-    receiptsPerMonth: "Unlimited",
-    payoutRate: "5%+",
-  },
+// Demo merchant details
+const merchantDetails = {
+  address: "123 Main Street, Suite 400",
+  city: "San Francisco",
+  state: "CA",
+  zip: "94105",
+  size: "Small Business", // Small Business, Regional, Enterprise
 }
 
 export default function PaymentsPage() {
@@ -112,9 +95,6 @@ export default function PaymentsPage() {
   if (!user) {
     return null
   }
-
-  // Demo merchant is on Growth tier
-  const currentTier = merchantTiers.growth
 
   // Generate Stripe billing portal URL with merchant ID
   const stripeBillingPortalUrl = `https://billing.stripe.com/p/login/test_${user.merchantId}`
@@ -289,76 +269,58 @@ export default function PaymentsPage() {
               </p>
             </div>
 
-            {/* Upgrade Notice */}
+            {/* Payout Information */}
             <div className="flex items-start gap-3 rounded-lg border border-[var(--border)] bg-[var(--muted)]/30 p-4">
-              <Info className="mt-0.5 h-5 w-5 text-[var(--muted-foreground)]" />
-              <p className="text-sm text-[var(--foreground)]">
-                To upgrade to our new plans, please contact sales.
-              </p>
-            </div>
-
-            {/* Current Plan */}
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-[var(--foreground)]">
-                  You are currently on the <span className="font-semibold">{currentTier.name}</span> plan.
+              <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-[var(--muted-foreground)]" />
+              <div className="text-sm text-[var(--foreground)]">
+                <p className="font-medium mb-1">How payouts are calculated</p>
+                <p className="text-[var(--muted-foreground)]">
+                  Merchant payouts are assessed based on multiple factors including the number of digital receipts sent,
+                  quality of receipt metadata, number of consumer inquiries regarding receipts, and other engagement metrics.
                 </p>
-                <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                  To cancel your subscription, update your payment method, or view your billing history, please visit our billing portal.
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  href={stripeBillingPortalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Open Billing Portal
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2.5 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
-                >
-                  Change Plan
-                </Link>
               </div>
             </div>
 
-            {/* Plan Details Card */}
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href={stripeBillingPortalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Open Billing Portal
+              </Link>
+            </div>
+
+            {/* Business Details Card */}
             <div className="rounded-xl border border-[var(--border)] p-6">
-              <h2 className="text-lg font-semibold">Plan Details</h2>
+              <h2 className="text-lg font-semibold">Business Details</h2>
               <div className="mt-4 space-y-4">
                 <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
                   <div>
-                    <p className="text-sm font-medium">Current Plan</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Your active subscription tier</p>
+                    <p className="text-sm font-medium">Business Name</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">Your registered business name</p>
                   </div>
-                  <Badge variant="success" className="text-sm">{currentTier.name}</Badge>
+                  <span className="text-sm font-semibold">{user.name}</span>
                 </div>
                 <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
                   <div>
-                    <p className="text-sm font-medium">Monthly Price</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Billed monthly to your payment method</p>
+                    <p className="text-sm font-medium">Business Address</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">Your primary business location</p>
                   </div>
-                  <span className="text-sm font-semibold">{currentTier.price}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                  <div>
-                    <p className="text-sm font-medium">Receipts Included</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Digital receipts per month</p>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold">{merchantDetails.address}</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">{merchantDetails.city}, {merchantDetails.state} {merchantDetails.zip}</p>
                   </div>
-                  <span className="text-sm font-semibold">{currentTier.receiptsPerMonth}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium">Payout Rate</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Revenue share on processed receipts</p>
+                    <p className="text-sm font-medium">Merchant Size</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">Your business classification</p>
                   </div>
-                  <span className="text-sm font-semibold">{currentTier.payoutRate}</span>
+                  <Badge variant="outline" className="text-sm">{merchantDetails.size}</Badge>
                 </div>
               </div>
             </div>

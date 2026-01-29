@@ -493,21 +493,21 @@ export default function DashboardPage() {
                     />
                     <Area
                       type="monotone"
-                      dataKey="sent"
-                      stroke="#1f2937"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorSent)"
-                      name="sent"
-                    />
-                    <Area
-                      type="monotone"
                       dataKey="rendered"
                       stroke="#6b7280"
                       strokeWidth={2}
                       fillOpacity={1}
                       fill="url(#colorRendered)"
                       name="rendered"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="sent"
+                      stroke="#1f2937"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorSent)"
+                      name="sent"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -583,10 +583,10 @@ export default function DashboardPage() {
                     Customize Columns
                     <ChevronDown className="h-4 w-4" />
                   </button>
-                  <button className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
+                  <Link href="/dashboard/integrations" className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
                     <Plus className="h-4 w-4" />
                     Add Integration
-                  </button>
+                  </Link>
                 </div>
               </div>
 
