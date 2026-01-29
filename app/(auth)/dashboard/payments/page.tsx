@@ -290,7 +290,7 @@ export default function PaymentsPage() {
                 className="inline-flex items-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
               >
                 <ExternalLink className="h-4 w-4" />
-                Open Billing Portal
+                Open Payments Portal
               </Link>
             </div>
 
@@ -358,9 +358,9 @@ export default function PaymentsPage() {
 
             {/* Help Section */}
             <div className="rounded-xl border border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent p-6">
-              <h3 className="text-lg font-semibold">Need help with billing?</h3>
+              <h3 className="text-lg font-semibold">Need help with payments?</h3>
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                Our support team is available to help with any billing questions or concerns.
+                Our support team is available to help with any payment questions or concerns.
               </p>
               <Link
                 href="/contact"
