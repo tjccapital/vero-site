@@ -473,16 +473,36 @@ export default function DashboardPage() {
                       dx={-10}
                     />
                     <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          const sent = payload.find(p => p.dataKey === 'sent')
+                          const rendered = payload.find(p => p.dataKey === 'rendered')
+                          return (
+                            <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+                              <p className="text-sm font-medium text-gray-900 mb-2">{label}</p>
+                              {sent && (
+                                <div className="flex items-center justify-between gap-4 text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="h-2.5 w-2.5 rounded-sm bg-gray-700" />
+                                    <span className="text-gray-600">Receipts Sent</span>
+                                  </div>
+                                  <span className="font-medium">{sent.value}</span>
+                                </div>
+                              )}
+                              {rendered && (
+                                <div className="flex items-center justify-between gap-4 text-sm mt-1">
+                                  <div className="flex items-center gap-2">
+                                    <div className="h-2.5 w-2.5 rounded-sm bg-gray-400" />
+                                    <span className="text-gray-600">Receipts Rendered</span>
+                                  </div>
+                                  <span className="font-medium">{rendered.value}</span>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        }
+                        return null
                       }}
-                      formatter={(value, name) => [
-                        value,
-                        name === 'sent' ? 'Receipts Sent' : 'Receipts Rendered'
-                      ]}
                     />
                     <Area
                       type="monotone"
