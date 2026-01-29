@@ -28,6 +28,7 @@ import {
   Columns3,
   Check,
   Clock,
+  CreditCard,
 } from "lucide-react"
 import { VeroLogo } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -127,9 +128,9 @@ const posIntegrations = [
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, active: true },
   { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
+  { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Receipts", href: "/dashboard/receipts", icon: Receipt },
-  { name: "Transactions", href: "/dashboard/transactions", icon: FileText },
 ]
 
 const documentNavItems = [
