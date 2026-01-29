@@ -28,6 +28,7 @@ import {
   Columns3,
   Check,
   Clock,
+  ArrowRight,
 } from "lucide-react"
 import { VeroLogo } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -621,6 +622,99 @@ export default function DashboardPage() {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+
+            {/* POS Plugins Section */}
+            <div className="rounded-lg border border-[var(--border)] p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold">Available POS Plugins</h3>
+                <p className="text-sm text-[var(--muted-foreground)]">Connect your POS system to start sending digital receipts</p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {/* Square */}
+                <Link
+                  href="https://docs.seevero.com/pos-plugins/square"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-lg border border-[var(--border)] p-4 transition-all hover:border-[var(--primary)] hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-black">
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 text-white" fill="currentColor">
+                      <path d="M4.5 2A2.5 2.5 0 0 0 2 4.5v15A2.5 2.5 0 0 0 4.5 22h15a2.5 2.5 0 0 0 2.5-2.5v-15A2.5 2.5 0 0 0 19.5 2h-15zm10.03 5.97a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 0 1-1.06-1.06l6-6a.75.75 0 0 1 1.06 0z"/>
+                    </svg>
+                  </div>
+                  <h4 className="font-medium group-hover:text-[var(--primary)]">Square</h4>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    Full POS integration with real-time receipt sync
+                  </p>
+                  <div className="mt-3 flex items-center gap-1 text-xs text-[var(--primary)]">
+                    View docs
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+
+                {/* Toast */}
+                <Link
+                  href="https://docs.seevero.com/pos-plugins/toast"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-lg border border-[var(--border)] p-4 transition-all hover:border-[var(--primary)] hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500">
+                    <span className="text-lg font-bold text-white">T</span>
+                  </div>
+                  <h4 className="font-medium group-hover:text-[var(--primary)]">Toast</h4>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    Restaurant-focused POS with itemized receipts
+                  </p>
+                  <div className="mt-3 flex items-center gap-1 text-xs text-[var(--primary)]">
+                    View docs
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+
+                {/* Clover */}
+                <Link
+                  href="https://docs.seevero.com/pos-plugins/clover"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-lg border border-[var(--border)] p-4 transition-all hover:border-[var(--primary)] hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-green-600">
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 text-white" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  </div>
+                  <h4 className="font-medium group-hover:text-[var(--primary)]">Clover</h4>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    Versatile POS for retail and service businesses
+                  </p>
+                  <div className="mt-3 flex items-center gap-1 text-xs text-[var(--primary)]">
+                    View docs
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+
+                {/* SpotOn */}
+                <Link
+                  href="https://docs.seevero.com/pos-plugins/spoton"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-lg border border-[var(--border)] p-4 transition-all hover:border-[var(--primary)] hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600">
+                    <span className="text-lg font-bold text-white">S</span>
+                  </div>
+                  <h4 className="font-medium group-hover:text-[var(--primary)]">SpotOn</h4>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    All-in-one platform for restaurants and retail
+                  </p>
+                  <div className="mt-3 flex items-center gap-1 text-xs text-[var(--primary)]">
+                    View docs
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </main>
