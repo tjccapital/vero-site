@@ -265,7 +265,7 @@ export default function PaymentsPage() {
             <div>
               <h1 className="text-2xl font-bold">Payment Configuration</h1>
               <p className="mt-1 text-[var(--muted-foreground)]">
-                Manage your subscription, payment methods, and payout settings.
+                Manage your payout settings and access the payment portal.
               </p>
             </div>
 
