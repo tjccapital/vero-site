@@ -480,21 +480,21 @@ export default function DashboardPage() {
                     />
                     <Area
                       type="monotone"
-                      dataKey="rendered"
-                      stroke="#6b7280"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorRendered)"
-                      name="rendered"
-                    />
-                    <Area
-                      type="monotone"
                       dataKey="sent"
                       stroke="#1f2937"
                       strokeWidth={2}
                       fillOpacity={1}
                       fill="url(#colorSent)"
                       name="sent"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="rendered"
+                      stroke="#6b7280"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorRendered)"
+                      name="rendered"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
