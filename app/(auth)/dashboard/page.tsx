@@ -148,7 +148,7 @@ const documentNavItems = [
 
 const bottomNavItems = [
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Get Help", href: "/dashboard/help", icon: CircleHelp },
+  { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: "/dashboard/search", icon: Search },
 ]
 
