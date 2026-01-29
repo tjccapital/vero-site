@@ -29,6 +29,7 @@ import {
   Check,
   Clock,
   CreditCard,
+  Info,
 } from "lucide-react"
 import { VeroLogo } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -84,6 +85,7 @@ const posIntegrations = [
     type: "Square",
     status: "active",
     receipts: 1842,
+    receiptsRendered: 1105,
     transactions: 2156,
     lastSync: "2 min ago",
   },
@@ -93,6 +95,7 @@ const posIntegrations = [
     type: "Clover",
     status: "active",
     receipts: 956,
+    receiptsRendered: 574,
     transactions: 1203,
     lastSync: "5 min ago",
   },
@@ -102,6 +105,7 @@ const posIntegrations = [
     type: "Toast",
     status: "pending",
     receipts: 0,
+    receiptsRendered: 0,
     transactions: 0,
     lastSync: "Pending setup",
   },
@@ -111,6 +115,7 @@ const posIntegrations = [
     type: "Shopify",
     status: "active",
     receipts: 3421,
+    receiptsRendered: 2053,
     transactions: 4102,
     lastSync: "1 min ago",
   },
@@ -120,6 +125,7 @@ const posIntegrations = [
     type: "Square",
     status: "inactive",
     receipts: 234,
+    receiptsRendered: 140,
     transactions: 289,
     lastSync: "3 days ago",
   },
@@ -587,7 +593,18 @@ export default function DashboardPage() {
                     <TableHead>Name</TableHead>
                     <TableHead>POS Type</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Receipts</TableHead>
+                    <TableHead className="text-right">Receipts Sent</TableHead>
+                    <TableHead className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        Receipts Rendered
+                        <div className="group relative">
+                          <Info className="h-3.5 w-3.5 text-[var(--muted-foreground)] cursor-help" />
+                          <div className="absolute right-0 top-full mt-1 z-50 hidden group-hover:block w-64 rounded-md border border-[var(--border)] bg-white p-2 text-xs text-[var(--muted-foreground)] shadow-lg">
+                            Receipts rendered is when a consumer actually views the receipt in their card issuer application.
+                          </div>
+                        </div>
+                      </div>
+                    </TableHead>
                     <TableHead className="text-right">Transactions</TableHead>
                     <TableHead>Last Sync</TableHead>
                     <TableHead className="w-12"></TableHead>
@@ -626,6 +643,7 @@ export default function DashboardPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-right">{integration.receipts.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{integration.receiptsRendered.toLocaleString()}</TableCell>
                       <TableCell className="text-right">{integration.transactions.toLocaleString()}</TableCell>
                       <TableCell className="text-[var(--muted-foreground)]">{integration.lastSync}</TableCell>
                       <TableCell>
