@@ -28,6 +28,7 @@ import {
   Columns3,
   Check,
   Clock,
+  CreditCard,
 } from "lucide-react"
 import { VeroLogo } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -58,22 +59,21 @@ import {
 
 // Chart data for receipts over time
 const chartData = [
-  { date: "Jan 3", receipts: 186 },
-  { date: "Jan 9", receipts: 305 },
-  { date: "Jan 15", receipts: 237 },
-  { date: "Jan 21", receipts: 273 },
-  { date: "Jan 27", receipts: 209 },
-  { date: "Feb 3", receipts: 314 },
-  { date: "Feb 9", receipts: 278 },
-  { date: "Feb 15", receipts: 189 },
-  { date: "Feb 21", receipts: 339 },
-  { date: "Feb 28", receipts: 287 },
-  { date: "Mar 3", receipts: 321 },
-  { date: "Mar 9", receipts: 256 },
-  { date: "Mar 15", receipts: 412 },
-  { date: "Mar 21", receipts: 378 },
-  { date: "Mar 27", receipts: 289 },
-  { date: "Apr 3", receipts: 345 },
+  { date: "Apr 3", sent: 286, rendered: 142 },
+  { date: "Apr 9", sent: 305, rendered: 168 },
+  { date: "Apr 15", sent: 237, rendered: 124 },
+  { date: "Apr 21", sent: 373, rendered: 198 },
+  { date: "Apr 27", sent: 309, rendered: 156 },
+  { date: "May 3", sent: 414, rendered: 223 },
+  { date: "May 9", sent: 378, rendered: 201 },
+  { date: "May 15", sent: 289, rendered: 145 },
+  { date: "May 21", sent: 339, rendered: 178 },
+  { date: "May 28", sent: 287, rendered: 143 },
+  { date: "Jun 3", sent: 321, rendered: 167 },
+  { date: "Jun 9", sent: 356, rendered: 189 },
+  { date: "Jun 15", sent: 412, rendered: 234 },
+  { date: "Jun 21", sent: 478, rendered: 270 },
+  { date: "Jun 29", sent: 389, rendered: 217 },
 ]
 
 // POS Integration data
@@ -128,9 +128,9 @@ const posIntegrations = [
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, active: true },
   { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
+  { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Receipts", href: "/dashboard/receipts", icon: Receipt },
-  { name: "Transactions", href: "/dashboard/transactions", icon: FileText },
 ]
 
 const documentNavItems = [
@@ -414,7 +414,7 @@ export default function DashboardPage() {
             <div className="rounded-lg border border-[var(--border)] p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">Total Receipts</h3>
+                  <h3 className="text-lg font-semibold">Digital Receipts</h3>
                   <p className="text-sm text-[var(--muted-foreground)]">Total for the last 3 months</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -457,9 +457,13 @@ export default function DashboardPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="colorReceipts" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#e5e7eb" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#e5e7eb" stopOpacity={0}/>
+                      <linearGradient id="colorSent" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#374151" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#374151" stopOpacity={0.1}/>
+                      </linearGradient>
+                      <linearGradient id="colorRendered" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#9ca3af" stopOpacity={0.6}/>
+                        <stop offset="95%" stopColor="#9ca3af" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <XAxis
@@ -482,17 +486,42 @@ export default function DashboardPage() {
                         borderRadius: '8px',
                         boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                       }}
+                      formatter={(value, name) => [
+                        value,
+                        name === 'sent' ? 'Receipts Sent' : 'Receipts Rendered'
+                      ]}
                     />
                     <Area
                       type="monotone"
-                      dataKey="receipts"
+                      dataKey="sent"
                       stroke="#1f2937"
                       strokeWidth={2}
                       fillOpacity={1}
-                      fill="url(#colorReceipts)"
+                      fill="url(#colorSent)"
+                      name="sent"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="rendered"
+                      stroke="#6b7280"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorRendered)"
+                      name="rendered"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
+              </div>
+              {/* Legend */}
+              <div className="mt-4 flex items-center justify-center gap-6">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-sm bg-gray-700"></div>
+                  <span className="text-sm text-[var(--muted-foreground)]">Receipts Sent</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-sm bg-gray-400"></div>
+                  <span className="text-sm text-[var(--muted-foreground)]">Receipts Rendered</span>
+                </div>
               </div>
             </div>
 
