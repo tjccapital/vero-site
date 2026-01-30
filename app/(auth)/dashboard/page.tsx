@@ -32,6 +32,7 @@ import {
   Info,
   PanelLeftClose,
   PanelLeft,
+  Menu,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -42,6 +43,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -160,6 +162,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("all")
   const [chartRange, setChartRange] = useState("3months")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -351,39 +354,103 @@ export default function DashboardPage() {
 
         {/* Mobile Header */}
         <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3 lg:hidden">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)]">
-              <VeroLogo size={18} />
-            </div>
-            <span className="text-sm font-semibold">Vero</span>
+          <div className="flex items-center gap-3">
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <button className="flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]">
+                  <Menu className="h-5 w-5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[280px] p-0">
+                {/* Logo */}
+                <div className="flex h-14 items-center px-4 border-b border-[var(--border)]">
+                  <VeroLogoFull height={20} className="text-[var(--foreground)]" />
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex-1 space-y-1 px-3 py-2">
+                  {mainNavItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                        item.active
+                          ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
+                          : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                      )}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.name}
+                    </Link>
+                  ))}
+
+                  {/* Documents Section */}
+                  <div className="pt-4">
+                    <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
+                      Documents
+                    </p>
+                    {documentNavItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                </nav>
+
+                {/* Bottom Navigation */}
+                <div className="border-t border-[var(--border)] px-3 py-2">
+                  {bottomNavItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* User Profile */}
+                <div className="border-t border-[var(--border)] p-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-[var(--muted)] text-sm">
+                        {user.name.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="truncate text-sm font-medium">{user.name}</p>
+                      <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      logout()
+                      setMobileMenuOpen(false)
+                    }}
+                    className="mt-3 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Log out
+                  </button>
+                </div>
+              </SheetContent>
+            </Sheet>
+            <span className="text-sm font-medium">Merchant Dashboard</span>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-md p-2 hover:bg-[var(--muted)]">
-                <Avatar className="h-7 w-7">
-                  <AvatarFallback className="bg-[var(--muted)] text-xs">
-                    {user.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <ChevronDown className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {mainNavItems.map((item) => (
-                <DropdownMenuItem key={item.name} asChild>
-                  <Link href={item.href}>
-                    <item.icon className="mr-2 h-4 w-4" />
-                    {item.name}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout} className="text-red-600">
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+            Back to Site
+          </Link>
         </div>
 
         {/* Page Content */}
