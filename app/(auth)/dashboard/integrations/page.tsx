@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth"
@@ -26,6 +26,8 @@ import {
   ArrowRight,
   ExternalLink,
   CreditCard,
+  PanelLeftClose,
+  PanelLeft,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -131,6 +133,7 @@ const posPlugins = [
 export default function IntegrationsPage() {
   const { user, isLoading, logout } = useAuth()
   const router = useRouter()
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -156,10 +159,14 @@ export default function IntegrationsPage() {
   return (
     <div className="flex min-h-screen w-full bg-white">
       {/* Sidebar */}
-      <aside className="hidden w-[240px] flex-col border-r border-[var(--border)] lg:flex">
+      <aside className={cn(
+        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300",
+        sidebarCollapsed ? "w-[60px]" : "w-[240px]"
+      )}>
         {/* Logo */}
-        <div className="flex h-14 items-center px-4">
-          <VeroLogoFull height={20} className="text-[var(--foreground)]" />
+        <div className="flex h-14 items-center justify-center px-4">
+          {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
+          {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
         </div>
 
         {/* Main Navigation */}
@@ -168,31 +175,39 @@ export default function IntegrationsPage() {
             <Link
               key={item.name}
               href={item.href}
+              title={sidebarCollapsed ? item.name : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 item.active
                   ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
-                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                sidebarCollapsed && "justify-center px-2"
               )}
             >
-              <item.icon className="h-4 w-4" />
-              {item.name}
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!sidebarCollapsed && item.name}
             </Link>
           ))}
 
           {/* Documents Section */}
           <div className="pt-4">
-            <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
-              Documents
-            </p>
+            {!sidebarCollapsed && (
+              <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
+                Documents
+              </p>
+            )}
             {documentNavItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                title={sidebarCollapsed ? item.name : undefined}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                  sidebarCollapsed && "justify-center px-2"
+                )}
               >
-                <item.icon className="h-4 w-4" />
-                {item.name}
+                <item.icon className="h-4 w-4 flex-shrink-0" />
+                {!sidebarCollapsed && item.name}
               </Link>
             ))}
           </div>
@@ -204,30 +219,38 @@ export default function IntegrationsPage() {
             <Link
               key={item.name}
               href={item.href}
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+              title={sidebarCollapsed ? item.name : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                sidebarCollapsed && "justify-center px-2"
+              )}
             >
-              <item.icon className="h-4 w-4" />
-              {item.name}
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!sidebarCollapsed && item.name}
             </Link>
           ))}
         </div>
 
         {/* User Profile */}
         <div className="border-t border-[var(--border)] p-3">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-[var(--muted)] text-sm">
-                {user.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium">{user.name}</p>
-              <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
-            </div>
+          <div className={cn("flex items-center gap-3", sidebarCollapsed && "justify-center")}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-md p-1 hover:bg-[var(--muted)]">
-                  <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
+                <button className="flex items-center gap-3 rounded-md hover:bg-[var(--muted)] p-1">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-[var(--muted)] text-sm">
+                      {user.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {!sidebarCollapsed && (
+                    <>
+                      <div className="flex-1 overflow-hidden text-left">
+                        <p className="truncate text-sm font-medium">{user.name}</p>
+                        <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
+                      </div>
+                      <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    </>
+                  )}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -250,8 +273,14 @@ export default function IntegrationsPage() {
       <div className="flex flex-1 flex-col">
         {/* Header */}
         <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-6">
-          <div className="flex items-center gap-2">
-            <Cable className="h-4 w-4 text-[var(--muted-foreground)]" />
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hidden lg:flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </button>
             <span className="text-sm font-medium">Integrations</span>
           </div>
           <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
