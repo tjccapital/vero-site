@@ -45,25 +45,27 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 
+const DOCS_URL = "https://docs.seevero.com/pos-plugins/overview"
+
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
   { name: "Payments", href: "/dashboard/payments", icon: CreditCard, active: true },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Receipts", href: "/dashboard/receipts", icon: Receipt },
+  { name: "Analytics", href: DOCS_URL, icon: BarChart3, external: true },
+  { name: "Receipts", href: DOCS_URL, icon: Receipt, external: true },
 ]
 
 const documentNavItems = [
-  { name: "Data Library", href: "/dashboard/data", icon: Database },
-  { name: "Reports", href: "/dashboard/reports", icon: FileBarChart },
-  { name: "API Docs", href: "/dashboard/api-docs", icon: Code },
-  { name: "More", href: "/dashboard/more", icon: MoreHorizontal },
+  { name: "Data Library", href: DOCS_URL, icon: Database, external: true },
+  { name: "Reports", href: DOCS_URL, icon: FileBarChart, external: true },
+  { name: "API Docs", href: DOCS_URL, icon: Code, external: true },
+  { name: "More", href: DOCS_URL, icon: MoreHorizontal, external: true },
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Settings", href: DOCS_URL, icon: Settings, external: true },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
-  { name: "Search", href: "/dashboard/search", icon: Search },
+  { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
 
 // Demo merchant details
@@ -125,7 +127,7 @@ export default function PaymentsPage() {
         sidebarCollapsed ? "w-[60px]" : "w-[240px]"
       )}>
         {/* Logo */}
-        <div className="flex h-14 items-center justify-center px-4">
+        <div className="flex h-14 items-center px-4">
           {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
           {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
         </div>
@@ -137,6 +139,7 @@ export default function PaymentsPage() {
               key={item.name}
               href={item.href}
               title={sidebarCollapsed ? item.name : undefined}
+              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 item.active
@@ -162,6 +165,7 @@ export default function PaymentsPage() {
                 key={item.name}
                 href={item.href}
                 title={sidebarCollapsed ? item.name : undefined}
+                {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className={cn(
                   "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
                   sidebarCollapsed && "justify-center px-2"
@@ -181,6 +185,7 @@ export default function PaymentsPage() {
               key={item.name}
               href={item.href}
               title={sidebarCollapsed ? item.name : undefined}
+              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
                 sidebarCollapsed && "justify-center px-2"
@@ -193,42 +198,43 @@ export default function PaymentsPage() {
         </div>
 
         {/* User Profile */}
-        <div className="border-t border-[var(--border)] p-3">
-          <div className={cn("flex items-center gap-3", sidebarCollapsed && "justify-center")}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-3 rounded-md hover:bg-[var(--muted)] p-1">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-[var(--muted)] text-sm">
-                      {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  {!sidebarCollapsed && (
-                    <>
-                      <div className="flex-1 overflow-hidden text-left">
-                        <p className="truncate text-sm font-medium">{user.name || "User"}</p>
-                        <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
-                      </div>
-                      <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
-                    </>
-                  )}
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="text-red-600">
-                  <a href="/auth/logout">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </a>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <div className="border-t border-[var(--border)] p-3 min-w-0">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className={cn(
+                "flex items-center gap-3 rounded-md hover:bg-[var(--muted)] p-1 w-full min-w-0",
+                sidebarCollapsed && "justify-center"
+              )}>
+                <Avatar className="h-8 w-8 flex-shrink-0">
+                  <AvatarFallback className="bg-[var(--muted)] text-sm">
+                    {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                {!sidebarCollapsed && (
+                  <>
+                    <div className="flex-1 min-w-0 overflow-hidden text-left">
+                      <p className="truncate text-sm font-medium">{user.name || "User"}</p>
+                      <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
+                    </div>
+                    <MoreVertical className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </>
+                )}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="text-red-600">
+                <a href="/auth/logout">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </aside>
 
@@ -283,7 +289,8 @@ export default function PaymentsPage() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => !item.external && setMobileMenuOpen(false)}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className={cn(
                       "flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors",
                       item.active
@@ -306,7 +313,8 @@ export default function PaymentsPage() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => !item.external && setMobileMenuOpen(false)}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                   >
                     <item.icon className="h-5 w-5" />
@@ -321,7 +329,8 @@ export default function PaymentsPage() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => !item.external && setMobileMenuOpen(false)}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                   >
                     <item.icon className="h-5 w-5" />
