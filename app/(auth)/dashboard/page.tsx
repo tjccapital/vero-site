@@ -33,6 +33,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   Menu,
+  X,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -43,7 +44,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -163,6 +163,18 @@ export default function DashboardPage() {
   const [chartRange, setChartRange] = useState("3months")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileMenuOpen])
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -335,9 +347,18 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col">
-        {/* Header */}
-        <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-6">
+        {/* Header - Responsive */}
+        <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-4 lg:px-6">
           <div className="flex items-center gap-3">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+            {/* Desktop sidebar toggle */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="hidden lg:flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
@@ -352,110 +373,96 @@ export default function DashboardPage() {
           </Link>
         </header>
 
-        {/* Mobile Header */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3 lg:hidden">
-          <div className="flex items-center gap-3">
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <button className="flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]">
-                  <Menu className="h-5 w-5" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] p-0">
-                {/* Logo */}
-                <div className="flex h-14 items-center px-4 border-b border-[var(--border)]">
-                  <VeroLogoFull height={20} className="text-[var(--foreground)]" />
+        {/* Mobile Navigation - Full Screen Overlay */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 top-14 z-50 bg-white overflow-y-auto">
+            <div className="px-4 py-4">
+              {/* User Profile at top */}
+              <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
+                <Avatar className="h-10 w-10">
+                  <AvatarFallback className="bg-[var(--muted)] text-sm">
+                    {user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 overflow-hidden">
+                  <p className="truncate text-sm font-medium">{user.name}</p>
+                  <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                 </div>
+              </div>
 
-                {/* Main Navigation */}
-                <nav className="flex-1 space-y-1 px-3 py-2">
-                  {mainNavItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                        item.active
-                          ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
-                          : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
-                      )}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {item.name}
-                    </Link>
-                  ))}
-
-                  {/* Documents Section */}
-                  <div className="pt-4">
-                    <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
-                      Documents
-                    </p>
-                    {documentNavItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </nav>
-
-                {/* Bottom Navigation */}
-                <div className="border-t border-[var(--border)] px-3 py-2">
-                  {bottomNavItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-
-                {/* User Profile */}
-                <div className="border-t border-[var(--border)] p-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-[var(--muted)] text-sm">
-                        {user.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="truncate text-sm font-medium">{user.name}</p>
-                      <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      logout()
-                      setMobileMenuOpen(false)
-                    }}
-                    className="mt-3 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+              {/* Main Navigation */}
+              <nav className="py-4 space-y-1">
+                {mainNavItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors",
+                      item.active
+                        ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                    )}
                   >
-                    <LogOut className="h-4 w-4" />
-                    Log out
-                  </button>
-                </div>
-              </SheetContent>
-            </Sheet>
-            <span className="text-sm font-medium">Merchant Dashboard</span>
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Documents Section */}
+              <div className="py-4 border-t border-[var(--border)]">
+                <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
+                  Documents
+                </p>
+                {documentNavItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Bottom Navigation */}
+              <div className="py-4 border-t border-[var(--border)]">
+                {bottomNavItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Logout */}
+              <div className="pt-4 border-t border-[var(--border)]">
+                <button
+                  onClick={() => {
+                    logout()
+                    setMobileMenuOpen(false)
+                  }}
+                  className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <LogOut className="h-5 w-5" />
+                  Log out
+                </button>
+              </div>
+            </div>
           </div>
-          <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
-            Back to Site
-          </Link>
-        </div>
+        )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="mx-auto max-w-6xl space-y-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6">
             {/* Stats Cards */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {/* Total Receipts */}
@@ -528,49 +535,49 @@ export default function DashboardPage() {
             </div>
 
             {/* Chart Section */}
-            <div className="rounded-lg border border-[var(--border)] p-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
+              <div className="flex flex-col gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">Digital Receipts</h3>
                   <p className="text-sm text-[var(--muted-foreground)]">Total for the last 3 months</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1">
                   <button
                     onClick={() => setChartRange("3months")}
                     className={cn(
-                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
                       chartRange === "3months"
                         ? "bg-[var(--foreground)] text-white"
                         : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
                     )}
                   >
-                    Last 3 months
+                    3 months
                   </button>
                   <button
                     onClick={() => setChartRange("30days")}
                     className={cn(
-                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
                       chartRange === "30days"
                         ? "bg-[var(--foreground)] text-white"
                         : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
                     )}
                   >
-                    Last 30 days
+                    30 days
                   </button>
                   <button
                     onClick={() => setChartRange("7days")}
                     className={cn(
-                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
                       chartRange === "7days"
                         ? "bg-[var(--foreground)] text-white"
                         : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
                     )}
                   >
-                    Last 7 days
+                    7 days
                   </button>
                 </div>
               </div>
-              <div className="mt-6 h-[300px]">
+              <div className="mt-4 h-[250px] sm:h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
                     <defs>
@@ -664,24 +671,24 @@ export default function DashboardPage() {
 
             {/* POS Integrations Table */}
             <div className="rounded-lg border border-[var(--border)]">
-              {/* Tabs */}
-              <div className="flex items-center justify-between border-b border-[var(--border)] px-4">
-                <div className="flex">
+              {/* Tabs - scrollable on mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border)]">
+                <div className="flex overflow-x-auto px-2 sm:px-4">
                   <button
                     onClick={() => setActiveTab("all")}
                     className={cn(
-                      "border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      "border-b-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
                       activeTab === "all"
                         ? "border-[var(--foreground)] text-[var(--foreground)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                     )}
                   >
-                    All Integrations
+                    All
                   </button>
                   <button
                     onClick={() => setActiveTab("active")}
                     className={cn(
-                      "flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      "flex items-center gap-2 border-b-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
                       activeTab === "active"
                         ? "border-[var(--foreground)] text-[var(--foreground)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -693,7 +700,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => setActiveTab("pending")}
                     className={cn(
-                      "flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      "flex items-center gap-2 border-b-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
                       activeTab === "pending"
                         ? "border-[var(--foreground)] text-[var(--foreground)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -705,7 +712,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => setActiveTab("inactive")}
                     className={cn(
-                      "border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                      "border-b-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
                       activeTab === "inactive"
                         ? "border-[var(--foreground)] text-[var(--foreground)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -714,7 +721,7 @@ export default function DashboardPage() {
                     Inactive
                   </button>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2 px-4 py-2">
                   <button className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
                     <Columns3 className="h-4 w-4" />
                     Customize Columns
@@ -727,8 +734,9 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Table */}
-              <Table>
+              {/* Table - scrollable on mobile */}
+              <div className="overflow-x-auto">
+              <Table className="min-w-[600px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="w-12">
@@ -799,6 +807,7 @@ export default function DashboardPage() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </div>
 
           </div>
