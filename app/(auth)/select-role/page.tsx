@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardDescription,
@@ -27,17 +26,12 @@ export default function SelectRolePage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Card Issuer Card - Left */}
-          <Card className="relative mx-auto w-full overflow-hidden pt-0">
-            <div className="flex items-center justify-center p-8 pb-4">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--primary)]">
-                <CreditCard className="h-10 w-10 text-[var(--primary-foreground)]" />
+          <Card className="relative mx-auto w-full">
+            <CardHeader className="pt-6">
+              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--muted)]">
+                <CreditCard className="h-6 w-6 text-[var(--primary)]" />
               </div>
-            </div>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Badge variant="outline">Card Issuer</Badge>
-              </div>
-              <CardTitle className="text-xl">Card Issuer Portal</CardTitle>
+              <CardTitle className="text-lg">Card Issuer Portal</CardTitle>
               <CardDescription>
                 Integrate digital receipts into your banking app. Provide cardholders with instant, itemized receipt data.
               </CardDescription>
@@ -54,17 +48,12 @@ export default function SelectRolePage() {
           </Card>
 
           {/* Merchant Card - Right */}
-          <Card className="relative mx-auto w-full overflow-hidden pt-0">
-            <div className="flex items-center justify-center p-8 pb-4">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--primary)]">
-                <Store className="h-10 w-10 text-[var(--primary-foreground)]" />
+          <Card className="relative mx-auto w-full">
+            <CardHeader className="pt-6">
+              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--muted)]">
+                <Store className="h-6 w-6 text-[var(--primary)]" />
               </div>
-            </div>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary">Merchant</Badge>
-              </div>
-              <CardTitle className="text-xl">Merchant Dashboard</CardTitle>
+              <CardTitle className="text-lg">Merchant Dashboard</CardTitle>
               <CardDescription>
                 Connect your POS systems, track receipts, and manage payouts. Perfect for retailers, restaurants, and service businesses.
               </CardDescription>
