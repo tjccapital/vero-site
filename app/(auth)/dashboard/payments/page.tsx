@@ -355,114 +355,83 @@ export default function PaymentsPage() {
 
         {/* Page Content */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
-          <div className="mx-auto max-w-3xl space-y-6 sm:space-y-8 w-full">
+          <div className="mx-auto max-w-3xl space-y-6 w-full">
             {/* Page Header */}
             <div>
-              <h1 className="text-2xl font-bold">Payment Configuration</h1>
-              <p className="mt-1 text-[var(--muted-foreground)]">
-                Manage your payout settings and access the payment portal.
-              </p>
-            </div>
-
-            {/* Payout Information */}
-            <div className="flex items-start gap-3 rounded-lg border border-[var(--border)] bg-[var(--muted)]/30 p-4">
-              <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-[var(--muted-foreground)]" />
-              <div className="text-sm text-[var(--foreground)]">
-                <p className="font-medium mb-1">How payouts are calculated</p>
-                <p className="text-[var(--muted-foreground)]">
-                  Merchant payouts are assessed based on multiple factors including the number of digital receipts sent,
-                  quality of receipt metadata, number of consumer inquiries regarding receipts, and other engagement metrics.
-                </p>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href={stripeBillingPortalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Open Payments Portal
-              </Link>
-            </div>
-
-            {/* Business Details Card */}
-            <div className="rounded-xl border border-[var(--border)] p-6">
-              <h2 className="text-lg font-semibold">Business Details</h2>
-              <div className="mt-4 space-y-4">
-                <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                  <div>
-                    <p className="text-sm font-medium">Business Name</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Your registered business name</p>
-                  </div>
-                  <span className="text-sm font-semibold">{user.name || "User"}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                  <div>
-                    <p className="text-sm font-medium">Business Address</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Your primary business location</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold">{merchantDetails.address}</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">{merchantDetails.city}, {merchantDetails.state} {merchantDetails.zip}</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">Merchant Size</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Your business classification</p>
-                  </div>
-                  <Badge variant="outline" className="text-sm">{merchantDetails.size}</Badge>
-                </div>
-              </div>
-            </div>
-
-            {/* Merchant Info */}
-            <div className="rounded-xl border border-[var(--border)] p-6">
-              <h2 className="text-lg font-semibold">Merchant Information</h2>
-              <div className="mt-4 space-y-4">
-                <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                  <div>
-                    <p className="text-sm font-medium">Merchant ID</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Your unique merchant identifier</p>
-                  </div>
-                  <code className="rounded bg-[var(--muted)] px-2 py-1 text-xs font-mono">{user.sub?.replace('|', '_') || "N/A"}</code>
-                </div>
-                <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                  <div>
-                    <p className="text-sm font-medium">Account Status</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Your account verification status</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-600">Verified</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">Payout Account</p>
-                    <p className="text-sm text-[var(--muted-foreground)]">Connected bank account for payouts</p>
-                  </div>
-                  <span className="text-sm font-semibold">••••4242</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Help Section */}
-            <div className="rounded-xl border border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent p-6">
-              <h3 className="text-lg font-semibold">Need help with payments?</h3>
+              <h1 className="text-2xl font-bold">Payments</h1>
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                Our support team is available to help with any payment questions or concerns.
+                Manage payouts and billing settings.
               </p>
+            </div>
+
+            {/* Payout Summary Card */}
+            <div className="rounded-xl border border-[var(--border)] p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
+                  <p className="text-3xl font-bold mt-1">$75.00</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span className="text-sm text-green-600">Account verified</span>
+                  </div>
+                </div>
+                <Link
+                  href={stripeBillingPortalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open Portal
+                </Link>
+              </div>
+            </div>
+
+            {/* Account Details */}
+            <div className="rounded-xl border border-[var(--border)] p-5">
+              <h2 className="text-base font-semibold mb-4">Account Details</h2>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
+                  <span className="text-sm text-[var(--muted-foreground)]">Business Name</span>
+                  <span className="text-sm font-medium">{user.name || "User"}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
+                  <span className="text-sm text-[var(--muted-foreground)]">Merchant ID</span>
+                  <code className="rounded bg-[var(--muted)] px-2 py-0.5 text-xs font-mono">{user.sub?.replace('|', '_').slice(0, 16) || "N/A"}...</code>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
+                  <span className="text-sm text-[var(--muted-foreground)]">Payout Account</span>
+                  <span className="text-sm font-medium">••••4242</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm text-[var(--muted-foreground)]">Classification</span>
+                  <Badge variant="outline" className="text-xs">{merchantDetails.size}</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* How Payouts Work - Collapsible/Compact */}
+            <details className="rounded-xl border border-[var(--border)] p-5 group">
+              <summary className="flex items-center justify-between cursor-pointer list-none">
+                <div className="flex items-center gap-2">
+                  <Info className="h-4 w-4 text-[var(--muted-foreground)]" />
+                  <span className="text-sm font-medium">How payouts work</span>
+                </div>
+                <ChevronDown className="h-4 w-4 text-[var(--muted-foreground)] transition-transform group-open:rotate-180" />
+              </summary>
+              <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                Payouts are calculated based on digital receipts sent, receipt quality, consumer engagement, and other metrics.
+              </p>
+            </details>
+
+            {/* Help Link */}
+            <div className="flex items-center justify-between rounded-xl border border-[var(--border)] p-4">
+              <span className="text-sm text-[var(--muted-foreground)]">Need help with payments?</span>
               <Link
                 href="/contact"
-                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] hover:underline"
+                className="text-sm font-medium text-[var(--primary)] hover:underline"
               >
                 Contact Support
-                <ExternalLink className="h-3.5 w-3.5" />
               </Link>
             </div>
           </div>
