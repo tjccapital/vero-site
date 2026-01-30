@@ -30,6 +30,8 @@ import {
   Clock,
   CreditCard,
   Info,
+  PanelLeftClose,
+  PanelLeft,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -148,7 +150,7 @@ const documentNavItems = [
 
 const bottomNavItems = [
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Get Help", href: "/dashboard/help", icon: CircleHelp },
+  { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: "/dashboard/search", icon: Search },
 ]
 
@@ -157,6 +159,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("all")
   const [chartRange, setChartRange] = useState("3months")
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -186,10 +189,14 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen w-full bg-white">
       {/* Sidebar */}
-      <aside className="hidden w-[240px] flex-col border-r border-[var(--border)] lg:flex">
+      <aside className={cn(
+        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300",
+        sidebarCollapsed ? "w-[60px]" : "w-[240px]"
+      )}>
         {/* Logo */}
-        <div className="flex h-14 items-center px-4">
-          <VeroLogoFull height={20} className="text-[var(--foreground)]" />
+        <div className="flex h-14 items-center justify-between px-4">
+          {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
+          {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
         </div>
 
         {/* Main Navigation */}
@@ -198,34 +205,52 @@ export default function DashboardPage() {
             <Link
               key={item.name}
               href={item.href}
+              title={sidebarCollapsed ? item.name : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 item.active
                   ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
-                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                sidebarCollapsed && "justify-center px-2"
               )}
             >
-              <item.icon className="h-4 w-4" />
-              {item.name}
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!sidebarCollapsed && item.name}
             </Link>
           ))}
 
           {/* Documents Section */}
-          <div className="pt-4">
-            <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
-              Documents
-            </p>
-            {documentNavItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
-              >
-                <item.icon className="h-4 w-4" />
-                {item.name}
-              </Link>
-            ))}
-          </div>
+          {!sidebarCollapsed && (
+            <div className="pt-4">
+              <p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)]">
+                Documents
+              </p>
+              {documentNavItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          )}
+          {sidebarCollapsed && (
+            <div className="pt-4 space-y-1">
+              {documentNavItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  title={item.name}
+                  className="flex items-center justify-center rounded-md px-2 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                >
+                  <item.icon className="h-4 w-4" />
+                </Link>
+              ))}
+            </div>
+          )}
         </nav>
 
         {/* Bottom Navigation */}
@@ -234,30 +259,29 @@ export default function DashboardPage() {
             <Link
               key={item.name}
               href={item.href}
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+              title={sidebarCollapsed ? item.name : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                sidebarCollapsed && "justify-center px-2"
+              )}
             >
-              <item.icon className="h-4 w-4" />
-              {item.name}
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!sidebarCollapsed && item.name}
             </Link>
           ))}
         </div>
 
         {/* User Profile */}
         <div className="border-t border-[var(--border)] p-3">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-[var(--muted)] text-sm">
-                {user.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium">{user.name}</p>
-              <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
-            </div>
+          {sidebarCollapsed ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-md p-1 hover:bg-[var(--muted)]">
-                  <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
+                <button className="flex w-full items-center justify-center">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-[var(--muted)] text-sm">
+                      {user.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -272,7 +296,37 @@ export default function DashboardPage() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-[var(--muted)] text-sm">
+                  {user.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 overflow-hidden">
+                <p className="truncate text-sm font-medium">{user.name}</p>
+                <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-md p-1 hover:bg-[var(--muted)]">
+                    <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -280,7 +334,16 @@ export default function DashboardPage() {
       <div className="flex flex-1 flex-col">
         {/* Header */}
         <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-6">
-          <span className="text-sm font-medium">Merchant Dashboard</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hidden lg:flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </button>
+            <span className="text-sm font-medium">Merchant Dashboard</span>
+          </div>
           <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
             Back to Site
           </Link>

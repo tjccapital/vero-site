@@ -29,13 +29,15 @@ export default function SelectRolePage() {
         <div className="grid gap-6 md:grid-cols-2">
           {/* Card Issuer Card - Left */}
           <Card className="relative mx-auto w-full overflow-hidden pt-0">
-            <div className="relative aspect-[16/9] w-full overflow-hidden border border-gray-200 mb-4">
-              <Image
-                src="/issuer-dashboard.png"
-                alt="Card Issuer Dashboard Preview"
-                fill
-                className="object-cover object-top"
-              />
+            <div className="p-4 pb-0">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md border border-gray-200">
+                <Image
+                  src="/issuer-dashboard.png"
+                  alt="Card Issuer Dashboard Preview"
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
             </div>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -59,13 +61,15 @@ export default function SelectRolePage() {
 
           {/* Merchant Card - Right */}
           <Card className="relative mx-auto w-full overflow-hidden pt-0">
-            <div className="relative aspect-[16/9] w-full overflow-hidden border border-gray-200 mb-4">
-              <Image
-                src="/merchant-dashboard.png"
-                alt="Merchant Dashboard Preview"
-                fill
-                className="object-cover object-top"
-              />
+            <div className="p-4 pb-0">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md border border-gray-200">
+                <Image
+                  src="/merchant-dashboard.png"
+                  alt="Merchant Dashboard Preview"
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
             </div>
             <CardHeader>
               <div className="flex items-center justify-between">
