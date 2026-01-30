@@ -41,7 +41,7 @@ export default function SelectRolePage() {
                 href="/contact"
                 className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
               >
-                Contact Sales
+                Contact Us
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </CardFooter>
