@@ -475,6 +475,26 @@ export default function DashboardPage() {
           <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
             {/* Stats Cards */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* 30-Day Payout */}
+              <Link
+                href="/dashboard/payments"
+                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
+                  <span className="flex items-center gap-1 text-xs text-green-600">
+                    <TrendingUp className="h-3 w-3" />
+                    +12.3%
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-semibold">$75.00</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  <span className="text-green-600">Trailing 30 days</span>
+                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                </p>
+                <p className="text-xs text-[var(--muted-foreground)]">Click to view payment details</p>
+              </Link>
+
               {/* Total Receipts */}
               <div className="rounded-lg border border-[var(--border)] p-4">
                 <div className="flex items-center justify-between">
@@ -525,26 +545,6 @@ export default function DashboardPage() {
                 </p>
                 <p className="text-xs text-[var(--muted-foreground)]">Engagement exceed targets</p>
               </div>
-
-              {/* 30-Day Payout */}
-              <Link
-                href="/dashboard/payments"
-                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +12.3%
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-semibold">$75.00</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">Trailing 30 days</span>
-                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Click to view payment details</p>
-              </Link>
             </div>
 
             {/* Chart Section */}
