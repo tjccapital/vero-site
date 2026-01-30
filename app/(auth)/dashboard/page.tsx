@@ -135,25 +135,27 @@ const posIntegrations = [
   },
 ]
 
+const DOCS_URL = "https://docs.seevero.com/pos-plugins/overview"
+
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, active: true },
   { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
   { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Receipts", href: "/dashboard/receipts", icon: Receipt },
+  { name: "Analytics", href: DOCS_URL, icon: BarChart3, external: true },
+  { name: "Receipts", href: DOCS_URL, icon: Receipt, external: true },
 ]
 
 const documentNavItems = [
-  { name: "Data Library", href: "/dashboard/data", icon: Database },
-  { name: "Reports", href: "/dashboard/reports", icon: FileBarChart },
-  { name: "API Docs", href: "/dashboard/api-docs", icon: Code },
-  { name: "More", href: "/dashboard/more", icon: MoreHorizontal },
+  { name: "Data Library", href: DOCS_URL, icon: Database, external: true },
+  { name: "Reports", href: DOCS_URL, icon: FileBarChart, external: true },
+  { name: "API Docs", href: DOCS_URL, icon: Code, external: true },
+  { name: "More", href: DOCS_URL, icon: MoreHorizontal, external: true },
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Settings", href: DOCS_URL, icon: Settings, external: true },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
-  { name: "Search", href: "/dashboard/search", icon: Search },
+  { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
 
 export default function DashboardPage() {
@@ -209,7 +211,7 @@ export default function DashboardPage() {
         sidebarCollapsed ? "w-[60px]" : "w-[240px]"
       )}>
         {/* Logo */}
-        <div className="flex h-14 items-center justify-between px-4">
+        <div className="flex h-14 items-center px-4">
           {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
           {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
         </div>
@@ -221,6 +223,7 @@ export default function DashboardPage() {
               key={item.name}
               href={item.href}
               title={sidebarCollapsed ? item.name : undefined}
+              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 item.active
@@ -244,6 +247,7 @@ export default function DashboardPage() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                 >
                   <item.icon className="h-4 w-4" />
@@ -259,6 +263,7 @@ export default function DashboardPage() {
                   key={item.name}
                   href={item.href}
                   title={item.name}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="flex items-center justify-center rounded-md px-2 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                 >
                   <item.icon className="h-4 w-4" />
@@ -275,6 +280,7 @@ export default function DashboardPage() {
               key={item.name}
               href={item.href}
               title={sidebarCollapsed ? item.name : undefined}
+              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
                 sidebarCollapsed && "justify-center px-2"
@@ -400,7 +406,8 @@ export default function DashboardPage() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => !item.external && setMobileMenuOpen(false)}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className={cn(
                       "flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors",
                       item.active
@@ -423,7 +430,8 @@ export default function DashboardPage() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => !item.external && setMobileMenuOpen(false)}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                   >
                     <item.icon className="h-5 w-5" />
@@ -438,7 +446,8 @@ export default function DashboardPage() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => !item.external && setMobileMenuOpen(false)}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                   >
                     <item.icon className="h-5 w-5" />
