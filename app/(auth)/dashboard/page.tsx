@@ -202,7 +202,7 @@ export default function DashboardPage() {
     : posIntegrations.filter(i => i.status === activeTab)
 
   return (
-    <div className="flex min-h-screen w-full bg-white">
+    <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
       {/* Sidebar */}
       <aside className={cn(
         "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300",
@@ -346,7 +346,7 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col min-w-0">
         {/* Header - Responsive */}
         <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-4 lg:px-6">
           <div className="flex items-center gap-3">
@@ -461,8 +461,8 @@ export default function DashboardPage() {
         )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-          <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
+          <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
             {/* Stats Cards */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {/* Total Receipts */}
