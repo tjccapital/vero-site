@@ -205,21 +205,6 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router])
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <VeroLogo size={48} spinning className="text-[var(--primary)]" />
-          <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!user) {
-    return null
-  }
-
   const filteredIntegrations = activeTab === "all"
     ? posIntegrations
     : posIntegrations.filter(i => i.status === activeTab)
@@ -247,6 +232,21 @@ export default function DashboardPage() {
         return "last 3 months"
     }
   }, [chartRange])
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <VeroLogo size={48} spinning className="text-[var(--primary)]" />
+          <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
 
   return (
     <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
