@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
@@ -62,8 +62,8 @@ import {
   Tooltip,
 } from "recharts"
 
-// Chart data for receipts over time
-const chartData = [
+// Chart data for receipts over time - different ranges
+const chartData3Months = [
   { date: "Apr 3", sent: 286, rendered: 142 },
   { date: "Apr 9", sent: 305, rendered: 168 },
   { date: "Apr 15", sent: 237, rendered: 124 },
@@ -78,6 +78,27 @@ const chartData = [
   { date: "Jun 9", sent: 356, rendered: 189 },
   { date: "Jun 15", sent: 412, rendered: 234 },
   { date: "Jun 21", sent: 478, rendered: 270 },
+  { date: "Jun 29", sent: 389, rendered: 217 },
+]
+
+const chartData30Days = [
+  { date: "Jun 1", sent: 312, rendered: 156 },
+  { date: "Jun 5", sent: 345, rendered: 178 },
+  { date: "Jun 9", sent: 356, rendered: 189 },
+  { date: "Jun 13", sent: 398, rendered: 212 },
+  { date: "Jun 17", sent: 425, rendered: 245 },
+  { date: "Jun 21", sent: 478, rendered: 270 },
+  { date: "Jun 25", sent: 412, rendered: 234 },
+  { date: "Jun 29", sent: 389, rendered: 217 },
+]
+
+const chartData7Days = [
+  { date: "Jun 23", sent: 445, rendered: 256 },
+  { date: "Jun 24", sent: 412, rendered: 234 },
+  { date: "Jun 25", sent: 398, rendered: 221 },
+  { date: "Jun 26", sent: 456, rendered: 267 },
+  { date: "Jun 27", sent: 423, rendered: 245 },
+  { date: "Jun 28", sent: 401, rendered: 228 },
   { date: "Jun 29", sent: 389, rendered: 217 },
 ]
 
@@ -202,6 +223,30 @@ export default function DashboardPage() {
   const filteredIntegrations = activeTab === "all"
     ? posIntegrations
     : posIntegrations.filter(i => i.status === activeTab)
+
+  const chartData = useMemo(() => {
+    switch (chartRange) {
+      case "7days":
+        return chartData7Days
+      case "30days":
+        return chartData30Days
+      case "3months":
+      default:
+        return chartData3Months
+    }
+  }, [chartRange])
+
+  const chartPeriodLabel = useMemo(() => {
+    switch (chartRange) {
+      case "7days":
+        return "last 7 days"
+      case "30days":
+        return "last 30 days"
+      case "3months":
+      default:
+        return "last 3 months"
+    }
+  }, [chartRange])
 
   return (
     <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
@@ -548,11 +593,24 @@ export default function DashboardPage() {
             </div>
 
             {/* Chart Section */}
-            <div className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
+            <div className="relative rounded-lg border border-[var(--border)] p-4 sm:p-6">
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/90 backdrop-blur-[1px] border border-[var(--border)] rounded-lg px-4 py-3 shadow-sm pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/dashboard/integrations" className="text-[var(--primary)] hover:underline">
+                      Configure your POS
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> in Integrations to see real data</span>
+                  </p>
+                </div>
+              </div>
               <div className="flex flex-col gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">Digital Receipts</h3>
-                  <p className="text-sm text-[var(--muted-foreground)]">Total for the last 3 months</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">Total for the {chartPeriodLabel}</p>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1">
                   <button
@@ -683,7 +741,20 @@ export default function DashboardPage() {
             </div>
 
             {/* POS Integrations Table */}
-            <div className="rounded-lg border border-[var(--border)]">
+            <div className="relative rounded-lg border border-[var(--border)]">
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/90 backdrop-blur-[1px] border border-[var(--border)] rounded-lg px-4 py-3 shadow-sm pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/dashboard/integrations" className="text-[var(--primary)] hover:underline">
+                      Configure your POS
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> in Integrations to see real data</span>
+                  </p>
+                </div>
+              </div>
               {/* Tabs - scrollable on mobile */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border)]">
                 <div className="flex overflow-x-auto px-2 sm:px-4">
