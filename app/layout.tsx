@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import "./globals.css";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
@@ -90,8 +91,10 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="antialiased">
-        {children}
-        <ScrollToTop />
+        <Auth0Provider>
+          {children}
+          <ScrollToTop />
+        </Auth0Provider>
       </body>
     </html>
   );

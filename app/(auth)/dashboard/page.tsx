@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useAuth } from "@/lib/auth"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { cn } from "@/lib/utils"
 import {
   Receipt,
@@ -157,7 +157,7 @@ const bottomNavItems = [
 ]
 
 export default function DashboardPage() {
-  const { user, isLoading, logout } = useAuth()
+  const { user, isLoading } = useUser()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("all")
   const [chartRange, setChartRange] = useState("3months")
@@ -294,7 +294,7 @@ export default function DashboardPage() {
                 <button className="flex w-full items-center justify-center">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[var(--muted)] text-sm">
-                      {user.name.charAt(0)}
+                      {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </button>
@@ -305,9 +305,11 @@ export default function DashboardPage() {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
+                <DropdownMenuItem asChild className="text-red-600">
+                  <a href="/auth/logout">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -315,11 +317,11 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-[var(--muted)] text-sm">
-                  {user.name.charAt(0)}
+                  {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 overflow-hidden">
-                <p className="truncate text-sm font-medium">{user.name}</p>
+                <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                 <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
               </div>
               <DropdownMenu>
@@ -334,9 +336,11 @@ export default function DashboardPage() {
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
+                  <DropdownMenuItem asChild className="text-red-600">
+                    <a href="/auth/logout">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </a>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -381,11 +385,11 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
                 <Avatar className="h-10 w-10">
                   <AvatarFallback className="bg-[var(--muted)] text-sm">
-                    {user.name.charAt(0)}
+                    {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 overflow-hidden">
-                  <p className="truncate text-sm font-medium">{user.name}</p>
+                  <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                   <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                 </div>
               </div>
@@ -445,16 +449,13 @@ export default function DashboardPage() {
 
               {/* Logout */}
               <div className="pt-4 border-t border-[var(--border)]">
-                <button
-                  onClick={() => {
-                    logout()
-                    setMobileMenuOpen(false)
-                  }}
+                <a
+                  href="/auth/logout"
                   className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-5 w-5" />
                   Log out
-                </button>
+                </a>
               </div>
             </div>
           </div>
