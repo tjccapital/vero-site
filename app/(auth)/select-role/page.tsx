@@ -70,13 +70,13 @@ export default function SelectRolePage() {
               </CardDescription>
             </CardHeader>
             <CardFooter>
-              <Link
-                href="/login"
+              <a
+                href="/auth/login?returnTo=/dashboard"
                 className="flex w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-4 py-2.5 text-sm font-medium text-[var(--primary-foreground)] hover:opacity-90 transition-opacity"
               >
                 Continue as Merchant
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </a>
             </CardFooter>
           </Card>
         </div>

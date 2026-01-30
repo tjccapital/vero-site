@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useAuth } from "@/lib/auth"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { cn } from "@/lib/utils"
 import {
   Receipt,
@@ -76,7 +76,7 @@ const merchantDetails = {
 }
 
 export default function PaymentsPage() {
-  const { user, isLoading, logout } = useAuth()
+  const { user, isLoading } = useUser()
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -95,7 +95,7 @@ export default function PaymentsPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/auth/login?returnTo=/dashboard/payments")
     }
   }, [user, isLoading, router])
 
@@ -114,8 +114,8 @@ export default function PaymentsPage() {
     return null
   }
 
-  // Generate Stripe billing portal URL with merchant ID
-  const stripeBillingPortalUrl = `https://billing.stripe.com/p/login/test_${user.merchantId}`
+  // Generate Stripe billing portal URL with user sub (Auth0 user ID)
+  const stripeBillingPortalUrl = `https://billing.stripe.com/p/login/test_${user.sub?.replace('|', '_')}`
 
   return (
     <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
@@ -200,13 +200,13 @@ export default function PaymentsPage() {
                 <button className="flex items-center gap-3 rounded-md hover:bg-[var(--muted)] p-1">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[var(--muted)] text-sm">
-                      {user.name.charAt(0)}
+                      {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                   {!sidebarCollapsed && (
                     <>
                       <div className="flex-1 overflow-hidden text-left">
-                        <p className="truncate text-sm font-medium">{user.name}</p>
+                        <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                         <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                       </div>
                       <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
@@ -220,9 +220,11 @@ export default function PaymentsPage() {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
+                <DropdownMenuItem asChild className="text-red-600">
+                  <a href="/auth/logout">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -266,11 +268,11 @@ export default function PaymentsPage() {
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
                 <Avatar className="h-10 w-10">
                   <AvatarFallback className="bg-[var(--muted)] text-sm">
-                    {user.name.charAt(0)}
+                    {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 overflow-hidden">
-                  <p className="truncate text-sm font-medium">{user.name}</p>
+                  <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                   <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                 </div>
               </div>
@@ -330,16 +332,13 @@ export default function PaymentsPage() {
 
               {/* Logout */}
               <div className="pt-4 border-t border-[var(--border)]">
-                <button
-                  onClick={() => {
-                    logout()
-                    setMobileMenuOpen(false)
-                  }}
+                <a
+                  href="/auth/logout"
                   className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-5 w-5" />
                   Log out
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -390,7 +389,7 @@ export default function PaymentsPage() {
                     <p className="text-sm font-medium">Business Name</p>
                     <p className="text-sm text-[var(--muted-foreground)]">Your registered business name</p>
                   </div>
-                  <span className="text-sm font-semibold">{user.name}</span>
+                  <span className="text-sm font-semibold">{user.name || "User"}</span>
                 </div>
                 <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
                   <div>
@@ -421,7 +420,7 @@ export default function PaymentsPage() {
                     <p className="text-sm font-medium">Merchant ID</p>
                     <p className="text-sm text-[var(--muted-foreground)]">Your unique merchant identifier</p>
                   </div>
-                  <code className="rounded bg-[var(--muted)] px-2 py-1 text-xs font-mono">{user.merchantId}</code>
+                  <code className="rounded bg-[var(--muted)] px-2 py-1 text-xs font-mono">{user.sub?.replace('|', '_') || "N/A"}</code>
                 </div>
                 <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
                   <div>
