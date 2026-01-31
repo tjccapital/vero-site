@@ -41,6 +41,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuCheckboxItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -201,6 +202,13 @@ export default function DashboardPage() {
   const [chartRange, setChartRange] = useState("3months")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [visibleColumns, setVisibleColumns] = useState({
+    name: true,
+    device: true,
+    status: true,
+    receiptsSent: true,
+    receiptsRendered: true,
+  })
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -369,11 +377,6 @@ export default function DashboardPage() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="text-red-600">
                   <a href="/auth/logout">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -401,11 +404,6 @@ export default function DashboardPage() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild className="text-red-600">
                     <a href="/auth/logout">
                       <LogOut className="mr-2 h-4 w-4" />
@@ -844,11 +842,48 @@ export default function DashboardPage() {
                   </button>
                 </div>
                 <div className="hidden sm:flex items-center gap-2 px-4 py-2">
-                  <button className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
-                    <Columns3 className="h-4 w-4" />
-                    Customize Columns
-                    <ChevronDown className="h-4 w-4" />
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="flex items-center justify-center rounded-md border border-[var(--border)] p-1.5 hover:bg-[var(--muted)]"
+                        title="Customize Columns"
+                      >
+                        <Columns3 className="h-4 w-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuCheckboxItem
+                        checked={visibleColumns.name}
+                        onCheckedChange={(checked) => setVisibleColumns(prev => ({ ...prev, name: checked }))}
+                      >
+                        Name
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={visibleColumns.device}
+                        onCheckedChange={(checked) => setVisibleColumns(prev => ({ ...prev, device: checked }))}
+                      >
+                        Device
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={visibleColumns.status}
+                        onCheckedChange={(checked) => setVisibleColumns(prev => ({ ...prev, status: checked }))}
+                      >
+                        Status
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={visibleColumns.receiptsSent}
+                        onCheckedChange={(checked) => setVisibleColumns(prev => ({ ...prev, receiptsSent: checked }))}
+                      >
+                        Receipts Sent
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={visibleColumns.receiptsRendered}
+                        onCheckedChange={(checked) => setVisibleColumns(prev => ({ ...prev, receiptsRendered: checked }))}
+                      >
+                        Receipts Rendered
+                      </DropdownMenuCheckboxItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <Link href="/dashboard/integrations" className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
                     <Plus className="h-4 w-4" />
                     Add Integration
@@ -864,21 +899,23 @@ export default function DashboardPage() {
                     <TableHead className="w-12">
                       <input type="checkbox" className="rounded border-[var(--border)]" />
                     </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Device</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Receipts Sent</TableHead>
-                    <TableHead className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        Receipts Rendered
-                        <div className="group relative">
-                          <Info className="h-3.5 w-3.5 text-[var(--muted-foreground)] cursor-help" />
-                          <div className="absolute right-0 top-full mt-1 z-50 hidden group-hover:block w-64 rounded-md border border-[var(--border)] bg-white p-2 text-xs text-[var(--muted-foreground)] shadow-lg">
-                            Receipts rendered is when a consumer actually views the receipt in their card issuer application.
+                    {visibleColumns.name && <TableHead>Name</TableHead>}
+                    {visibleColumns.device && <TableHead>Device</TableHead>}
+                    {visibleColumns.status && <TableHead>Status</TableHead>}
+                    {visibleColumns.receiptsSent && <TableHead className="text-right">Receipts Sent</TableHead>}
+                    {visibleColumns.receiptsRendered && (
+                      <TableHead className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          Receipts Rendered
+                          <div className="group relative">
+                            <Info className="h-3.5 w-3.5 text-[var(--muted-foreground)] cursor-help" />
+                            <div className="absolute right-0 top-full mt-1 z-50 hidden group-hover:block w-64 rounded-md border border-[var(--border)] bg-white p-2 text-xs text-[var(--muted-foreground)] shadow-lg text-left">
+                              Receipts rendered is when a consumer actually views the receipt in their card issuer application.
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </TableHead>
+                      </TableHead>
+                    )}
                     <TableHead className="text-right">Transactions</TableHead>
                     <TableHead>Last Sync</TableHead>
                     <TableHead className="w-12"></TableHead>
@@ -890,30 +927,32 @@ export default function DashboardPage() {
                       <TableCell>
                         <input type="checkbox" className="rounded border-[var(--border)]" />
                       </TableCell>
-                      <TableCell className="font-medium">{integration.name}</TableCell>
-                      <TableCell className="text-[var(--muted-foreground)]">{integration.device}</TableCell>
-                      <TableCell>
-                        {integration.status === "active" && (
-                          <div className="flex items-center gap-1.5">
-                            <Check className="h-3.5 w-3.5 text-green-600" />
-                            <span className="text-sm text-green-600">Active</span>
-                          </div>
-                        )}
-                        {integration.status === "pending" && (
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5 text-yellow-600" />
-                            <span className="text-sm text-yellow-600">Pending</span>
-                          </div>
-                        )}
-                        {integration.status === "inactive" && (
-                          <div className="flex items-center gap-1.5">
-                            <span className="h-2 w-2 rounded-full bg-gray-400" />
-                            <span className="text-sm text-gray-500">Inactive</span>
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">{integration.receipts.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">{integration.receiptsRendered.toLocaleString()}</TableCell>
+                      {visibleColumns.name && <TableCell className="font-medium">{integration.name}</TableCell>}
+                      {visibleColumns.device && <TableCell className="text-[var(--muted-foreground)]">{integration.device}</TableCell>}
+                      {visibleColumns.status && (
+                        <TableCell>
+                          {integration.status === "active" && (
+                            <div className="flex items-center gap-1.5">
+                              <Check className="h-3.5 w-3.5 text-green-600" />
+                              <span className="text-sm text-green-600">Active</span>
+                            </div>
+                          )}
+                          {integration.status === "pending" && (
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5 text-yellow-600" />
+                              <span className="text-sm text-yellow-600">Pending</span>
+                            </div>
+                          )}
+                          {integration.status === "inactive" && (
+                            <div className="flex items-center gap-1.5">
+                              <span className="h-2 w-2 rounded-full bg-gray-400" />
+                              <span className="text-sm text-gray-500">Inactive</span>
+                            </div>
+                          )}
+                        </TableCell>
+                      )}
+                      {visibleColumns.receiptsSent && <TableCell className="text-right">{integration.receipts.toLocaleString()}</TableCell>}
+                      {visibleColumns.receiptsRendered && <TableCell className="text-right">{integration.receiptsRendered.toLocaleString()}</TableCell>}
                       <TableCell className="text-right">{integration.transactions.toLocaleString()}</TableCell>
                       <TableCell className="text-[var(--muted-foreground)]">{integration.lastSync}</TableCell>
                       <TableCell>
