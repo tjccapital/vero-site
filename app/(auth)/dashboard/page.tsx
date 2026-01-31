@@ -36,7 +36,7 @@ import {
   X,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -257,8 +257,10 @@ export default function DashboardPage() {
       )}>
         {/* Logo */}
         <div className="flex h-14 items-center px-4">
-          {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
-          {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
+          <Link href="/dashboard">
+            {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
+            {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
+          </Link>
         </div>
 
         {/* Main Navigation */}
@@ -342,8 +344,9 @@ export default function DashboardPage() {
           {sidebarCollapsed ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex w-full items-center justify-center">
+                <button className="flex w-full items-center justify-center" title={user.email || user.name || "User"}>
                   <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
                     <AvatarFallback className="bg-[var(--muted)] text-sm">
                       {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
@@ -367,11 +370,12 @@ export default function DashboardPage() {
           ) : (
             <div className="flex items-center gap-3">
               <Avatar className="h-8 w-8">
+                <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
                 <AvatarFallback className="bg-[var(--muted)] text-sm">
                   {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 overflow-hidden" title={user.email || undefined}>
                 <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                 <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
               </div>
@@ -435,11 +439,12 @@ export default function DashboardPage() {
               {/* User Profile at top */}
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
                 <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
                   <AvatarFallback className="bg-[var(--muted)] text-sm">
                     {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 overflow-hidden">
+                <div className="flex-1 overflow-hidden" title={user.email || undefined}>
                   <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                   <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                 </div>
@@ -596,7 +601,7 @@ export default function DashboardPage() {
             <div className="relative rounded-lg border border-[var(--border)] p-4 sm:p-6">
               {/* Sample Data Banner */}
               <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/90 backdrop-blur-[1px] border border-[var(--border)] rounded-lg px-4 py-3 shadow-sm pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_30px_rgba(0,0,0,0.05)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>
@@ -744,7 +749,7 @@ export default function DashboardPage() {
             <div className="relative rounded-lg border border-[var(--border)]">
               {/* Sample Data Banner */}
               <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/90 backdrop-blur-[1px] border border-[var(--border)] rounded-lg px-4 py-3 shadow-sm pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_30px_rgba(0,0,0,0.05)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>

@@ -1548,3 +1548,15 @@ html {
     padding-bottom: 24px;
   }
 }
+
+/* Sample Data Badge Halo Animation */
+@keyframes halo-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1), 0 0 30px rgba(0, 0, 0, 0.05);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15), 0 0 50px rgba(0, 0, 0, 0.08);
+    opacity: 0.9;
+  }
+}
