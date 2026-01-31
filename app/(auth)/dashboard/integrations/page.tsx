@@ -182,8 +182,10 @@ export default function IntegrationsPage() {
       )}>
         {/* Logo */}
         <div className="flex h-14 items-center px-4">
-          {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
-          {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
+          <Link href="/dashboard">
+            {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
+            {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
+          </Link>
         </div>
 
         {/* Main Navigation */}
