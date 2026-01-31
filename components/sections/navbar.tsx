@@ -41,7 +41,7 @@ const resourceItems = [
     icon: BookOpen,
     title: "Docs",
     description: "API reference and integration guides.",
-    href: "https://vero-80b6ce5c.mintlify.app/api-reference/introduction",
+    href: "https://docs.seevero.com/api-reference/introduction",
     external: true,
   },
   {
