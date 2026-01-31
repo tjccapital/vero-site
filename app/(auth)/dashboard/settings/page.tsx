@@ -223,11 +223,6 @@ export default function SettingsPage() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="text-red-600">
                   <a href="/auth/logout">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -255,11 +250,6 @@ export default function SettingsPage() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild className="text-red-600">
                     <a href="/auth/logout">
                       <LogOut className="mr-2 h-4 w-4" />

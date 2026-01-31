@@ -32,7 +32,7 @@ import {
   X,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -278,11 +278,6 @@ export default function IntegrationsPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem asChild className="text-red-600">
                 <a href="/auth/logout">
                   <LogOut className="mr-2 h-4 w-4" />
@@ -329,11 +324,12 @@ export default function IntegrationsPage() {
               {/* User Profile at top */}
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
                 <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
                   <AvatarFallback className="bg-[var(--muted)] text-sm">
                     {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 overflow-hidden">
+                <div className="flex-1 overflow-hidden" title={user.email || undefined}>
                   <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                   <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                 </div>
