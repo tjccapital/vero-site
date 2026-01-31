@@ -113,6 +113,9 @@ const posIntegrations = [
     receiptsRendered: 1708,
     transactions: 3412,
     lastSync: "2 min ago",
+    device: "Square Terminal",
+    serialNumber: "SQ-TRM-48291",
+    location: "123 Main St, San Francisco, CA",
   },
   {
     id: "int_002",
@@ -123,6 +126,9 @@ const posIntegrations = [
     receiptsRendered: 1154,
     transactions: 2308,
     lastSync: "3 min ago",
+    device: "Square Register",
+    serialNumber: "SQ-REG-73845",
+    location: "456 College Ave, Berkeley, CA",
   },
   {
     id: "int_003",
@@ -133,6 +139,9 @@ const posIntegrations = [
     receiptsRendered: 874,
     transactions: 1747,
     lastSync: "1 min ago",
+    device: "Square Terminal",
+    serialNumber: "SQ-TRM-29156",
+    location: "789 Embarcadero, San Francisco, CA",
   },
   {
     id: "int_004",
@@ -143,6 +152,9 @@ const posIntegrations = [
     receiptsRendered: 0,
     transactions: 0,
     lastSync: "Pending setup",
+    device: "Square Register",
+    serialNumber: "SQ-REG-91024",
+    location: "SFO Terminal B, Gate 42",
   },
   {
     id: "int_005",
@@ -153,6 +165,9 @@ const posIntegrations = [
     receiptsRendered: 535,
     transactions: 1070,
     lastSync: "5 min ago",
+    device: "Square Stand",
+    serialNumber: "SQ-STD-56738",
+    location: "321 Oak Blvd, Palo Alto, CA",
   },
 ]
 
@@ -524,76 +539,94 @@ export default function DashboardPage() {
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
           <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
             {/* Stats Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {/* 30-Day Payout */}
-              <Link
-                href="/dashboard/payments"
-                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +12.3%
-                  </span>
+            <div className="relative">
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_30px_rgba(0,0,0,0.05)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/dashboard/integrations" className="text-[var(--primary)] hover:underline">
+                      Configure your POS
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> in Integrations to see real data</span>
+                  </p>
                 </div>
-                <p className="mt-2 text-2xl font-semibold">$75.00</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">Trailing 30 days</span>
-                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Click to view payment details</p>
-              </Link>
-
-              {/* Total Receipts */}
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Total Receipts</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +12.5%
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-semibold">7,118</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">Trending up this month</span>
-                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Receipts for the last 6 months</p>
               </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {/* 30-Day Payout */}
+                <Link
+                  href="/dashboard/payments"
+                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
+                    <span className="flex items-center gap-1 text-xs text-green-600">
+                      <TrendingUp className="h-3 w-3" />
+                      +12.3%
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">$75.00</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    <span className="text-green-600">Trailing 30 days</span>
+                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)]">Click to view payment details</p>
+                </Link>
 
-              {/* Transactions */}
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Transactions</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +8.3%
-                  </span>
+                {/* Total Receipts */}
+                <div className="rounded-lg border border-[var(--border)] p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-[var(--muted-foreground)]">Total Receipts</p>
+                    <span className="flex items-center gap-1 text-xs text-green-600">
+                      <TrendingUp className="h-3 w-3" />
+                      +12.5%
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">7,118</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    <span className="text-green-600">Trending up this month</span>
+                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)]">Receipts for the last 6 months</p>
                 </div>
-                <p className="mt-2 text-2xl font-semibold">8,537</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">Growing steadily</span>
-                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Across all coffee shop locations</p>
-              </div>
 
-              {/* Active Integrations */}
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Active Integrations</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +12.5%
-                  </span>
+                {/* Transactions */}
+                <div className="rounded-lg border border-[var(--border)] p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-[var(--muted-foreground)]">Transactions</p>
+                    <span className="flex items-center gap-1 text-xs text-green-600">
+                      <TrendingUp className="h-3 w-3" />
+                      +8.3%
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">8,537</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    <span className="text-green-600">Growing steadily</span>
+                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)]">Across all coffee shop locations</p>
                 </div>
-                <p className="mt-2 text-2xl font-semibold">4</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">Strong POS coverage</span>
-                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Engagement exceed targets</p>
+
+                {/* Active Integrations */}
+                <Link
+                  href="/dashboard/integrations"
+                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-[var(--muted-foreground)]">Active Integrations</p>
+                    <span className="flex items-center gap-1 text-xs text-green-600">
+                      <TrendingUp className="h-3 w-3" />
+                      +12.5%
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">4</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    <span className="text-green-600">Strong POS coverage</span>
+                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)]">Click to manage integrations</p>
+                </Link>
               </div>
             </div>
 
@@ -825,14 +858,14 @@ export default function DashboardPage() {
 
               {/* Table - scrollable on mobile */}
               <div className="overflow-x-auto">
-              <Table className="min-w-[600px]">
+              <Table className="min-w-[800px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="w-12">
                       <input type="checkbox" className="rounded border-[var(--border)]" />
                     </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>POS Type</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Device</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Receipts Sent</TableHead>
                     <TableHead className="text-right">
@@ -857,11 +890,22 @@ export default function DashboardPage() {
                       <TableCell>
                         <input type="checkbox" className="rounded border-[var(--border)]" />
                       </TableCell>
-                      <TableCell className="font-medium">{integration.name}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="font-normal">
-                          {integration.type}
-                        </Badge>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{integration.name}</span>
+                          <span className="text-xs text-[var(--muted-foreground)]">{integration.location}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="font-normal">
+                              {integration.type}
+                            </Badge>
+                            <span className="text-sm">{integration.device}</span>
+                          </div>
+                          <span className="text-xs text-[var(--muted-foreground)] font-mono">{integration.serialNumber}</span>
+                        </div>
                       </TableCell>
                       <TableCell>
                         {integration.status === "active" && (
