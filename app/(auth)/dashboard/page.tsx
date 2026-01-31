@@ -542,7 +542,7 @@ export default function DashboardPage() {
             <div className="relative">
               {/* Sample Data Banner */}
               <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_30px_rgba(0,0,0,0.05)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>
@@ -634,7 +634,7 @@ export default function DashboardPage() {
             <div className="relative rounded-lg border border-[var(--border)] p-4 sm:p-6">
               {/* Sample Data Banner */}
               <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_30px_rgba(0,0,0,0.05)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>
@@ -782,7 +782,7 @@ export default function DashboardPage() {
             <div className="relative rounded-lg border border-[var(--border)]">
               {/* Sample Data Banner */}
               <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_30px_rgba(0,0,0,0.05)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>

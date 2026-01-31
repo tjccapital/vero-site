@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useUser } from "@auth0/nextjs-auth0";
 import { Logo } from "@/components/ui/logo";
-import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, Mail } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, Mail, LayoutDashboard, LogOut } from "lucide-react";
 
 const solutionItems = [
   {
@@ -51,6 +53,7 @@ const resourceItems = [
 ];
 
 export function Navbar() {
+  const { user, isLoading } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
@@ -239,12 +242,21 @@ export function Navbar() {
             <a href="/contact" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Contact
             </a>
-            <a
-              href="/select-role"
-              className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
-            >
-              Get started
-            </a>
+            {!isLoading && user ? (
+              <a
+                href="/dashboard"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
+              >
+                Dashboard
+              </a>
+            ) : (
+              <a
+                href="/select-role"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
+              >
+                Get started
+              </a>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -261,99 +273,139 @@ export function Navbar() {
       {/* Mobile Navigation - Full Screen Overlay */}
       {isOpen && (
         <div className="md:hidden absolute left-0 right-0 top-16 bottom-0 h-[calc(100vh-4rem)] bg-white overflow-y-auto border-t border-gray-100">
-          <div className="px-4 py-6">
+          <div className="px-4 py-4">
+            {/* User Profile at top (if logged in) */}
+            {!isLoading && user && (
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-200 mb-4">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
+                  <AvatarFallback className="bg-gray-100 text-sm">
+                    {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 overflow-hidden" title={user.email || undefined}>
+                  <p className="truncate text-sm font-medium text-gray-900">{user.name || "User"}</p>
+                  <p className="truncate text-xs text-gray-500">{user.email}</p>
+                </div>
+              </div>
+            )}
+
             {/* CTA Buttons */}
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-4">
               <a href="/contact" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
                 Contact
               </a>
-              <a href="/select-role" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
-                Get started
+              {!isLoading && user ? (
+                <a href="/dashboard" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
+                  Dashboard
+                </a>
+              ) : (
+                <a href="/select-role" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
+                  Get started
+                </a>
+              )}
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="space-y-1">
+              {/* Product Link */}
+              <a
+                href="/product"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              >
+                Product
               </a>
-            </div>
 
-            {/* Product Link */}
-            <a
-              href="/product"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center justify-between py-4 border-b border-gray-100 text-gray-900 font-medium"
-            >
-              Product
-            </a>
+              {/* Solutions Section */}
+              <div>
+                <button
+                  onClick={() => toggleMobileSection('solutions')}
+                  className="flex items-center justify-between w-full rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                >
+                  Solutions
+                  {mobileSection === 'solutions' ? (
+                    <ChevronUp className="w-4 h-4 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  )}
+                </button>
 
-            {/* Solutions Section */}
-            <div className="border-b border-gray-100">
-              <button
-                onClick={() => toggleMobileSection('solutions')}
-                className="flex items-center justify-between w-full py-4 text-gray-900 font-medium"
-              >
-                Solutions
-                {mobileSection === 'solutions' ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                {mobileSection === 'solutions' && (
+                  <div className="ml-3 mt-1 space-y-1 border-l-2 border-gray-100 pl-3">
+                    {solutionItems.map((item) => (
+                      <a
+                        key={item.title}
+                        href={item.href}
+                        onClick={(e) => handleSolutionClick(e, item.href, true)}
+                        className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
                 )}
-              </button>
+              </div>
 
-              {mobileSection === 'solutions' && (
-                <div className="pb-4 space-y-2">
-                  {solutionItems.map((item) => (
-                    <a
-                      key={item.title}
-                      href={item.href}
-                      onClick={(e) => handleSolutionClick(e, item.href, true)}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="w-10 h-10 bg-white flex items-center justify-center border border-gray-200">
-                        <item.icon className="w-5 h-5 text-primary-900" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{item.title}</h3>
-                        <p className="text-xs text-gray-500">{item.description}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+              {/* Resources Section */}
+              <div>
+                <button
+                  onClick={() => toggleMobileSection('resources')}
+                  className="flex items-center justify-between w-full rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                >
+                  Resources
+                  {mobileSection === 'resources' ? (
+                    <ChevronUp className="w-4 h-4 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  )}
+                </button>
 
-            {/* Resources Section */}
-            <div className="border-b border-gray-100">
-              <button
-                onClick={() => toggleMobileSection('resources')}
-                className="flex items-center justify-between w-full py-4 text-gray-900 font-medium"
-              >
-                Resources
-                {mobileSection === 'resources' ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                {mobileSection === 'resources' && (
+                  <div className="ml-3 mt-1 space-y-1 border-l-2 border-gray-100 pl-3">
+                    {resourceItems.map((item) => (
+                      <a
+                        key={item.title}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        target={item.external ? "_blank" : undefined}
+                        rel={item.external ? "noopener noreferrer" : undefined}
+                        className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
                 )}
-              </button>
+              </div>
 
-              {mobileSection === 'resources' && (
-                <div className="pb-4 space-y-2">
-                  {resourceItems.map((item) => (
-                    <a
-                      key={item.title}
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
-                      target={item.external ? "_blank" : undefined}
-                      rel={item.external ? "noopener noreferrer" : undefined}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="w-10 h-10 bg-white flex items-center justify-center border border-gray-200">
-                        <item.icon className="w-5 h-5 text-primary-900" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{item.title}</h3>
-                        <p className="text-xs text-gray-500">{item.description}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
+              {/* Dashboard Link (if logged in) */}
+              {!isLoading && user && (
+                <a
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
+                </a>
               )}
-            </div>
+            </nav>
+
+            {/* Logout (if logged in) */}
+            {!isLoading && user && (
+              <div className="pt-4 mt-4 border-t border-gray-100">
+                <a
+                  href="/auth/logout"
+                  className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Log out
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}

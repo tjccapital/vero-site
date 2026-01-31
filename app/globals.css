@@ -1552,11 +1552,11 @@ html {
 /* Sample Data Badge Halo Animation */
 @keyframes halo-pulse {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1), 0 0 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.08), 0 0 60px rgba(0, 0, 0, 0.04);
     opacity: 1;
   }
   50% {
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15), 0 0 50px rgba(0, 0, 0, 0.08);
-    opacity: 0.9;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.2), 0 0 65px rgba(0, 0, 0, 0.12), 0 0 90px rgba(0, 0, 0, 0.06);
+    opacity: 0.95;
   }
 }
