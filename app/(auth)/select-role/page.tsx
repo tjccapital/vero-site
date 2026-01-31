@@ -13,9 +13,9 @@ import { ArrowRight, CreditCard, Store } from "lucide-react"
 
 export default function SelectRolePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--muted)] p-6 md:p-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--muted)] p-6 md:p-10 -mt-16 md:mt-0">
       <div className="w-full max-w-4xl">
-        <div className="mb-12 text-center">
+        <div className="mb-8 md:mb-12 text-center">
           <Link href="/" className="inline-flex items-center justify-center mb-6">
             <VeroLogoFull height={32} className="text-[var(--foreground)]" />
           </Link>
