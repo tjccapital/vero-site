@@ -106,28 +106,38 @@ const chartData7Days = [
 const posIntegrations = [
   {
     id: "int_001",
-    name: "Main Store POS",
+    name: "Downtown Flagship",
     type: "Square",
     status: "active",
-    receipts: 1842,
-    receiptsRendered: 1105,
-    transactions: 2156,
+    receipts: 2847,
+    receiptsRendered: 1708,
+    transactions: 3412,
     lastSync: "2 min ago",
   },
   {
     id: "int_002",
-    name: "Downtown Location",
-    type: "Clover",
+    name: "University District",
+    type: "Square",
     status: "active",
-    receipts: 956,
-    receiptsRendered: 574,
-    transactions: 1203,
-    lastSync: "5 min ago",
+    receipts: 1923,
+    receiptsRendered: 1154,
+    transactions: 2308,
+    lastSync: "3 min ago",
   },
   {
     id: "int_003",
-    name: "Airport Kiosk",
-    type: "Toast",
+    name: "Waterfront Cafe",
+    type: "Square",
+    status: "active",
+    receipts: 1456,
+    receiptsRendered: 874,
+    transactions: 1747,
+    lastSync: "1 min ago",
+  },
+  {
+    id: "int_004",
+    name: "Airport Terminal B",
+    type: "Square",
     status: "pending",
     receipts: 0,
     receiptsRendered: 0,
@@ -135,24 +145,14 @@ const posIntegrations = [
     lastSync: "Pending setup",
   },
   {
-    id: "int_004",
-    name: "Online Store",
-    type: "Shopify",
-    status: "active",
-    receipts: 3421,
-    receiptsRendered: 2053,
-    transactions: 4102,
-    lastSync: "1 min ago",
-  },
-  {
     id: "int_005",
-    name: "Food Truck",
+    name: "Suburban Plaza",
     type: "Square",
-    status: "inactive",
-    receipts: 234,
-    receiptsRendered: 140,
-    transactions: 289,
-    lastSync: "3 days ago",
+    status: "active",
+    receipts: 892,
+    receiptsRendered: 535,
+    transactions: 1070,
+    lastSync: "5 min ago",
   },
 ]
 
@@ -554,7 +554,7 @@ export default function DashboardPage() {
                     +12.5%
                   </span>
                 </div>
-                <p className="mt-2 text-2xl font-semibold">6,453</p>
+                <p className="mt-2 text-2xl font-semibold">7,118</p>
                 <p className="mt-1 text-xs text-[var(--muted-foreground)]">
                   <span className="text-green-600">Trending up this month</span>
                   <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
@@ -566,17 +566,17 @@ export default function DashboardPage() {
               <div className="rounded-lg border border-[var(--border)] p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-[var(--muted-foreground)]">Transactions</p>
-                  <span className="flex items-center gap-1 text-xs text-red-600">
-                    <TrendingDown className="h-3 w-3" />
-                    -20%
+                  <span className="flex items-center gap-1 text-xs text-green-600">
+                    <TrendingUp className="h-3 w-3" />
+                    +8.3%
                   </span>
                 </div>
-                <p className="mt-2 text-2xl font-semibold">7,750</p>
+                <p className="mt-2 text-2xl font-semibold">8,537</p>
                 <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-red-600">Down 20% this period</span>
-                  <TrendingDown className="ml-1 inline h-3 w-3 text-red-600" />
+                  <span className="text-green-600">Growing steadily</span>
+                  <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
                 </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Acquisition needs attention</p>
+                <p className="text-xs text-[var(--muted-foreground)]">Across all coffee shop locations</p>
               </div>
 
               {/* Active Integrations */}
@@ -784,7 +784,7 @@ export default function DashboardPage() {
                     )}
                   >
                     Active
-                    <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">3</span>
+                    <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">4</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("pending")}
