@@ -60,7 +60,7 @@ const documentNavItems = [
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: DOCS_URL, icon: Settings, external: true },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
