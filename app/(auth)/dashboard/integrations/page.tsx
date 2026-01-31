@@ -262,13 +262,14 @@ export default function IntegrationsPage() {
                 sidebarCollapsed && "justify-center"
               )}>
                 <Avatar className="h-8 w-8 flex-shrink-0">
+                  <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
                   <AvatarFallback className="bg-[var(--muted)] text-sm">
                     {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 {!sidebarCollapsed && (
                   <>
-                    <div className="flex-1 min-w-0 overflow-hidden text-left">
+                    <div className="flex-1 min-w-0 overflow-hidden text-left" title={user.email || undefined}>
                       <p className="truncate text-sm font-medium">{user.name || "User"}</p>
                       <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
                     </div>
