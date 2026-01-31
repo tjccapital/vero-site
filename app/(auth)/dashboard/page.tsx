@@ -605,7 +605,7 @@ export default function DashboardPage() {
                     <span className="text-green-600">Growing steadily</span>
                     <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
                   </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">Across all coffee shop locations</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">Across all locations</p>
                 </div>
 
                 {/* Active Integrations */}
