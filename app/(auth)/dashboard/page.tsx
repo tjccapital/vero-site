@@ -858,13 +858,13 @@ export default function DashboardPage() {
 
               {/* Table - scrollable on mobile */}
               <div className="overflow-x-auto">
-              <Table className="min-w-[800px]">
+              <Table className="min-w-[700px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="w-12">
                       <input type="checkbox" className="rounded border-[var(--border)]" />
                     </TableHead>
-                    <TableHead>Location</TableHead>
+                    <TableHead>Name</TableHead>
                     <TableHead>Device</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Receipts Sent</TableHead>
@@ -890,23 +890,8 @@ export default function DashboardPage() {
                       <TableCell>
                         <input type="checkbox" className="rounded border-[var(--border)]" />
                       </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{integration.name}</span>
-                          <span className="text-xs text-[var(--muted-foreground)]">{integration.location}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="font-normal">
-                              {integration.type}
-                            </Badge>
-                            <span className="text-sm">{integration.device}</span>
-                          </div>
-                          <span className="text-xs text-[var(--muted-foreground)] font-mono">{integration.serialNumber}</span>
-                        </div>
-                      </TableCell>
+                      <TableCell className="font-medium">{integration.name}</TableCell>
+                      <TableCell className="text-[var(--muted-foreground)]">{integration.device}</TableCell>
                       <TableCell>
                         {integration.status === "active" && (
                           <div className="flex items-center gap-1.5">
