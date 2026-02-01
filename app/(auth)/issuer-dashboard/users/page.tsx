@@ -55,7 +55,7 @@ const usersData = [
   {
     id: "user_001",
     cardLast4: "4582",
-    cardType: "Visa",
+    cardProduct: "Signature",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-11-15",
     lastActivity: "2 hours ago",
@@ -65,7 +65,7 @@ const usersData = [
   {
     id: "user_002",
     cardLast4: "8923",
-    cardType: "Mastercard",
+    cardProduct: "Platinum",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-10-22",
     lastActivity: "5 hours ago",
@@ -75,7 +75,7 @@ const usersData = [
   {
     id: "user_003",
     cardLast4: "1256",
-    cardType: "Visa",
+    cardProduct: "Classic",
     digitalReceiptsEnabled: false,
     enrolledDate: "2024-12-01",
     lastActivity: "1 day ago",
@@ -85,7 +85,7 @@ const usersData = [
   {
     id: "user_004",
     cardLast4: "7341",
-    cardType: "Amex",
+    cardProduct: "Rewards",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-09-08",
     lastActivity: "3 hours ago",
@@ -95,7 +95,7 @@ const usersData = [
   {
     id: "user_005",
     cardLast4: "5629",
-    cardType: "Visa",
+    cardProduct: "Signature",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-11-30",
     lastActivity: "30 min ago",
@@ -105,7 +105,7 @@ const usersData = [
   {
     id: "user_006",
     cardLast4: "3847",
-    cardType: "Mastercard",
+    cardProduct: "Classic",
     digitalReceiptsEnabled: false,
     enrolledDate: "2024-10-15",
     lastActivity: "3 days ago",
@@ -115,7 +115,7 @@ const usersData = [
   {
     id: "user_007",
     cardLast4: "9012",
-    cardType: "Visa",
+    cardProduct: "Platinum",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-08-20",
     lastActivity: "1 hour ago",
@@ -125,7 +125,7 @@ const usersData = [
   {
     id: "user_008",
     cardLast4: "6754",
-    cardType: "Discover",
+    cardProduct: "Rewards",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-12-10",
     lastActivity: "15 min ago",
@@ -135,7 +135,7 @@ const usersData = [
   {
     id: "user_009",
     cardLast4: "2198",
-    cardType: "Mastercard",
+    cardProduct: "Signature",
     digitalReceiptsEnabled: true,
     enrolledDate: "2024-07-01",
     lastActivity: "4 hours ago",
@@ -145,7 +145,7 @@ const usersData = [
   {
     id: "user_010",
     cardLast4: "8456",
-    cardType: "Visa",
+    cardProduct: "Classic",
     digitalReceiptsEnabled: false,
     enrolledDate: "2024-11-05",
     lastActivity: "1 week ago",
@@ -212,7 +212,7 @@ export default function IssuerUsersPage() {
     const matchesSearch =
       searchQuery === "" ||
       u.cardLast4.includes(searchQuery) ||
-      u.cardType.toLowerCase().includes(searchQuery.toLowerCase())
+      u.cardProduct.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesStatus && matchesSearch
   })
 
@@ -606,12 +606,12 @@ export default function IssuerUsersPage() {
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
                       <TableHead>Card</TableHead>
-                      <TableHead>Card Type</TableHead>
+                      <TableHead className="hidden sm:table-cell">Product</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Device</TableHead>
+                      <TableHead className="hidden md:table-cell">Device</TableHead>
                       <TableHead>Receipts</TableHead>
-                      <TableHead>Last Activity</TableHead>
-                      <TableHead>Enrolled</TableHead>
+                      <TableHead className="hidden lg:table-cell">Last Activity</TableHead>
+                      <TableHead className="hidden md:table-cell">Enrolled</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -619,11 +619,11 @@ export default function IssuerUsersPage() {
                       <TableRow key={userData.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
-                            <span className="font-mono">****{userData.cardLast4}</span>
+                            <CreditCard className="h-4 w-4 text-[var(--muted-foreground)] hidden sm:block" />
+                            <span className="font-mono text-sm">****{userData.cardLast4}</span>
                           </div>
                         </TableCell>
-                        <TableCell>{userData.cardType}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{userData.cardProduct}</TableCell>
                         <TableCell>
                           {userData.digitalReceiptsEnabled ? (
                             <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">
@@ -635,15 +635,15 @@ export default function IssuerUsersPage() {
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden md:table-cell">
                           <div className="flex items-center gap-1.5">
                             <Smartphone className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
                             <span className="text-sm">{userData.deviceType}</span>
                           </div>
                         </TableCell>
                         <TableCell>{userData.receiptCount}</TableCell>
-                        <TableCell className="text-[var(--muted-foreground)]">{userData.lastActivity}</TableCell>
-                        <TableCell className="text-[var(--muted-foreground)]">{userData.enrolledDate}</TableCell>
+                        <TableCell className="text-[var(--muted-foreground)] hidden lg:table-cell">{userData.lastActivity}</TableCell>
+                        <TableCell className="text-[var(--muted-foreground)] hidden md:table-cell">{userData.enrolledDate}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
