@@ -672,31 +672,27 @@ function IssuerReceiptsPageContent() {
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                      <TableHead>Transaction ID</TableHead>
                       <TableHead>Merchant</TableHead>
-                      <TableHead>Card</TableHead>
+                      <TableHead className="hidden sm:table-cell">Card</TableHead>
                       <TableHead>Amount</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Viewed</TableHead>
-                      <TableHead>Time</TableHead>
+                      <TableHead className="hidden md:table-cell">Viewed</TableHead>
+                      <TableHead className="hidden lg:table-cell">Time</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredReceipts.map((receipt) => (
                       <TableRow key={receipt.id}>
                         <TableCell>
-                          <span className="font-mono text-xs">{receipt.transactionId}</span>
-                        </TableCell>
-                        <TableCell>
                           <div className="flex items-center gap-2">
-                            <Store className="h-4 w-4 text-[var(--muted-foreground)]" />
-                            <span className="font-medium">{receipt.merchant}</span>
+                            <Store className="h-4 w-4 text-[var(--muted-foreground)] hidden sm:block" />
+                            <span className="font-medium text-sm truncate max-w-[120px] sm:max-w-none">{receipt.merchant}</span>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <span className="font-mono">****{receipt.cardLast4}</span>
+                        <TableCell className="hidden sm:table-cell">
+                          <span className="font-mono text-sm">****{receipt.cardLast4}</span>
                         </TableCell>
-                        <TableCell className="font-medium">
+                        <TableCell className="font-medium text-sm">
                           {formatCurrency(receipt.amount, receipt.currency)}
                         </TableCell>
                         <TableCell>
@@ -711,7 +707,7 @@ function IssuerReceiptsPageContent() {
                                 Failed
                               </Badge>
                               {receipt.errorCode && (
-                                <span className="text-xs font-mono text-red-600">{receipt.errorCode}</span>
+                                <span className="text-xs font-mono text-red-600 hidden sm:block">{receipt.errorCode}</span>
                               )}
                             </div>
                           )}
@@ -721,7 +717,7 @@ function IssuerReceiptsPageContent() {
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden md:table-cell">
                           {receipt.rendered ? (
                             <div className="flex items-center gap-1.5 text-green-600">
                               <Eye className="h-3.5 w-3.5" />
@@ -731,7 +727,7 @@ function IssuerReceiptsPageContent() {
                             <span className="text-sm text-[var(--muted-foreground)]">No</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-[var(--muted-foreground)]">
+                        <TableCell className="text-[var(--muted-foreground)] hidden lg:table-cell">
                           {formatTimestamp(receipt.timestamp)}
                         </TableCell>
                       </TableRow>
