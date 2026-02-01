@@ -502,68 +502,62 @@ export default function IssuerKeysPage() {
 
             {/* API Keys Table */}
             <div className="rounded-lg border border-[var(--border)]">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead>Name</TableHead>
-                      <TableHead>Key</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Last Used</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {apiKeysData.map((apiKey) => (
-                      <TableRow key={apiKey.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Key className="h-4 w-4 text-[var(--muted-foreground)]" />
-                            <span className="font-medium">{apiKey.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <code className="rounded bg-[var(--muted)] px-2 py-1 font-mono text-xs">
-                            {apiKey.prefix}...{apiKey.lastChars}
-                          </code>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">
-                            Active
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-[var(--muted-foreground)]">
-                          {apiKey.lastUsed}
-                        </TableCell>
-                        <TableCell className="text-[var(--muted-foreground)]">
-                          {apiKey.created}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => setShowRegenerateModal(apiKey.id)}
-                              className="flex h-8 items-center gap-1.5 rounded-md border border-[var(--border)] px-2 text-sm hover:bg-[var(--muted)]"
-                              title="Regenerate key"
-                            >
-                              <RefreshCw className="h-3.5 w-3.5" />
-                              <span className="hidden sm:inline">Regenerate</span>
-                            </button>
-                            <button
-                              onClick={() => setShowDeleteModal(apiKey.id)}
-                              className="flex h-8 items-center gap-1.5 rounded-md border border-red-200 px-2 text-sm text-red-600 hover:bg-red-50"
-                              title="Delete key"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                              <span className="hidden sm:inline">Delete</span>
-                            </button>
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Name</TableHead>
+                    <TableHead className="hidden sm:table-cell">Key</TableHead>
+                    <TableHead className="hidden md:table-cell">Status</TableHead>
+                    <TableHead className="hidden lg:table-cell">Last Used</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {apiKeysData.map((apiKey) => (
+                    <TableRow key={apiKey.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Key className="h-4 w-4 text-[var(--muted-foreground)] hidden sm:block" />
+                          <span className="font-medium text-sm">{apiKey.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <code className="rounded bg-[var(--muted)] px-2 py-1 font-mono text-xs">
+                          {apiKey.prefix}...{apiKey.lastChars}
+                        </code>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100">
+                          Active
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-[var(--muted-foreground)] hidden lg:table-cell">
+                        {apiKey.lastUsed}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1 sm:gap-2">
+                          <button
+                            onClick={() => setShowRegenerateModal(apiKey.id)}
+                            className="flex h-8 items-center gap-1.5 rounded-md border border-[var(--border)] px-2 text-sm hover:bg-[var(--muted)]"
+                            title="Regenerate key"
+                          >
+                            <RefreshCw className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">Regenerate</span>
+                          </button>
+                          <button
+                            onClick={() => setShowDeleteModal(apiKey.id)}
+                            className="flex h-8 items-center gap-1.5 rounded-md border border-red-200 px-2 text-sm text-red-600 hover:bg-red-50"
+                            title="Delete key"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">Delete</span>
+                          </button>
                           </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
-              </div>
             </div>
 
             {/* Security Best Practices */}

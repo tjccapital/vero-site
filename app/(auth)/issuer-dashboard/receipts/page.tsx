@@ -553,50 +553,22 @@ function IssuerReceiptsPageContent() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--muted)]">
-                    <Receipt className="h-5 w-5 text-[var(--primary)]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Total</p>
-                    <p className="text-2xl font-semibold">{totalReceipts.toLocaleString()}</p>
-                  </div>
-                </div>
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Total</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold">{totalReceipts.toLocaleString()}</p>
               </div>
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Delivered</p>
-                    <p className="text-2xl font-semibold">{deliveredReceipts.toLocaleString()}</p>
-                  </div>
-                </div>
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Delivered</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold text-green-600">{deliveredReceipts.toLocaleString()}</p>
               </div>
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100">
-                    <XCircle className="h-5 w-5 text-red-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Failed</p>
-                    <p className="text-2xl font-semibold">{failedReceipts.toLocaleString()}</p>
-                  </div>
-                </div>
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Failed</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold text-red-600">{failedReceipts.toLocaleString()}</p>
               </div>
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                    <Eye className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Rendered</p>
-                    <p className="text-2xl font-semibold">{renderedReceipts.toLocaleString()}</p>
-                  </div>
-                </div>
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Rendered</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold text-blue-600">{renderedReceipts.toLocaleString()}</p>
               </div>
             </div>
 

@@ -503,75 +503,39 @@ export default function IssuerDashboardPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
               {/* Total Receipts Received */}
               <Link
                 href="/issuer-dashboard/receipts"
-                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block h-full"
               >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Receipts Received</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +18.2%
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-semibold">125,847</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">Last 30 days</span>
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Click to view all receipts</p>
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Receipts Received</p>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">125,847</p>
+                <p className="mt-1 text-xs text-green-600">+18.2% last 30 days</p>
               </Link>
 
               {/* Receipts Rendered */}
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Receipts Rendered</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +15.7%
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-semibold">106,212</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">84.4% render rate</span>
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Viewed by cardholders</p>
+              <div className="rounded-lg border border-[var(--border)] p-4 h-full">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Receipts Rendered</p>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">106,212</p>
+                <p className="mt-1 text-xs text-green-600">84.4% render rate</p>
               </div>
 
               {/* Active Users */}
               <Link
                 href="/issuer-dashboard/users"
-                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block h-full"
               >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Users with Receipts</p>
-                  <span className="flex items-center gap-1 text-xs text-green-600">
-                    <TrendingUp className="h-3 w-3" />
-                    +8.3%
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-semibold">48,392</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">12.4% of cardholders</span>
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Click to manage users</p>
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Users with Receipts</p>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">48,392</p>
+                <p className="mt-1 text-xs text-green-600">12.4% of cardholders</p>
               </Link>
 
               {/* Issues */}
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[var(--muted-foreground)]">Open Issues</p>
-                  <span className="flex items-center gap-1 text-xs text-yellow-600">
-                    <AlertTriangle className="h-3 w-3" />
-                    3 new
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-semibold">12</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  <span className="text-green-600">99.99% success rate</span>
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">Delivery failures today</p>
+              <div className="rounded-lg border border-[var(--border)] p-4 h-full">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Open Issues</p>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">12</p>
+                <p className="mt-1 text-xs text-yellow-600">3 new today</p>
               </div>
             </div>
 
@@ -727,44 +691,38 @@ export default function IssuerDashboardPage() {
                     View all
                   </Link>
                 </div>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-transparent">
-                        <TableHead>Merchant</TableHead>
-                        <TableHead>Error</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Time</TableHead>
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>Merchant</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden sm:table-cell">Time</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {recentIssues.slice(0, 5).map((issue) => (
+                      <TableRow key={issue.id}>
+                        <TableCell>
+                          <span className="font-medium text-sm">{issue.merchant}</span>
+                        </TableCell>
+                        <TableCell>
+                          {issue.status === "open" ? (
+                            <div className="flex items-center gap-1.5">
+                              <AlertCircle className="h-3.5 w-3.5 text-yellow-600" />
+                              <span className="text-sm text-yellow-600">Open</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                              <span className="text-sm text-green-600">Resolved</span>
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-[var(--muted-foreground)] hidden sm:table-cell">{issue.timestamp}</TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentIssues.slice(0, 5).map((issue) => (
-                        <TableRow key={issue.id}>
-                          <TableCell className="font-medium">{issue.merchant}</TableCell>
-                          <TableCell>
-                            <span className="text-xs font-mono text-[var(--muted-foreground)]">
-                              {issue.errorCode}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            {issue.status === "open" ? (
-                              <div className="flex items-center gap-1.5">
-                                <AlertCircle className="h-3.5 w-3.5 text-yellow-600" />
-                                <span className="text-sm text-yellow-600">Open</span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
-                                <span className="text-sm text-green-600">Resolved</span>
-                              </div>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-[var(--muted-foreground)]">{issue.timestamp}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
 
               {/* Top Merchants */}

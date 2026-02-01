@@ -508,39 +508,18 @@ export default function IssuerUsersPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--muted)]">
-                    <Users className="h-5 w-5 text-[var(--primary)]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Total Enrolled</p>
-                    <p className="text-2xl font-semibold">{totalUsers.toLocaleString()}</p>
-                  </div>
-                </div>
+            <div className="grid gap-4 grid-cols-3">
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Total Enrolled</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold">{totalUsers.toLocaleString()}</p>
               </div>
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Receipts Enabled</p>
-                    <p className="text-2xl font-semibold">{enabledUsers.toLocaleString()}</p>
-                  </div>
-                </div>
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Enabled</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold text-green-600">{enabledUsers.toLocaleString()}</p>
               </div>
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                    <XCircle className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--muted-foreground)]">Receipts Disabled</p>
-                    <p className="text-2xl font-semibold">{disabledUsers.toLocaleString()}</p>
-                  </div>
-                </div>
+              <div className="rounded-lg border border-[var(--border)] p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Disabled</p>
+                <p className="mt-1 text-lg sm:text-2xl font-semibold text-gray-500">{disabledUsers.toLocaleString()}</p>
               </div>
             </div>
 
