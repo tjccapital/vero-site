@@ -42,10 +42,10 @@ import {
 const DOCS_URL = "https://docs.seevero.com"
 
 const mainNavItems = [
-  { name: "Overview", href: "/issuer-dashboard", icon: LayoutDashboard },
-  { name: "Receipts", href: "/issuer-dashboard/receipts", icon: Receipt },
-  { name: "Users", href: "/issuer-dashboard/users", icon: Users },
-  { name: "API Keys", href: "/issuer-dashboard/keys", icon: Key },
+  { name: "Overview", href: "/issuer-dashboard", icon: LayoutDashboard, active: false },
+  { name: "Receipts", href: "/issuer-dashboard/receipts", icon: Receipt, active: false },
+  { name: "Users", href: "/issuer-dashboard/users", icon: Users, active: false },
+  { name: "API Keys", href: "/issuer-dashboard/keys", icon: Key, active: false },
 ]
 
 const documentNavItems = [

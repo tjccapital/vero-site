@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
@@ -199,7 +199,7 @@ const bottomNavItems = [
   { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
 
-export default function IssuerReceiptsPage() {
+function IssuerReceiptsPageContent() {
   const { user, isLoading } = useUser()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -777,5 +777,20 @@ export default function IssuerReceiptsPage() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function IssuerReceiptsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <VeroLogo size={48} spinning className="text-[var(--primary)]" />
+          <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
+        </div>
+      </div>
+    }>
+      <IssuerReceiptsPageContent />
+    </Suspense>
   )
 }
