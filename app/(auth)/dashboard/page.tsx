@@ -551,79 +551,39 @@ export default function DashboardPage() {
                   </p>
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
                 {/* 30-Day Payout */}
                 <Link
                   href="/dashboard/payments"
-                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block h-full"
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
-                    <span className="flex items-center gap-1 text-xs text-green-600">
-                      <TrendingUp className="h-3 w-3" />
-                      +12.3%
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold">$75.00</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    <span className="text-green-600">Trailing 30 days</span>
-                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">Click to view payment details</p>
+                  <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">$75.00</p>
+                  <p className="mt-1 text-xs text-green-600">+12.3% from last month</p>
                 </Link>
 
                 {/* Total Receipts */}
-                <div className="rounded-lg border border-[var(--border)] p-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-[var(--muted-foreground)]">Total Receipts</p>
-                    <span className="flex items-center gap-1 text-xs text-green-600">
-                      <TrendingUp className="h-3 w-3" />
-                      +12.5%
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold">7,118</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    <span className="text-green-600">Trending up this month</span>
-                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">Receipts for the last 6 months</p>
+                <div className="rounded-lg border border-[var(--border)] p-4 h-full">
+                  <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Total Receipts</p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">7,118</p>
+                  <p className="mt-1 text-xs text-green-600">+12.5% this month</p>
                 </div>
 
                 {/* Transactions */}
-                <div className="rounded-lg border border-[var(--border)] p-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-[var(--muted-foreground)]">Transactions</p>
-                    <span className="flex items-center gap-1 text-xs text-green-600">
-                      <TrendingUp className="h-3 w-3" />
-                      +8.3%
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold">8,537</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    <span className="text-green-600">Growing steadily</span>
-                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">Across all locations</p>
+                <div className="rounded-lg border border-[var(--border)] p-4 h-full">
+                  <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Transactions</p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">8,537</p>
+                  <p className="mt-1 text-xs text-green-600">+8.3% this month</p>
                 </div>
 
                 {/* Active Integrations */}
                 <Link
                   href="/dashboard/integrations"
-                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block h-full"
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-[var(--muted-foreground)]">Active Integrations</p>
-                    <span className="flex items-center gap-1 text-xs text-green-600">
-                      <TrendingUp className="h-3 w-3" />
-                      +12.5%
-                    </span>
-                  </div>
-                  <p className="mt-2 text-2xl font-semibold">4</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    <span className="text-green-600">Strong POS coverage</span>
-                    <TrendingUp className="ml-1 inline h-3 w-3 text-green-600" />
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">Click to manage integrations</p>
+                  <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Active Integrations</p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">4</p>
+                  <p className="mt-1 text-xs text-green-600">Across all locations</p>
                 </Link>
               </div>
             </div>
