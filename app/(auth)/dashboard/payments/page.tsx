@@ -402,9 +402,19 @@ export default function PaymentsPage() {
                   <span className="text-sm text-[var(--muted-foreground)]">Payout Account</span>
                   <span className="text-sm font-medium">••••4242</span>
                 </div>
-                <div className="flex items-center justify-between py-2">
+                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
                   <span className="text-sm text-[var(--muted-foreground)]">Classification</span>
                   <Badge variant="outline" className="text-xs">{merchantDetails.size}</Badge>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm text-[var(--muted-foreground)]">Business Info</span>
+                  <Link
+                    href="/dashboard/settings"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] hover:underline"
+                  >
+                    <Settings className="h-3.5 w-3.5" />
+                    Edit in Settings
+                  </Link>
                 </div>
               </div>
             </div>
