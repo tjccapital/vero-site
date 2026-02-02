@@ -490,80 +490,65 @@ export default function ConsumerDashboardPage() {
         {/* Page Content */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
           <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
-            {/* Referral Banner */}
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[var(--primary)] via-blue-600 to-indigo-600 p-6 text-white">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-              <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                    <Gift className="h-6 w-6" />
+            {/* Referral Banner - Compact */}
+            <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 p-4 sm:p-5 text-white">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 flex-shrink-0">
+                    <Gift className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold">Refer a Friend, Get $5</h2>
-                    <p className="mt-1 text-white/90 text-sm max-w-md">
-                      Share Vero with friends and family. When they sign up and receive their first digital receipt, you both get $5!
+                    <h2 className="font-semibold">Refer a Friend, Get $5</h2>
+                    <p className="text-white/80 text-sm hidden sm:block">
+                      Share Vero and you both get $5 when they join
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col sm:items-end gap-3">
-                  <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                    <span className="text-sm font-medium">Your code:</span>
-                    <span className="font-mono font-bold">{referralCode}</span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs bg-white/20 rounded px-2 py-1 font-mono">{referralCode}</span>
                   <button
                     onClick={copyReferralLink}
-                    className="flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
+                    className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-sm font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
                   >
-                    {referralCopied ? (
-                      <>
-                        <Check className="h-4 w-4" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4" />
-                        Copy Referral Link
-                      </>
-                    )}
+                    {referralCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    <span className="hidden sm:inline">{referralCopied ? 'Copied!' : 'Copy Link'}</span>
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Welcome Header */}
-            <div className="mb-2">
+            <div>
               <h1 className="text-2xl font-semibold">Welcome back, {user.name?.split(' ')[0] || 'there'}</h1>
               <p className="text-sm text-[var(--muted-foreground)]">
                 Here&apos;s an overview of your recent spending
               </p>
             </div>
 
-            {/* Getting Started Checklist */}
+            {/* Getting Started Checklist - Clean Version */}
             <div className="rounded-lg border border-[var(--border)] overflow-hidden">
               <button
                 onClick={() => setChecklistCollapsed(!checklistCollapsed)}
-                className="flex w-full items-center justify-between px-4 py-3 sm:px-6 bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-colors"
+                className="flex w-full items-center justify-between px-4 py-3 hover:bg-[var(--muted)]/30 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)]/10">
-                    <Zap className="h-4 w-4 text-[var(--primary)]" />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                    <Zap className="h-3.5 w-3.5 text-[var(--primary)]" />
                   </div>
                   <div className="text-left">
-                    <h2 className="font-semibold">Getting Started</h2>
+                    <h2 className="font-medium text-sm">Getting Started</h2>
                     <p className="text-xs text-[var(--muted-foreground)]">
                       {onboardingSteps.filter(s => s.status === 'completed').length} of {onboardingSteps.length} completed
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  {/* Progress indicator */}
-                  <div className="hidden sm:flex items-center gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-0.5">
                     {onboardingSteps.map((step) => (
                       <div
                         key={step.id}
                         className={cn(
-                          "h-2 w-8 rounded-full transition-colors",
+                          "h-1.5 w-6 rounded-full transition-colors",
                           step.status === 'completed' ? "bg-green-500" :
                           step.status === 'current' ? "bg-[var(--primary)]" :
                           "bg-[var(--muted)]"
@@ -572,100 +557,119 @@ export default function ConsumerDashboardPage() {
                     ))}
                   </div>
                   {checklistCollapsed ? (
-                    <ChevronDown className="h-5 w-5 text-[var(--muted-foreground)]" />
+                    <ChevronDown className="h-4 w-4 text-[var(--muted-foreground)]" />
                   ) : (
-                    <ChevronUp className="h-5 w-5 text-[var(--muted-foreground)]" />
+                    <ChevronUp className="h-4 w-4 text-[var(--muted-foreground)]" />
                   )}
                 </div>
               </button>
 
-              {/* Checklist Content */}
               {!checklistCollapsed && (
-                <div className="p-4 sm:p-6 border-t border-[var(--border)]">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {onboardingSteps.map((step, index) => {
-                      const StepContent = (
-                        <div
-                          className={cn(
-                            "relative rounded-lg border p-4 transition-all",
-                            step.status === 'completed'
-                              ? "border-green-200 bg-green-50/50"
-                              : step.status === 'current'
-                              ? "border-[var(--primary)]/30 bg-[var(--primary)]/5"
-                              : "border-[var(--border)] bg-[var(--muted)]/30",
-                            step.href && "hover:border-[var(--primary)]/50 cursor-pointer"
-                          )}
-                        >
-                          {/* Step number indicator */}
-                          <div className="flex items-start justify-between mb-3">
+                <div className="border-t border-[var(--border)]">
+                  {/* Mobile: Compact horizontal scroll */}
+                  <div className="sm:hidden overflow-x-auto">
+                    <div className="flex gap-3 p-3 min-w-max">
+                      {onboardingSteps.map((step) => {
+                        const content = (
+                          <div
+                            className={cn(
+                              "flex items-center gap-2.5 rounded-lg px-3 py-2 min-w-[180px]",
+                              step.status === 'completed' ? "bg-green-50" :
+                              step.status === 'current' ? "bg-[var(--primary)]/5" :
+                              "bg-[var(--muted)]/50"
+                            )}
+                          >
                             <div
                               className={cn(
-                                "flex h-10 w-10 items-center justify-center rounded-full",
-                                step.status === 'completed'
-                                  ? "bg-green-500 text-white"
-                                  : step.status === 'current'
-                                  ? "bg-[var(--primary)] text-white"
-                                  : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+                                "flex h-7 w-7 items-center justify-center rounded-full flex-shrink-0",
+                                step.status === 'completed' ? "bg-green-500 text-white" :
+                                step.status === 'current' ? "bg-[var(--primary)] text-white" :
+                                "bg-[var(--muted)] text-[var(--muted-foreground)]"
                               )}
                             >
                               {step.status === 'completed' ? (
-                                <CheckCircle2 className="h-5 w-5" />
-                              ) : step.status === 'current' ? (
-                                <div className="relative">
-                                  <Circle className="h-5 w-5" />
-                                  <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="h-2 w-2 rounded-full bg-white" />
-                                  </div>
-                                </div>
+                                <Check className="h-3.5 w-3.5" />
                               ) : (
-                                <span className="text-sm font-semibold">{step.id}</span>
+                                <span className="text-xs font-medium">{step.id}</span>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className={cn(
+                                "text-xs font-medium truncate",
+                                step.status === 'pending' && "text-[var(--muted-foreground)]"
+                              )}>
+                                {step.title}
+                              </p>
+                              <p className={cn(
+                                "text-[10px]",
+                                step.status === 'completed' ? "text-green-600" :
+                                step.status === 'current' ? "text-[var(--primary)]" :
+                                "text-[var(--muted-foreground)]"
+                              )}>
+                                {step.status === 'completed' ? "Done" :
+                                 step.status === 'current' ? "Next" : "Pending"}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                        return step.href ? (
+                          <Link key={step.id} href={step.href}>{content}</Link>
+                        ) : (
+                          <div key={step.id}>{content}</div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Desktop: Grid layout */}
+                  <div className="hidden sm:grid sm:grid-cols-4 divide-x divide-[var(--border)]">
+                    {onboardingSteps.map((step) => {
+                      const content = (
+                        <div
+                          className={cn(
+                            "p-4 transition-colors",
+                            step.status === 'completed' ? "bg-green-50/50" :
+                            step.status === 'current' ? "bg-[var(--primary)]/5" :
+                            "bg-transparent",
+                            step.href && "hover:bg-[var(--muted)]/50 cursor-pointer"
+                          )}
+                        >
+                          <div className="flex items-center gap-3 mb-2">
+                            <div
+                              className={cn(
+                                "flex h-8 w-8 items-center justify-center rounded-full flex-shrink-0",
+                                step.status === 'completed' ? "bg-green-500 text-white" :
+                                step.status === 'current' ? "bg-[var(--primary)] text-white" :
+                                "bg-[var(--muted)] text-[var(--muted-foreground)]"
+                              )}
+                            >
+                              {step.status === 'completed' ? (
+                                <Check className="h-4 w-4" />
+                              ) : (
+                                <span className="text-sm font-medium">{step.id}</span>
                               )}
                             </div>
                             {step.status === 'current' && (
-                              <span className="inline-flex items-center rounded-full bg-[var(--primary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--primary)]">
-                                Next
+                              <span className="text-[10px] font-medium text-[var(--primary)] bg-[var(--primary)]/10 px-1.5 py-0.5 rounded">
+                                NEXT
                               </span>
                             )}
                           </div>
-
-                          {/* Step content */}
                           <h3 className={cn(
-                            "font-semibold text-sm",
+                            "font-medium text-sm",
                             step.status === 'pending' && "text-[var(--muted-foreground)]"
                           )}>
                             {step.title}
                           </h3>
-                          <p className={cn(
-                            "mt-1 text-xs",
-                            step.status === 'pending'
-                              ? "text-[var(--muted-foreground)]/70"
-                              : "text-[var(--muted-foreground)]"
-                          )}>
+                          <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
                             {step.description}
                           </p>
-
-                          {/* Status indicator */}
-                          <div className="mt-3 pt-3 border-t border-[var(--border)]/50">
-                            <span className={cn(
-                              "text-xs font-medium",
-                              step.status === 'completed' && "text-green-600",
-                              step.status === 'current' && "text-[var(--primary)]",
-                              step.status === 'pending' && "text-[var(--muted-foreground)]"
-                            )}>
-                              {step.status === 'completed' && "Completed"}
-                              {step.status === 'current' && "In Progress"}
-                              {step.status === 'pending' && "Pending"}
-                            </span>
-                          </div>
                         </div>
                       )
-
                       return step.href ? (
-                        <Link key={step.id} href={step.href}>
-                          {StepContent}
-                        </Link>
+                        <Link key={step.id} href={step.href}>{content}</Link>
                       ) : (
-                        <div key={step.id}>{StepContent}</div>
+                        <div key={step.id}>{content}</div>
                       )
                     })}
                   </div>
