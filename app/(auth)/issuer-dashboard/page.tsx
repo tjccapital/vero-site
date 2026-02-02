@@ -503,7 +503,21 @@ export default function IssuerDashboardPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+            <div className="relative">
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/issuer-dashboard/keys" className="text-[var(--primary)] hover:underline">
+                      Configure API Keys
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> to connect real data</span>
+                  </p>
+                </div>
+              </div>
+              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
               {/* Total Receipts Received */}
               <Link
                 href="/issuer-dashboard/receipts"
@@ -537,10 +551,24 @@ export default function IssuerDashboardPage() {
                 <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">12</p>
                 <p className="mt-1 text-xs text-yellow-600">3 new today</p>
               </div>
+              </div>
             </div>
 
             {/* Chart Section */}
-            <div className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
+            <div className="relative rounded-lg border border-[var(--border)] p-4 sm:p-6">
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/issuer-dashboard/keys" className="text-[var(--primary)] hover:underline">
+                      Configure API Keys
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> to connect real data</span>
+                  </p>
+                </div>
+              </div>
               <div className="flex flex-col gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">Receipt Activity</h3>
@@ -676,7 +704,20 @@ export default function IssuerDashboardPage() {
             </div>
 
             {/* Two Column Layout: Issues and Top Merchants */}
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="relative grid gap-4 lg:grid-cols-2">
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/issuer-dashboard/keys" className="text-[var(--primary)] hover:underline">
+                      Configure API Keys
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> to connect real data</span>
+                  </p>
+                </div>
+              </div>
               {/* Recent Issues Table */}
               <div className="rounded-lg border border-[var(--border)]">
                 <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
