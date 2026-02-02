@@ -232,10 +232,10 @@ export default function IssuerDashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
+    <div className="flex h-screen w-full bg-white overflow-hidden">
       {/* Sidebar */}
       <aside className={cn(
-        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300",
+        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300 h-full",
         sidebarCollapsed ? "w-[60px]" : "w-[240px]"
       )}>
         {/* Logo */}
