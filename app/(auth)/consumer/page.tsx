@@ -27,6 +27,8 @@ import {
   Zap,
   Store,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   TrendingUp,
   Calendar,
   DollarSign,
@@ -35,6 +37,9 @@ import {
   Plus,
   CreditCard,
   ExternalLink,
+  CheckCircle2,
+  Circle,
+  FileText,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -137,6 +142,38 @@ const linkedAccounts = [
   { id: "acc_002", name: "Bank of America Checking", type: "Checking", last4: "8821", institution: "Bank of America" },
 ]
 
+// Onboarding steps - status can be 'completed', 'current', or 'pending'
+const onboardingSteps = [
+  {
+    id: 1,
+    title: "Connect an account",
+    description: "Link your bank or credit card via Plaid",
+    status: "completed" as const,
+    href: "/consumer/accounts",
+  },
+  {
+    id: 2,
+    title: "Make a purchase",
+    description: "Shop at a Vero-connected merchant",
+    status: "completed" as const,
+    href: null,
+  },
+  {
+    id: 3,
+    title: "View receipt details",
+    description: "See itemized receipt information",
+    status: "current" as const,
+    href: "/consumer/receipts",
+  },
+  {
+    id: 4,
+    title: "Refer a friend",
+    description: "Earn $5 for each friend who joins",
+    status: "pending" as const,
+    href: null,
+  },
+]
+
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard, active: true },
   { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
@@ -156,6 +193,7 @@ export default function ConsumerDashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [referralCopied, setReferralCopied] = useState(false)
   const [showPlaidModal, setShowPlaidModal] = useState(false)
+  const [checklistCollapsed, setChecklistCollapsed] = useState(false)
 
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
@@ -497,8 +535,142 @@ export default function ConsumerDashboardPage() {
             <div className="mb-2">
               <h1 className="text-2xl font-semibold">Welcome back, {user.name?.split(' ')[0] || 'there'}</h1>
               <p className="text-sm text-[var(--muted-foreground)]">
-                Here's an overview of your recent spending
+                Here&apos;s an overview of your recent spending
               </p>
+            </div>
+
+            {/* Getting Started Checklist */}
+            <div className="rounded-lg border border-[var(--border)] overflow-hidden">
+              <button
+                onClick={() => setChecklistCollapsed(!checklistCollapsed)}
+                className="flex w-full items-center justify-between px-4 py-3 sm:px-6 bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                    <Zap className="h-4 w-4 text-[var(--primary)]" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="font-semibold">Getting Started</h2>
+                    <p className="text-xs text-[var(--muted-foreground)]">
+                      {onboardingSteps.filter(s => s.status === 'completed').length} of {onboardingSteps.length} completed
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  {/* Progress indicator */}
+                  <div className="hidden sm:flex items-center gap-1">
+                    {onboardingSteps.map((step) => (
+                      <div
+                        key={step.id}
+                        className={cn(
+                          "h-2 w-8 rounded-full transition-colors",
+                          step.status === 'completed' ? "bg-green-500" :
+                          step.status === 'current' ? "bg-[var(--primary)]" :
+                          "bg-[var(--muted)]"
+                        )}
+                      />
+                    ))}
+                  </div>
+                  {checklistCollapsed ? (
+                    <ChevronDown className="h-5 w-5 text-[var(--muted-foreground)]" />
+                  ) : (
+                    <ChevronUp className="h-5 w-5 text-[var(--muted-foreground)]" />
+                  )}
+                </div>
+              </button>
+
+              {/* Checklist Content */}
+              {!checklistCollapsed && (
+                <div className="p-4 sm:p-6 border-t border-[var(--border)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {onboardingSteps.map((step, index) => {
+                      const StepContent = (
+                        <div
+                          className={cn(
+                            "relative rounded-lg border p-4 transition-all",
+                            step.status === 'completed'
+                              ? "border-green-200 bg-green-50/50"
+                              : step.status === 'current'
+                              ? "border-[var(--primary)]/30 bg-[var(--primary)]/5"
+                              : "border-[var(--border)] bg-[var(--muted)]/30",
+                            step.href && "hover:border-[var(--primary)]/50 cursor-pointer"
+                          )}
+                        >
+                          {/* Step number indicator */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div
+                              className={cn(
+                                "flex h-10 w-10 items-center justify-center rounded-full",
+                                step.status === 'completed'
+                                  ? "bg-green-500 text-white"
+                                  : step.status === 'current'
+                                  ? "bg-[var(--primary)] text-white"
+                                  : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+                              )}
+                            >
+                              {step.status === 'completed' ? (
+                                <CheckCircle2 className="h-5 w-5" />
+                              ) : step.status === 'current' ? (
+                                <div className="relative">
+                                  <Circle className="h-5 w-5" />
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="h-2 w-2 rounded-full bg-white" />
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className="text-sm font-semibold">{step.id}</span>
+                              )}
+                            </div>
+                            {step.status === 'current' && (
+                              <span className="inline-flex items-center rounded-full bg-[var(--primary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--primary)]">
+                                Next
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Step content */}
+                          <h3 className={cn(
+                            "font-semibold text-sm",
+                            step.status === 'pending' && "text-[var(--muted-foreground)]"
+                          )}>
+                            {step.title}
+                          </h3>
+                          <p className={cn(
+                            "mt-1 text-xs",
+                            step.status === 'pending'
+                              ? "text-[var(--muted-foreground)]/70"
+                              : "text-[var(--muted-foreground)]"
+                          )}>
+                            {step.description}
+                          </p>
+
+                          {/* Status indicator */}
+                          <div className="mt-3 pt-3 border-t border-[var(--border)]/50">
+                            <span className={cn(
+                              "text-xs font-medium",
+                              step.status === 'completed' && "text-green-600",
+                              step.status === 'current' && "text-[var(--primary)]",
+                              step.status === 'pending' && "text-[var(--muted-foreground)]"
+                            )}>
+                              {step.status === 'completed' && "Completed"}
+                              {step.status === 'current' && "In Progress"}
+                              {step.status === 'pending' && "Pending"}
+                            </span>
+                          </div>
+                        </div>
+                      )
+
+                      return step.href ? (
+                        <Link key={step.id} href={step.href}>
+                          {StepContent}
+                        </Link>
+                      ) : (
+                        <div key={step.id}>{StepContent}</div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Linked Accounts Card */}
