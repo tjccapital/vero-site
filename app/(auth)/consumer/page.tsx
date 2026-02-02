@@ -505,12 +505,12 @@ export default function ConsumerDashboardPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs bg-white/20 rounded px-2 py-1 font-mono">{referralCode}</span>
+                  <span className="text-xs bg-white/20 rounded px-2.5 py-1.5 font-mono">{referralCode}</span>
                   <button
                     onClick={copyReferralLink}
-                    className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-sm font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
+                    className="flex items-center gap-1.5 rounded bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
                   >
-                    {referralCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    {referralCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                     <span className="hidden sm:inline">{referralCopied ? 'Copied!' : 'Copy Link'}</span>
                   </button>
                 </div>
