@@ -31,6 +31,10 @@ import {
   Calendar,
   DollarSign,
   Users,
+  Landmark,
+  Plus,
+  CreditCard,
+  ExternalLink,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -127,6 +131,12 @@ const categorySpending = [
   { name: "Shopping", amount: 312.60, percentage: 24, icon: Store, color: "bg-purple-500" },
 ]
 
+// Sample linked accounts data
+const linkedAccounts = [
+  { id: "acc_001", name: "Chase Sapphire", type: "Credit Card", last4: "4242", institution: "Chase" },
+  { id: "acc_002", name: "Bank of America Checking", type: "Checking", last4: "8821", institution: "Bank of America" },
+]
+
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard, active: true },
   { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
@@ -144,6 +154,7 @@ export default function ConsumerDashboardPage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [referralCopied, setReferralCopied] = useState(false)
+  const [showPlaidModal, setShowPlaidModal] = useState(false)
 
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
@@ -489,6 +500,57 @@ export default function ConsumerDashboardPage() {
               </p>
             </div>
 
+            {/* Linked Accounts Card */}
+            <button
+              onClick={() => setShowPlaidModal(true)}
+              className="w-full rounded-lg border border-[var(--border)] p-4 sm:p-6 hover:bg-[var(--muted)]/50 hover:border-[var(--primary)]/30 transition-colors text-left"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                    <Landmark className="h-6 w-6 text-[var(--primary)]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Linked Accounts</h3>
+                    <p className="text-sm text-[var(--muted-foreground)]">
+                      {linkedAccounts.length} account{linkedAccounts.length !== 1 ? 's' : ''} connected
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {linkedAccounts.length > 0 && (
+                    <div className="hidden sm:flex -space-x-2">
+                      {linkedAccounts.slice(0, 3).map((account) => (
+                        <div
+                          key={account.id}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)] border-2 border-white text-xs font-medium"
+                          title={account.name}
+                        >
+                          {account.institution.charAt(0)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+                    <Plus className="h-4 w-4" />
+                  </div>
+                </div>
+              </div>
+              {linkedAccounts.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {linkedAccounts.map((account) => (
+                    <span
+                      key={account.id}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[var(--muted)] px-3 py-1 text-xs font-medium"
+                    >
+                      <CreditCard className="h-3 w-3" />
+                      {account.institution} ••{account.last4}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </button>
+
             {/* Stats Cards */}
             <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
               <div className="rounded-lg border border-[var(--border)] p-4">
@@ -714,6 +776,96 @@ export default function ConsumerDashboardPage() {
           </div>
         </main>
       </div>
+
+      {/* Plaid Link Modal */}
+      {showPlaidModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowPlaidModal(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-md mx-4 rounded-xl bg-white shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                  <Landmark className="h-5 w-5 text-[var(--primary)]" />
+                </div>
+                <div>
+                  <h2 className="font-semibold">Link a Bank Account</h2>
+                  <p className="text-xs text-[var(--muted-foreground)]">Securely connect via Plaid</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPlaidModal(false)}
+                className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
+              >
+                <X className="h-5 w-5 text-[var(--muted-foreground)]" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Connect your bank account or credit card to automatically receive digital receipts for your transactions.
+              </p>
+
+              {/* Current Accounts */}
+              {linkedAccounts.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
+                    Connected Accounts
+                  </p>
+                  <div className="space-y-2">
+                    {linkedAccounts.map((account) => (
+                      <div
+                        key={account.id}
+                        className="flex items-center justify-between rounded-lg border border-[var(--border)] p-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
+                            <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{account.name}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">
+                              {account.type} •••• {account.last4}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-xs text-green-600 font-medium">Connected</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Plaid Button */}
+              <a
+                href="https://plaid.com/docs/link/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                Add New Account
+                <ExternalLink className="h-3.5 w-3.5 ml-1" />
+              </a>
+
+              {/* Security Note */}
+              <div className="flex items-start gap-2 rounded-lg bg-[var(--muted)]/50 p-3">
+                <Landmark className="h-4 w-4 text-[var(--muted-foreground)] mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  Your credentials are encrypted and securely transmitted directly to your bank through Plaid. Vero never sees or stores your login information.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
