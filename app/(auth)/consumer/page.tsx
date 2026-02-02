@@ -729,52 +729,67 @@ export default function ConsumerDashboardPage() {
             </button>
 
             {/* Stats Cards */}
-            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
-                  <Calendar className="h-4 w-4" />
-                  <p className="text-xs sm:text-sm">This Month</p>
+            <div className="relative">
+              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-lg border border-[var(--border)] p-4">
+                  <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                    <Calendar className="h-4 w-4" />
+                    <p className="text-xs sm:text-sm">This Month</p>
+                  </div>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">$1,311.05</p>
+                  <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
+                    <TrendingUp className="h-3 w-3" />
+                    -12% vs last month
+                  </p>
                 </div>
-                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">$1,311.05</p>
-                <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3" />
-                  -12% vs last month
-                </p>
+
+                <Link
+                  href="/consumer/receipts"
+                  className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+                >
+                  <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                    <Receipt className="h-4 w-4" />
+                    <p className="text-xs sm:text-sm">Total Receipts</p>
+                  </div>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">247</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">All time</p>
+                </Link>
+
+                <div className="rounded-lg border border-[var(--border)] p-4">
+                  <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                    <Store className="h-4 w-4" />
+                    <p className="text-xs sm:text-sm">Merchants</p>
+                  </div>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">34</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">Unique stores</p>
+                </div>
+
+                <div className="rounded-lg border border-[var(--border)] p-4">
+                  <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                    <Users className="h-4 w-4" />
+                    <p className="text-xs sm:text-sm">Referrals</p>
+                  </div>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">3</p>
+                  <p className="mt-1 text-xs text-green-600">$15 earned</p>
+                </div>
               </div>
-
-              <Link
-                href="/consumer/receipts"
-                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
-              >
-                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
-                  <Receipt className="h-4 w-4" />
-                  <p className="text-xs sm:text-sm">Total Receipts</p>
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                      Link an account
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> to see your real data</span>
+                  </p>
                 </div>
-                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">247</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">All time</p>
-              </Link>
-
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
-                  <Store className="h-4 w-4" />
-                  <p className="text-xs sm:text-sm">Merchants</p>
-                </div>
-                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">34</p>
-                <p className="mt-1 text-xs text-[var(--muted-foreground)]">Unique stores</p>
-              </div>
-
-              <div className="rounded-lg border border-[var(--border)] p-4">
-                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
-                  <Users className="h-4 w-4" />
-                  <p className="text-xs sm:text-sm">Referrals</p>
-                </div>
-                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">3</p>
-                <p className="mt-1 text-xs text-green-600">$15 earned</p>
               </div>
             </div>
 
             {/* Spending Chart */}
-            <div className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
+            <div className="relative rounded-lg border border-[var(--border)] p-4 sm:p-6">
               <div className="flex flex-col gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">Spending Overview</h3>
@@ -871,12 +886,26 @@ export default function ConsumerDashboardPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                      Link an account
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> to see your real data</span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Two Column Layout: Recent Receipts and Categories */}
-            <div className="grid gap-4 lg:grid-cols-2">
-              {/* Recent Receipts */}
-              <div className="rounded-lg border border-[var(--border)]">
+            <div className="relative">
+              <div className="grid gap-4 lg:grid-cols-2">
+                {/* Recent Receipts */}
+                <div className="rounded-lg border border-[var(--border)]">
                 <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
                   <div>
                     <h3 className="font-semibold">Recent Receipts</h3>
@@ -947,6 +976,20 @@ export default function ConsumerDashboardPage() {
                       </div>
                     )
                   })}
+                </div>
+              </div>
+            </div>
+              {/* Sample Data Banner */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                  <p className="text-sm text-center">
+                    <span className="font-medium">Sample Data</span>
+                    <span className="text-[var(--muted-foreground)]"> · </span>
+                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                      Link an account
+                    </Link>
+                    <span className="text-[var(--muted-foreground)]"> to see your real data</span>
+                  </p>
                 </div>
               </div>
             </div>
