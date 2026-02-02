@@ -110,10 +110,10 @@ export default function ConsumerAccountsPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
+    <div className="flex h-screen w-full bg-white overflow-hidden">
       {/* Sidebar */}
       <aside className={cn(
-        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300 sticky top-0 h-screen",
+        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300 h-full",
         sidebarCollapsed ? "w-[60px]" : "w-[240px]"
       )}>
         {/* Logo */}
