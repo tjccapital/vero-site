@@ -133,7 +133,7 @@ export default function ConsumerSettingsPage() {
     <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
       {/* Sidebar */}
       <aside className={cn(
-        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300",
+        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300 sticky top-0 h-screen",
         sidebarCollapsed ? "w-[60px]" : "w-[240px]"
       )}>
         {/* Logo */}
