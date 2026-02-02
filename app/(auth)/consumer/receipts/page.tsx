@@ -622,7 +622,11 @@ export default function ConsumerReceiptsPage() {
                   {filteredReceipts.map((receipt) => {
                     const CategoryIcon = getCategoryIcon(receipt.category)
                     return (
-                      <TableRow key={receipt.id} className="cursor-pointer">
+                      <TableRow
+                        key={receipt.id}
+                        className="cursor-pointer hover:bg-[var(--muted)]/50"
+                        onClick={() => router.push(`/consumer/receipts/${receipt.id}`)}
+                      >
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
@@ -660,9 +664,10 @@ export default function ConsumerReceiptsPage() {
               {filteredReceipts.map((receipt) => {
                 const CategoryIcon = getCategoryIcon(receipt.category)
                 return (
-                  <div
+                  <Link
                     key={receipt.id}
-                    className="rounded-lg border border-[var(--border)] p-4"
+                    href={`/consumer/receipts/${receipt.id}`}
+                    className="block rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors"
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
@@ -685,7 +690,7 @@ export default function ConsumerReceiptsPage() {
                         <p className="mt-1 text-xs text-[var(--muted-foreground)]">{receipt.paymentMethod}</p>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 )
               })}
             </div>
