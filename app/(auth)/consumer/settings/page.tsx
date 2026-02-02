@@ -26,6 +26,8 @@ import {
   Smartphone,
   Copy,
   Check,
+  ExternalLink,
+  Sparkles,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -441,6 +443,58 @@ export default function ConsumerSettingsPage() {
                     </div>
                     <span className="text-[var(--muted-foreground)]">Total earned</span>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Subscription Settings */}
+            <div className="rounded-lg border border-[var(--border)] overflow-hidden">
+              <div className="border-b border-[var(--border)] px-4 py-3 sm:px-6 bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-[var(--primary)]" />
+                  <h2 className="font-semibold">Subscription</h2>
+                </div>
+              </div>
+              <div className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                        <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
+                        Active Trial
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium">Free Trial</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        You&apos;re currently on a free 1-week trial. Enjoy full access to all features.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="text-[var(--muted-foreground)]">Unlimited receipts</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="text-[var(--muted-foreground)]">Spending insights</span>
+                      </div>
+                    </div>
+                  </div>
+                  <a
+                    href={`https://billing.stripe.com/p/login/test_${user.sub?.replace('|', '_')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Manage Subscription
+                  </a>
+                </div>
+                <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    Your trial ends in 7 days. After the trial, you&apos;ll be prompted to choose a subscription plan to continue using premium features.
+                  </p>
                 </div>
               </div>
             </div>
