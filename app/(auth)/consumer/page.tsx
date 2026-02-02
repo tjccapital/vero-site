@@ -1,0 +1,719 @@
+"use client"
+
+import { useEffect, useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { useUser } from "@auth0/nextjs-auth0/client"
+import { cn } from "@/lib/utils"
+import {
+  Receipt,
+  LayoutDashboard,
+  Settings,
+  CircleHelp,
+  Search,
+  MoreVertical,
+  LogOut,
+  PanelLeftClose,
+  PanelLeft,
+  Menu,
+  X,
+  Gift,
+  Copy,
+  Check,
+  ShoppingBag,
+  Coffee,
+  Utensils,
+  Car,
+  Zap,
+  Store,
+  ChevronRight,
+  TrendingUp,
+  Calendar,
+  DollarSign,
+  Users,
+} from "lucide-react"
+import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge"
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts"
+
+// Sample spending data over time
+const spendingData7Days = [
+  { date: "Mon", amount: 45.20 },
+  { date: "Tue", amount: 128.50 },
+  { date: "Wed", amount: 32.00 },
+  { date: "Thu", amount: 89.75 },
+  { date: "Fri", amount: 156.30 },
+  { date: "Sat", amount: 234.80 },
+  { date: "Sun", amount: 67.45 },
+]
+
+const spendingData30Days = [
+  { date: "Week 1", amount: 425.50 },
+  { date: "Week 2", amount: 512.30 },
+  { date: "Week 3", amount: 389.20 },
+  { date: "Week 4", amount: 478.60 },
+]
+
+const spendingData3Months = [
+  { date: "Nov", amount: 1245.80 },
+  { date: "Dec", amount: 1892.30 },
+  { date: "Jan", amount: 1156.45 },
+]
+
+// Sample recent receipts
+const recentReceipts = [
+  {
+    id: "rcpt_001",
+    merchant: "Whole Foods Market",
+    amount: 87.45,
+    date: "Today, 2:34 PM",
+    category: "groceries",
+    items: 12,
+  },
+  {
+    id: "rcpt_002",
+    merchant: "Starbucks",
+    amount: 6.75,
+    date: "Today, 9:15 AM",
+    category: "coffee",
+    items: 2,
+  },
+  {
+    id: "rcpt_003",
+    merchant: "Shell Gas Station",
+    amount: 52.30,
+    date: "Yesterday, 5:45 PM",
+    category: "gas",
+    items: 1,
+  },
+  {
+    id: "rcpt_004",
+    merchant: "Chipotle",
+    amount: 14.25,
+    date: "Yesterday, 12:30 PM",
+    category: "dining",
+    items: 3,
+  },
+  {
+    id: "rcpt_005",
+    merchant: "Target",
+    amount: 156.80,
+    date: "Jan 30, 3:20 PM",
+    category: "shopping",
+    items: 8,
+  },
+]
+
+// Category spending breakdown
+const categorySpending = [
+  { name: "Groceries", amount: 423.50, percentage: 32, icon: ShoppingBag, color: "bg-green-500" },
+  { name: "Dining", amount: 287.20, percentage: 22, icon: Utensils, color: "bg-orange-500" },
+  { name: "Gas & Auto", amount: 198.45, percentage: 15, icon: Car, color: "bg-blue-500" },
+  { name: "Coffee", amount: 89.30, percentage: 7, icon: Coffee, color: "bg-amber-600" },
+  { name: "Shopping", amount: 312.60, percentage: 24, icon: Store, color: "bg-purple-500" },
+]
+
+const mainNavItems = [
+  { name: "Home", href: "/consumer", icon: LayoutDashboard, active: true },
+  { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+]
+
+const bottomNavItems = [
+  { name: "Settings", href: "/consumer/settings", icon: Settings },
+  { name: "Get Help", href: "/contact", icon: CircleHelp },
+]
+
+export default function ConsumerDashboardPage() {
+  const { user, isLoading } = useUser()
+  const router = useRouter()
+  const [chartRange, setChartRange] = useState("7days")
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [referralCopied, setReferralCopied] = useState(false)
+
+  // Generate a simple referral code based on user
+  const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
+
+  const copyReferralLink = () => {
+    const referralUrl = `https://seevero.com/signup?ref=${referralCode}`
+    navigator.clipboard.writeText(referralUrl)
+    setReferralCopied(true)
+    setTimeout(() => setReferralCopied(false), 2000)
+  }
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileMenuOpen])
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/auth/login?returnTo=/consumer")
+    }
+  }, [user, isLoading, router])
+
+  const chartData = useMemo(() => {
+    switch (chartRange) {
+      case "7days":
+        return spendingData7Days
+      case "30days":
+        return spendingData30Days
+      case "3months":
+      default:
+        return spendingData3Months
+    }
+  }, [chartRange])
+
+  const chartPeriodLabel = useMemo(() => {
+    switch (chartRange) {
+      case "7days":
+        return "last 7 days"
+      case "30days":
+        return "last 30 days"
+      case "3months":
+      default:
+        return "last 3 months"
+    }
+  }, [chartRange])
+
+  const totalSpending = useMemo(() => {
+    return chartData.reduce((sum, item) => sum + item.amount, 0)
+  }, [chartData])
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "groceries":
+        return ShoppingBag
+      case "coffee":
+        return Coffee
+      case "dining":
+        return Utensils
+      case "gas":
+        return Car
+      case "shopping":
+        return Store
+      default:
+        return Receipt
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <VeroLogo size={48} spinning className="text-[var(--primary)]" />
+          <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
+
+  return (
+    <div className="flex min-h-screen w-full bg-white overflow-x-hidden">
+      {/* Sidebar */}
+      <aside className={cn(
+        "hidden flex-col border-r border-[var(--border)] lg:flex transition-all duration-300",
+        sidebarCollapsed ? "w-[60px]" : "w-[240px]"
+      )}>
+        {/* Logo */}
+        <div className="flex h-14 items-center px-4">
+          <Link href="/consumer">
+            {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
+            {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
+          </Link>
+        </div>
+
+        {/* Main Navigation */}
+        <nav className="flex-1 space-y-1 px-3 py-2">
+          {mainNavItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              title={sidebarCollapsed ? item.name : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                item.active
+                  ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
+                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                sidebarCollapsed && "justify-center px-2"
+              )}
+            >
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!sidebarCollapsed && item.name}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Bottom Navigation */}
+        <div className="border-t border-[var(--border)] px-3 py-2">
+          {bottomNavItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              title={sidebarCollapsed ? item.name : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]",
+                sidebarCollapsed && "justify-center px-2"
+              )}
+            >
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!sidebarCollapsed && item.name}
+            </Link>
+          ))}
+        </div>
+
+        {/* User Profile */}
+        <div className="border-t border-[var(--border)] p-3">
+          {sidebarCollapsed ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex w-full items-center justify-center" title={user.email || user.name || "User"}>
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
+                    <AvatarFallback className="bg-[var(--muted)] text-sm">
+                      {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild className="text-red-600">
+                  <a href="/auth/logout">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
+                <AvatarFallback className="bg-[var(--muted)] text-sm">
+                  {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 overflow-hidden" title={user.email || undefined}>
+                <p className="truncate text-sm font-medium">{user.name || "User"}</p>
+                <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-md p-1 hover:bg-[var(--muted)]">
+                    <MoreVertical className="h-4 w-4 text-[var(--muted-foreground)]" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild className="text-red-600">
+                    <a href="/auth/logout">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col min-w-0">
+        {/* Header - Responsive */}
+        <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-4 lg:px-6">
+          <div className="flex items-center gap-3">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+            {/* Desktop sidebar toggle */}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hidden lg:flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </button>
+            <span className="text-sm font-medium">My Receipts</span>
+          </div>
+          <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+            Back to Site
+          </Link>
+        </header>
+
+        {/* Mobile Navigation - Full Screen Overlay */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 top-14 z-50 bg-white overflow-y-auto">
+            <div className="px-4 py-4">
+              {/* User Profile at top */}
+              <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
+                  <AvatarFallback className="bg-[var(--muted)] text-sm">
+                    {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 overflow-hidden" title={user.email || undefined}>
+                  <p className="truncate text-sm font-medium">{user.name || "User"}</p>
+                  <p className="truncate text-xs text-[var(--muted-foreground)]">{user.email}</p>
+                </div>
+              </div>
+
+              {/* Main Navigation */}
+              <nav className="py-4 space-y-1">
+                {mainNavItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors",
+                      item.active
+                        ? "bg-[var(--muted)] font-medium text-[var(--foreground)]"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                    )}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Bottom Navigation */}
+              <div className="py-4 border-t border-[var(--border)]">
+                {bottomNavItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Logout */}
+              <div className="pt-4 border-t border-[var(--border)]">
+                <a
+                  href="/auth/logout"
+                  className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <LogOut className="h-5 w-5" />
+                  Log out
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
+          <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
+            {/* Referral Banner */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[var(--primary)] via-blue-600 to-indigo-600 p-6 text-white">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                    <Gift className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Refer a Friend, Get $5</h2>
+                    <p className="mt-1 text-white/90 text-sm max-w-md">
+                      Share Vero with friends and family. When they sign up and receive their first digital receipt, you both get $5!
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:items-end gap-3">
+                  <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                    <span className="text-sm font-medium">Your code:</span>
+                    <span className="font-mono font-bold">{referralCode}</span>
+                  </div>
+                  <button
+                    onClick={copyReferralLink}
+                    className="flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
+                  >
+                    {referralCopied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Copy Referral Link
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Welcome Header */}
+            <div className="mb-2">
+              <h1 className="text-2xl font-semibold">Welcome back, {user.name?.split(' ')[0] || 'there'}</h1>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Here's an overview of your recent spending
+              </p>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                  <Calendar className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm">This Month</p>
+                </div>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">$1,311.05</p>
+                <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" />
+                  -12% vs last month
+                </p>
+              </div>
+
+              <Link
+                href="/consumer/receipts"
+                className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
+              >
+                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                  <Receipt className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm">Total Receipts</p>
+                </div>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">247</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">All time</p>
+              </Link>
+
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                  <Store className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm">Merchants</p>
+                </div>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">34</p>
+                <p className="mt-1 text-xs text-[var(--muted-foreground)]">Unique stores</p>
+              </div>
+
+              <div className="rounded-lg border border-[var(--border)] p-4">
+                <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                  <Users className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm">Referrals</p>
+                </div>
+                <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">3</p>
+                <p className="mt-1 text-xs text-green-600">$15 earned</p>
+              </div>
+            </div>
+
+            {/* Spending Chart */}
+            <div className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Spending Overview</h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">Your spending for the {chartPeriodLabel}</p>
+                </div>
+                <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1">
+                  <button
+                    onClick={() => setChartRange("3months")}
+                    className={cn(
+                      "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
+                      chartRange === "3months"
+                        ? "bg-[var(--foreground)] text-white"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                    )}
+                  >
+                    3 months
+                  </button>
+                  <button
+                    onClick={() => setChartRange("30days")}
+                    className={cn(
+                      "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
+                      chartRange === "30days"
+                        ? "bg-[var(--foreground)] text-white"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                    )}
+                  >
+                    30 days
+                  </button>
+                  <button
+                    onClick={() => setChartRange("7days")}
+                    className={cn(
+                      "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
+                      chartRange === "7days"
+                        ? "bg-[var(--foreground)] text-white"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                    )}
+                  >
+                    7 days
+                  </button>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold">${totalSpending.toFixed(2)}</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">Total spent</p>
+                </div>
+              </div>
+              <div className="mt-4 h-[200px] sm:h-[250px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id="colorSpending" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#1e3a8a" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#1e3a8a" stopOpacity={0.1}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#6b7280' }}
+                      dy={10}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: '#6b7280' }}
+                      dx={-10}
+                      tickFormatter={(value) => `$${value}`}
+                    />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+                              <p className="text-sm font-medium text-gray-900 mb-1">{label}</p>
+                              <p className="text-lg font-bold text-[var(--primary)]">
+                                ${Number(payload[0].value).toFixed(2)}
+                              </p>
+                            </div>
+                          )
+                        }
+                        return null
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#1e3a8a"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorSpending)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Two Column Layout: Recent Receipts and Categories */}
+            <div className="grid gap-4 lg:grid-cols-2">
+              {/* Recent Receipts */}
+              <div className="rounded-lg border border-[var(--border)]">
+                <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
+                  <div>
+                    <h3 className="font-semibold">Recent Receipts</h3>
+                    <p className="text-xs text-[var(--muted-foreground)]">Your latest transactions</p>
+                  </div>
+                  <Link
+                    href="/consumer/receipts"
+                    className="flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
+                  >
+                    View all
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </div>
+                <div className="divide-y divide-[var(--border)]">
+                  {recentReceipts.map((receipt) => {
+                    const CategoryIcon = getCategoryIcon(receipt.category)
+                    return (
+                      <Link
+                        key={receipt.id}
+                        href={`/consumer/receipts/${receipt.id}`}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
+                          <CategoryIcon className="h-5 w-5 text-[var(--muted-foreground)]" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{receipt.merchant}</p>
+                          <p className="text-xs text-[var(--muted-foreground)]">{receipt.date}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold">${receipt.amount.toFixed(2)}</p>
+                          <p className="text-xs text-[var(--muted-foreground)]">{receipt.items} items</p>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Spending by Category */}
+              <div className="rounded-lg border border-[var(--border)]">
+                <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
+                  <div>
+                    <h3 className="font-semibold">Spending by Category</h3>
+                    <p className="text-xs text-[var(--muted-foreground)]">This month's breakdown</p>
+                  </div>
+                </div>
+                <div className="p-4 space-y-4">
+                  {categorySpending.map((category) => {
+                    const CategoryIcon = category.icon
+                    return (
+                      <div key={category.name} className="flex items-center gap-3">
+                        <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", category.color)}>
+                          <CategoryIcon className="h-4 w-4 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium">{category.name}</span>
+                            <span className="text-sm font-semibold">${category.amount.toFixed(2)}</span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-[var(--muted)]">
+                            <div
+                              className={cn("h-2 rounded-full", category.color)}
+                              style={{ width: `${category.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
+}
