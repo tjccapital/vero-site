@@ -29,6 +29,7 @@ import {
   Download,
   Share2,
   CheckCircle2,
+  Landmark,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -327,6 +328,7 @@ const receiptsData: Record<string, {
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard },
   { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+  { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
 ]
 
 const bottomNavItems = [

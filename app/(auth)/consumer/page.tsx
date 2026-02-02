@@ -140,6 +140,7 @@ const linkedAccounts = [
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard, active: true },
   { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+  { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
 ]
 
 const bottomNavItems = [
