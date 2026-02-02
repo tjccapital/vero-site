@@ -27,10 +27,19 @@ import {
   Zap,
   Store,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   TrendingUp,
   Calendar,
   DollarSign,
   Users,
+  Landmark,
+  Plus,
+  CreditCard,
+  ExternalLink,
+  CheckCircle2,
+  Circle,
+  FileText,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -127,9 +136,48 @@ const categorySpending = [
   { name: "Shopping", amount: 312.60, percentage: 24, icon: Store, color: "bg-purple-500" },
 ]
 
+// Sample linked accounts data
+const linkedAccounts = [
+  { id: "acc_001", name: "Chase Sapphire", type: "Credit Card", last4: "4242", institution: "Chase" },
+  { id: "acc_002", name: "Bank of America Checking", type: "Checking", last4: "8821", institution: "Bank of America" },
+]
+
+// Onboarding steps - status can be 'completed', 'current', or 'pending'
+const onboardingSteps = [
+  {
+    id: 1,
+    title: "Connect an account",
+    description: "Link your bank or credit card via Plaid",
+    status: "completed" as const,
+    href: "/consumer/accounts",
+  },
+  {
+    id: 2,
+    title: "Make a purchase",
+    description: "Shop at a Vero-connected merchant",
+    status: "completed" as const,
+    href: null,
+  },
+  {
+    id: 3,
+    title: "View receipt details",
+    description: "See itemized receipt information",
+    status: "current" as const,
+    href: "/consumer/receipts",
+  },
+  {
+    id: 4,
+    title: "Refer a friend",
+    description: "Earn $5 for each friend who joins",
+    status: "pending" as const,
+    href: null,
+  },
+]
+
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard, active: true },
   { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+  { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
 ]
 
 const bottomNavItems = [
@@ -144,6 +192,8 @@ export default function ConsumerDashboardPage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [referralCopied, setReferralCopied] = useState(false)
+  const [showPlaidModal, setShowPlaidModal] = useState(false)
+  const [checklistCollapsed, setChecklistCollapsed] = useState(false)
 
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
@@ -485,9 +535,194 @@ export default function ConsumerDashboardPage() {
             <div className="mb-2">
               <h1 className="text-2xl font-semibold">Welcome back, {user.name?.split(' ')[0] || 'there'}</h1>
               <p className="text-sm text-[var(--muted-foreground)]">
-                Here's an overview of your recent spending
+                Here&apos;s an overview of your recent spending
               </p>
             </div>
+
+            {/* Getting Started Checklist */}
+            <div className="rounded-lg border border-[var(--border)] overflow-hidden">
+              <button
+                onClick={() => setChecklistCollapsed(!checklistCollapsed)}
+                className="flex w-full items-center justify-between px-4 py-3 sm:px-6 bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                    <Zap className="h-4 w-4 text-[var(--primary)]" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="font-semibold">Getting Started</h2>
+                    <p className="text-xs text-[var(--muted-foreground)]">
+                      {onboardingSteps.filter(s => s.status === 'completed').length} of {onboardingSteps.length} completed
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  {/* Progress indicator */}
+                  <div className="hidden sm:flex items-center gap-1">
+                    {onboardingSteps.map((step) => (
+                      <div
+                        key={step.id}
+                        className={cn(
+                          "h-2 w-8 rounded-full transition-colors",
+                          step.status === 'completed' ? "bg-green-500" :
+                          step.status === 'current' ? "bg-[var(--primary)]" :
+                          "bg-[var(--muted)]"
+                        )}
+                      />
+                    ))}
+                  </div>
+                  {checklistCollapsed ? (
+                    <ChevronDown className="h-5 w-5 text-[var(--muted-foreground)]" />
+                  ) : (
+                    <ChevronUp className="h-5 w-5 text-[var(--muted-foreground)]" />
+                  )}
+                </div>
+              </button>
+
+              {/* Checklist Content */}
+              {!checklistCollapsed && (
+                <div className="p-4 sm:p-6 border-t border-[var(--border)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {onboardingSteps.map((step, index) => {
+                      const StepContent = (
+                        <div
+                          className={cn(
+                            "relative rounded-lg border p-4 transition-all",
+                            step.status === 'completed'
+                              ? "border-green-200 bg-green-50/50"
+                              : step.status === 'current'
+                              ? "border-[var(--primary)]/30 bg-[var(--primary)]/5"
+                              : "border-[var(--border)] bg-[var(--muted)]/30",
+                            step.href && "hover:border-[var(--primary)]/50 cursor-pointer"
+                          )}
+                        >
+                          {/* Step number indicator */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div
+                              className={cn(
+                                "flex h-10 w-10 items-center justify-center rounded-full",
+                                step.status === 'completed'
+                                  ? "bg-green-500 text-white"
+                                  : step.status === 'current'
+                                  ? "bg-[var(--primary)] text-white"
+                                  : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+                              )}
+                            >
+                              {step.status === 'completed' ? (
+                                <CheckCircle2 className="h-5 w-5" />
+                              ) : step.status === 'current' ? (
+                                <div className="relative">
+                                  <Circle className="h-5 w-5" />
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="h-2 w-2 rounded-full bg-white" />
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className="text-sm font-semibold">{step.id}</span>
+                              )}
+                            </div>
+                            {step.status === 'current' && (
+                              <span className="inline-flex items-center rounded-full bg-[var(--primary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--primary)]">
+                                Next
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Step content */}
+                          <h3 className={cn(
+                            "font-semibold text-sm",
+                            step.status === 'pending' && "text-[var(--muted-foreground)]"
+                          )}>
+                            {step.title}
+                          </h3>
+                          <p className={cn(
+                            "mt-1 text-xs",
+                            step.status === 'pending'
+                              ? "text-[var(--muted-foreground)]/70"
+                              : "text-[var(--muted-foreground)]"
+                          )}>
+                            {step.description}
+                          </p>
+
+                          {/* Status indicator */}
+                          <div className="mt-3 pt-3 border-t border-[var(--border)]/50">
+                            <span className={cn(
+                              "text-xs font-medium",
+                              step.status === 'completed' && "text-green-600",
+                              step.status === 'current' && "text-[var(--primary)]",
+                              step.status === 'pending' && "text-[var(--muted-foreground)]"
+                            )}>
+                              {step.status === 'completed' && "Completed"}
+                              {step.status === 'current' && "In Progress"}
+                              {step.status === 'pending' && "Pending"}
+                            </span>
+                          </div>
+                        </div>
+                      )
+
+                      return step.href ? (
+                        <Link key={step.id} href={step.href}>
+                          {StepContent}
+                        </Link>
+                      ) : (
+                        <div key={step.id}>{StepContent}</div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Linked Accounts Card */}
+            <button
+              onClick={() => setShowPlaidModal(true)}
+              className="w-full rounded-lg border border-[var(--border)] p-4 sm:p-6 hover:bg-[var(--muted)]/50 hover:border-[var(--primary)]/30 transition-colors text-left"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                    <Landmark className="h-6 w-6 text-[var(--primary)]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Linked Accounts</h3>
+                    <p className="text-sm text-[var(--muted-foreground)]">
+                      {linkedAccounts.length} account{linkedAccounts.length !== 1 ? 's' : ''} connected
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {linkedAccounts.length > 0 && (
+                    <div className="hidden sm:flex -space-x-2">
+                      {linkedAccounts.slice(0, 3).map((account) => (
+                        <div
+                          key={account.id}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)] border-2 border-white text-xs font-medium"
+                          title={account.name}
+                        >
+                          {account.institution.charAt(0)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+                    <Plus className="h-4 w-4" />
+                  </div>
+                </div>
+              </div>
+              {linkedAccounts.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {linkedAccounts.map((account) => (
+                    <span
+                      key={account.id}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[var(--muted)] px-3 py-1 text-xs font-medium"
+                    >
+                      <CreditCard className="h-3 w-3" />
+                      {account.institution} ••{account.last4}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </button>
 
             {/* Stats Cards */}
             <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
@@ -714,6 +949,96 @@ export default function ConsumerDashboardPage() {
           </div>
         </main>
       </div>
+
+      {/* Plaid Link Modal */}
+      {showPlaidModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowPlaidModal(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-md mx-4 rounded-xl bg-white shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                  <Landmark className="h-5 w-5 text-[var(--primary)]" />
+                </div>
+                <div>
+                  <h2 className="font-semibold">Link a Bank Account</h2>
+                  <p className="text-xs text-[var(--muted-foreground)]">Securely connect via Plaid</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPlaidModal(false)}
+                className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
+              >
+                <X className="h-5 w-5 text-[var(--muted-foreground)]" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Connect your bank account or credit card to automatically receive digital receipts for your transactions.
+              </p>
+
+              {/* Current Accounts */}
+              {linkedAccounts.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
+                    Connected Accounts
+                  </p>
+                  <div className="space-y-2">
+                    {linkedAccounts.map((account) => (
+                      <div
+                        key={account.id}
+                        className="flex items-center justify-between rounded-lg border border-[var(--border)] p-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
+                            <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{account.name}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">
+                              {account.type} •••• {account.last4}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-xs text-green-600 font-medium">Connected</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Plaid Button */}
+              <a
+                href="https://plaid.com/docs/link/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                Add New Account
+                <ExternalLink className="h-3.5 w-3.5 ml-1" />
+              </a>
+
+              {/* Security Note */}
+              <div className="flex items-start gap-2 rounded-lg bg-[var(--muted)]/50 p-3">
+                <Landmark className="h-4 w-4 text-[var(--muted-foreground)] mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  Your credentials are encrypted and securely transmitted directly to your bank through Plaid. Vero never sees or stores your login information.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

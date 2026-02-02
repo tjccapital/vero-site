@@ -28,6 +28,7 @@ import {
   Check,
   ExternalLink,
   Sparkles,
+  Landmark,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -41,6 +42,7 @@ import {
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard },
   { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+  { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
 ]
 
 const bottomNavItems = [
