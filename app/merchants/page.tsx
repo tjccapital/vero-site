@@ -4,6 +4,8 @@ import { MerchantHero } from "@/components/sections/merchants/merchant-hero";
 import { MerchantStats } from "@/components/sections/merchants/merchant-stats";
 import { HowItWorks } from "@/components/sections/merchants/how-it-works";
 import { MerchantBenefits } from "@/components/sections/merchants/merchant-benefits";
+import { OffsetCosts } from "@/components/sections/merchants/offset-costs";
+import { ConsumerDemand } from "@/components/sections/merchants/consumer-demand";
 import { MerchantIntegrations } from "@/components/sections/merchants/merchant-integrations";
 import { MerchantCTA } from "@/components/sections/merchants/merchant-cta";
 import { Metadata } from "next";
@@ -29,6 +31,8 @@ export default function MerchantsPage() {
         <MerchantStats />
         <HowItWorks />
         <MerchantBenefits />
+        <OffsetCosts />
+        <ConsumerDemand />
         <MerchantIntegrations />
         <MerchantCTA />
       </main>
