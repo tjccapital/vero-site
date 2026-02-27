@@ -17,13 +17,13 @@ export function MerchantStats() {
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className={`text-center ${index > 0 ? "md:border-l md:border-primary-700" : ""}`}
+              className={`text-center ${index > 0 ? "md:border-l md:border-white/20" : ""}`}
             >
-              <stat.icon className="w-5 h-5 text-primary-300 mx-auto mb-3" />
+              <stat.icon className="w-5 h-5 text-white/70 mx-auto mb-3" />
               <div className="text-3xl sm:text-4xl font-bold text-white mb-1">
                 {stat.value}
               </div>
-              <div className="text-sm text-primary-200">{stat.label}</div>
+              <div className="text-sm text-white/70">{stat.label}</div>
             </div>
           ))}
         </div>
