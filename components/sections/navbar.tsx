@@ -18,7 +18,7 @@ const solutionItems = [
     icon: Store,
     title: "Merchants",
     description: "Free plugin for your POS. Send receipts in minutes.",
-    href: "/#merchants",
+    href: "/merchants",
     image: "/merchant-dashboard.png",
   },
   {
