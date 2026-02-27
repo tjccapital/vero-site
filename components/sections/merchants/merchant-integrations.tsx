@@ -32,7 +32,7 @@ export function MerchantIntegrations() {
               key={partner.name}
               className="flex flex-col items-center gap-2"
             >
-              <div className="w-16 h-16 bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-700 font-bold text-sm hover:border-gray-300 hover:shadow-sm transition-all">
+              <div className="w-16 h-16 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-700 font-bold text-sm hover:border-gray-300 hover:shadow-sm transition-all">
                 {partner.letter}
               </div>
               <span className="text-xs text-gray-500">{partner.name}</span>

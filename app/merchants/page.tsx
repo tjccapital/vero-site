@@ -5,7 +5,6 @@ import { MerchantStats } from "@/components/sections/merchants/merchant-stats";
 import { HowItWorks } from "@/components/sections/merchants/how-it-works";
 import { MerchantBenefits } from "@/components/sections/merchants/merchant-benefits";
 import { MerchantIntegrations } from "@/components/sections/merchants/merchant-integrations";
-import { MerchantTestimonial } from "@/components/sections/merchants/merchant-testimonial";
 import { MerchantCTA } from "@/components/sections/merchants/merchant-cta";
 import { Metadata } from "next";
 
@@ -31,7 +30,6 @@ export default function MerchantsPage() {
         <HowItWorks />
         <MerchantBenefits />
         <MerchantIntegrations />
-        <MerchantTestimonial />
         <MerchantCTA />
       </main>
       <Footer />

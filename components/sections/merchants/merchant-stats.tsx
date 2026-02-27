@@ -14,8 +14,11 @@ export function MerchantStats() {
     <section className="bg-primary-900 py-10 sm:py-14">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`text-center ${index > 0 ? "md:border-l md:border-primary-700" : ""}`}
+            >
               <stat.icon className="w-5 h-5 text-primary-300 mx-auto mb-3" />
               <div className="text-3xl sm:text-4xl font-bold text-white mb-1">
                 {stat.value}
