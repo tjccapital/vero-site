@@ -10,7 +10,7 @@ const partners = [
 
 export function MerchantIntegrations() {
   return (
-    <section className="py-12 sm:py-20 bg-white">
+    <section className="py-12 sm:py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-14">
           <p className="text-sm font-medium text-primary-900 mb-2">
