@@ -118,7 +118,7 @@ export function Encryption() {
         {/* CTA Button */}
         <div className="mt-8 sm:mt-10 text-center">
           <a
-            href="/product"
+            href="/app"
             className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-primary-600 hover:bg-primary-500 transition-colors"
           >
             Learn more
