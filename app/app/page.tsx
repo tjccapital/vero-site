@@ -23,8 +23,8 @@ export default function AppPage() {
     <>
       <Navbar />
       <main className="pt-16">
-        <section className="relative flex min-h-[calc(100vh-4rem)] w-full items-center bg-white overflow-hidden">
-          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
+        <section className="relative flex w-full items-center bg-white overflow-hidden">
+          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               {/* Left - Text Content */}
               <div>
