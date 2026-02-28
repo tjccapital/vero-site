@@ -1,11 +1,14 @@
 "use client";
 
+import Image from "next/image";
+
 const partners = [
-  { name: "Square", letter: "S" },
-  { name: "Toast", letter: "T" },
-  { name: "Clover", letter: "C" },
-  { name: "Shopify", letter: "Sh" },
-  { name: "Stripe", letter: "St" },
+  { name: "Square", logo: "/square-logo.png" },
+  { name: "Toast", logo: "/toast-logo.png" },
+  { name: "Clover", logo: "/clover-logo.png" },
+  { name: "Shopify", logo: "/shopify-logo.png" },
+  { name: "Stripe", logo: "/stripe-logo.png" },
+  { name: "SpotOn", logo: "/spoton-logo.png" },
 ];
 
 export function MerchantIntegrations() {
@@ -26,69 +29,24 @@ export function MerchantIntegrations() {
         </div>
 
         {/* Partner logos */}
-        <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-12 sm:mb-16">
+        <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
           {partners.map((partner) => (
             <div
               key={partner.name}
               className="flex flex-col items-center gap-2"
             >
-              <div className="w-16 h-16 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-700 font-bold text-sm hover:border-gray-300 hover:shadow-sm transition-all">
-                {partner.letter}
+              <div className="w-16 h-16 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-gray-300 hover:shadow-sm transition-all">
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
               </div>
               <span className="text-xs text-gray-500">{partner.name}</span>
             </div>
           ))}
-        </div>
-
-        {/* Code snippet */}
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-gray-900 border border-gray-700 overflow-hidden">
-            {/* Terminal header */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-700">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-green-500/80" />
-              <span className="ml-2 text-xs text-gray-400">
-                integration.js
-              </span>
-            </div>
-            {/* Code */}
-            <div className="p-4 sm:p-6 text-sm font-mono overflow-x-auto">
-              <div className="text-gray-500">
-                {"// Initialize Vero in 3 lines"}
-              </div>
-              <div className="mt-2">
-                <span className="text-blue-400">import</span>
-                <span className="text-gray-300">{" { Vero } "}</span>
-                <span className="text-blue-400">from</span>
-                <span className="text-green-400">
-                  {" '@vero/merchant-sdk'"}
-                </span>
-                <span className="text-gray-300">;</span>
-              </div>
-              <div className="mt-3">
-                <span className="text-blue-400">const</span>
-                <span className="text-gray-300"> vero = </span>
-                <span className="text-blue-400">new</span>
-                <span className="text-yellow-300"> Vero</span>
-                <span className="text-gray-300">{"({ "}</span>
-                <span className="text-gray-300">merchantId</span>
-                <span className="text-gray-300">{": "}</span>
-                <span className="text-green-400">
-                  {"'your_merchant_id'"}
-                </span>
-                <span className="text-gray-300">{" });"}
-                </span>
-              </div>
-              <div className="mt-3">
-                <span className="text-blue-400">await</span>
-                <span className="text-gray-300"> vero.</span>
-                <span className="text-yellow-300">sendReceipt</span>
-                <span className="text-gray-300">{"(transaction);"}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
