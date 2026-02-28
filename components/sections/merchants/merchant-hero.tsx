@@ -49,16 +49,17 @@ export function MerchantHero() {
             </div>
           </div>
 
-          {/* Right side - Image placeholder */}
+          {/* Right side - Image */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-md aspect-[4/3] bg-gray-100 border border-gray-200 rounded-lg overflow-hidden">
-              {/* Replace src with actual image when available */}
+            <div className="relative w-full max-w-lg aspect-[1908/1156] overflow-hidden">
               <Image
-                src="/merchant-dashboard.png"
-                alt="Vero Merchant Dashboard"
+                src="/pos-to-app.png"
+                alt="POS to banking app digital receipt flow"
                 fill
-                className="object-contain p-4"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain"
                 loading="eager"
+                priority
               />
             </div>
           </div>
