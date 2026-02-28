@@ -17,7 +17,7 @@ const resourceItems = [
     icon: BookOpen,
     title: "Docs",
     description: "API reference and integration guides.",
-    href: "https://docs.seevero.com/api-reference/introduction",
+    href: "https://docs.veroreceipts.com/api-reference/introduction",
     external: true,
   },
   {

@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 
-const DOCS_URL = "https://docs.seevero.com/pos-plugins/overview"
+const DOCS_URL = "https://docs.veroreceipts.com/pos-plugins/overview"
 
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },

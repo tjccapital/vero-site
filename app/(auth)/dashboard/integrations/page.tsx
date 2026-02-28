@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 
-const DOCS_URL = "https://docs.seevero.com/pos-plugins/overview"
+const DOCS_URL = "https://docs.veroreceipts.com/pos-plugins/overview"
 
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -70,7 +70,7 @@ const posPlugins = [
     id: "square",
     name: "Square",
     description: "Full POS integration with real-time receipt sync. Perfect for retail stores, restaurants, and service businesses.",
-    docsUrl: "https://docs.seevero.com/pos-plugins/square",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/square",
     color: "bg-black",
     icon: (
       <svg viewBox="0 0 24 24" className="h-8 w-8 text-white" fill="currentColor">
@@ -83,7 +83,7 @@ const posPlugins = [
     id: "toast",
     name: "Toast",
     description: "Restaurant-focused POS with itemized receipts. Includes support for tips, modifiers, and split checks.",
-    docsUrl: "https://docs.seevero.com/pos-plugins/toast",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/toast",
     color: "bg-orange-500",
     icon: <span className="text-2xl font-bold text-white">T</span>,
     status: "coming_soon",
@@ -92,7 +92,7 @@ const posPlugins = [
     id: "clover",
     name: "Clover",
     description: "Versatile POS for retail and service businesses. Supports inventory tracking and customer management.",
-    docsUrl: "https://docs.seevero.com/pos-plugins/clover",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/clover",
     color: "bg-green-600",
     icon: (
       <svg viewBox="0 0 24 24" className="h-8 w-8 text-white" fill="currentColor">
@@ -105,7 +105,7 @@ const posPlugins = [
     id: "spoton",
     name: "SpotOn",
     description: "All-in-one platform for restaurants and retail. Includes online ordering and loyalty programs.",
-    docsUrl: "https://docs.seevero.com/pos-plugins/spoton",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/spoton",
     color: "bg-blue-600",
     icon: <span className="text-2xl font-bold text-white">S</span>,
     status: "coming_soon",
@@ -114,7 +114,7 @@ const posPlugins = [
     id: "lightspeed",
     name: "Lightspeed",
     description: "Advanced retail and restaurant POS with powerful analytics and multi-location support.",
-    docsUrl: "https://docs.seevero.com/pos-plugins/lightspeed",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/lightspeed",
     color: "bg-red-500",
     icon: <span className="text-2xl font-bold text-white">L</span>,
     status: "coming_soon",
@@ -123,7 +123,7 @@ const posPlugins = [
     id: "shopify",
     name: "Shopify POS",
     description: "Unified commerce platform connecting online and in-store sales with digital receipts.",
-    docsUrl: "https://docs.seevero.com/pos-plugins/shopify",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/shopify",
     color: "bg-green-500",
     icon: (
       <svg viewBox="0 0 24 24" className="h-8 w-8 text-white" fill="currentColor">

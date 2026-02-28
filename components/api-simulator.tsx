@@ -17,11 +17,11 @@ interface ApiLog {
 
 // Documentation URLs for each API endpoint
 const DOC_URLS: Record<number, string> = {
-  1: "https://docs.seevero.com/api-reference/onboarding/generate-keys",
-  2: "https://docs.seevero.com/api-reference/onboarding/register",
-  3: "https://docs.seevero.com/api-reference/payments/create",
-  4: "https://docs.seevero.com/api-reference/keys/grant-access",
-  5: "https://docs.seevero.com/api-reference/payments/decrypt",
+  1: "https://docs.veroreceipts.com/api-reference/onboarding/generate-keys",
+  2: "https://docs.veroreceipts.com/api-reference/onboarding/register",
+  3: "https://docs.veroreceipts.com/api-reference/payments/create",
+  4: "https://docs.veroreceipts.com/api-reference/keys/grant-access",
+  5: "https://docs.veroreceipts.com/api-reference/payments/decrypt",
 };
 
 interface StepData {

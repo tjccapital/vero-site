@@ -36,7 +36,7 @@ export function ProductHero() {
             <ArrowRight className="w-4 h-4 ml-2" />
           </a>
           <a
-            href="https://docs.seevero.com"
+            href="https://docs.veroreceipts.com"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
