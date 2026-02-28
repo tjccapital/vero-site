@@ -1,12 +1,12 @@
 "use client";
 
-import { Store, ArrowLeftRight, Clock, Zap } from "lucide-react";
+import { Store, ShieldCheck, DollarSign, Zap } from "lucide-react";
 
 const stats = [
-  { value: "50+", label: "Merchant Partners", icon: Store },
-  { value: "2M+", label: "Transactions Processed", icon: ArrowLeftRight },
-  { value: "99.9%", label: "Uptime", icon: Clock },
-  { value: "<100ms", label: "Response Time", icon: Zap },
+  { value: "80%", label: "Chargeback Reduction", icon: ShieldCheck },
+  { value: "$0", label: "Integration Cost", icon: DollarSign },
+  { value: "89%", label: "Consumers Want Digital Receipts", icon: Store },
+  { value: "<1 Day", label: "To Go Live", icon: Zap },
 ];
 
 export function MerchantStats() {
