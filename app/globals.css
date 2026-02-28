@@ -107,6 +107,8 @@ html {
   margin: 0 auto;
   background: #ffffff;
   overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
 }
 
 .drp-sim-header {
@@ -114,8 +116,8 @@ html {
   flex-direction: column;
   gap: 16px;
   padding: 20px 24px;
-  background: #0f172a;
-  border-bottom: 1px solid #1e293b;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 @media (min-width: 640px) {
@@ -135,7 +137,7 @@ html {
 
 .drp-sim-progress-bar {
   height: 4px;
-  background: #334155;
+  background: #e5e7eb;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -149,7 +151,7 @@ html {
 
 .drp-sim-progress-text {
   font-size: 13px;
-  color: #94a3b8;
+  color: #6b7280;
   font-weight: 500;
 }
 
@@ -194,13 +196,13 @@ html {
 
 .drp-sim-btn-secondary {
   background: transparent;
-  color: #e2e8f0;
-  border: 1px solid #475569;
+  color: #374151;
+  border: 1px solid #d1d5db;
 }
 
 .drp-sim-btn-secondary:hover:not(:disabled) {
-  background: #1e293b;
-  border-color: #64748b;
+  background: #f3f4f6;
+  border-color: #9ca3af;
 }
 
 .drp-sim-spinner {
@@ -364,7 +366,7 @@ html {
 
 @media (min-width: 768px) {
   .drp-sim-left {
-    border-right: 1px solid #1e293b;
+    border-right: 1px solid #e5e7eb;
     border-bottom: none;
     min-height: 720px;
     height: 720px;
