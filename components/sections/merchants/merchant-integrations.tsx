@@ -39,13 +39,13 @@ export function MerchantIntegrations() {
                 href="https://docs.veroreceipts.com/pos-plugins/overview"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-16 h-16 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-gray-300 hover:shadow-sm transition-all"
+                className="w-20 h-20 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-gray-300 hover:shadow-sm transition-all"
               >
                 <Image
                   src={partner.logo}
                   alt={partner.name}
-                  width={50}
-                  height={50}
+                  width={70}
+                  height={70}
                   className="object-contain"
                 />
               </a>
