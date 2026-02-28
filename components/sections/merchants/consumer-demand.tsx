@@ -54,38 +54,50 @@ export function ConsumerDemand() {
 
           {/* Right side - Illustration */}
           <div className="flex justify-center lg:justify-end">
-            <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden w-full max-w-md">
-              {/* Top bar chart area */}
-              <div className="px-6 pt-6 pb-4">
-                <div className="flex items-end gap-1.5 h-12 mb-1">
-                  {[40, 65, 50, 80, 55, 70, 45, 60, 75, 50, 85, 65].map(
-                    (h, i) => (
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden w-full max-w-md">
+              {/* Chart header */}
+              <div className="px-6 pt-5 pb-2 flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-900">Consumer Interest in Digital Receipts</span>
+                <span className="text-xs text-gray-400">2020–2025</span>
+              </div>
+
+              {/* Bar chart area */}
+              <div className="px-6 pb-6">
+                <div className="flex items-end gap-2 h-40">
+                  {[
+                    { h: 30, label: "'20" },
+                    { h: 42, label: "" },
+                    { h: 48, label: "'21" },
+                    { h: 55, label: "" },
+                    { h: 62, label: "'22" },
+                    { h: 68, label: "" },
+                    { h: 72, label: "'23" },
+                    { h: 78, label: "" },
+                    { h: 82, label: "'24" },
+                    { h: 88, label: "" },
+                    { h: 93, label: "'25" },
+                    { h: 98, label: "" },
+                  ].map((bar, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
                       <div
-                        key={i}
-                        className="flex-1 bg-primary-200 rounded-t-sm"
-                        style={{ height: `${h}%` }}
+                        className="w-full bg-primary-600 rounded-t-sm"
+                        style={{ height: `${bar.h}%` }}
                       />
-                    )
-                  )}
+                      {bar.label && (
+                        <span className="text-[10px] text-gray-400">{bar.label}</span>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Illustration area */}
-              <div className="relative bg-primary-900 px-6 pt-8 pb-0 min-h-[160px] flex items-end justify-center">
-                {/* Receipt delivered badge */}
-                <div className="absolute top-4 right-6 bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-primary-600" />
-                  <span className="text-xs font-medium text-gray-900">
-                    Receipt delivered
-                  </span>
+              {/* Bottom stat bar */}
+              <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between bg-gray-50">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-gray-900">89% want digital receipts</span>
                 </div>
-
-                {/* People silhouettes */}
-                <div className="flex items-end gap-3">
-                  <div className="w-12 h-20 bg-primary-400 rounded-t-full" />
-                  <div className="w-14 h-24 bg-primary-300 rounded-t-full" />
-                  <div className="w-12 h-20 bg-primary-400 rounded-t-full" />
-                </div>
+                <span className="text-xs text-green-600 font-medium">+12% YoY</span>
               </div>
             </div>
           </div>
