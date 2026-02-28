@@ -71,6 +71,16 @@ export default function AppPage() {
         </section>
 
         {/* Features Grid */}
+        <section className="pt-12 sm:pt-20 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Take control of your expenses
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              It&apos;s finally time that you have access to your own itemized transaction data.
+            </p>
+          </div>
+        </section>
         <Features />
 
         {/* CTA */}
