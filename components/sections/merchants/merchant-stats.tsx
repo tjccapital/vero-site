@@ -2,7 +2,7 @@ const stats = [
   { value: "80%", label: "Chargeback Reduction" },
   { value: "$0", label: "Integration Cost" },
   { value: "89%", label: "Consumers Want Digital Receipts" },
-  { value: "<1 Day", label: "To Go Live" },
+  { value: "<2 Min", label: "To Go Live" },
 ];
 
 export function MerchantStats() {
