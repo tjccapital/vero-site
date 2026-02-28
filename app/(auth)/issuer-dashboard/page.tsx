@@ -146,7 +146,7 @@ const topMerchants = [
   { name: "Whole Foods", receipts: 7230, percentage: 5.8 },
 ]
 
-const DOCS_URL = "https://docs.seevero.com"
+const DOCS_URL = "https://docs.veroreceipts.com"
 
 const mainNavItems = [
   { name: "Overview", href: "/issuer-dashboard", icon: LayoutDashboard, active: true },

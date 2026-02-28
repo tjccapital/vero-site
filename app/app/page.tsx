@@ -24,18 +24,18 @@ export default function AppPage() {
       <Navbar />
       <main className="pt-16">
         <section className="relative flex w-full items-center bg-white overflow-hidden">
-          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16 w-full">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               {/* Left - Text Content */}
-              <div>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-6">
+              <div className="text-center lg:text-left">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] mb-4 sm:mb-6">
                   Your receipts,
                   <br />
                   right in your
                   <br />
                   pocket.
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-600 mb-10 max-w-lg">
+                <p className="text-base sm:text-xl text-gray-600 mb-6 sm:mb-10 max-w-lg mx-auto lg:mx-0">
                   Download the Vero app and see exactly what you bought —
                   itemized receipts delivered automatically every time you tap
                   your card. No more cryptic bank statement codes.
@@ -44,6 +44,7 @@ export default function AppPage() {
                   href="https://apps.apple.com/app/vero-receipts/id6504488613"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="inline-block"
                 >
                   <img
                     src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
@@ -62,7 +63,7 @@ export default function AppPage() {
                   alt="Vero app showing itemized digital receipts on phone"
                   width={580}
                   height={580}
-                  className="w-full max-w-[500px] h-auto"
+                  className="w-full max-w-[320px] sm:max-w-[500px] h-auto"
                   priority
                 />
               </div>
@@ -71,12 +72,12 @@ export default function AppPage() {
         </section>
 
         {/* Features Grid */}
-        <section className="pt-12 sm:pt-20 bg-white">
+        <section className="pt-8 sm:pt-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
               Take control of your expenses
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto">
               It&apos;s finally time that you have access to your own itemized transaction data.
             </p>
           </div>
@@ -84,12 +85,12 @@ export default function AppPage() {
         <Features />
 
         {/* CTA */}
-        <section className="py-20 bg-primary-900">
+        <section className="py-12 sm:py-20 bg-primary-900">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
               See where your money really goes.
             </h2>
-            <p className="text-lg text-primary-100 mb-10">
+            <p className="text-base sm:text-lg text-primary-100 mb-6 sm:mb-10">
               Download Vero and get itemized receipts from every purchase, automatically.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">

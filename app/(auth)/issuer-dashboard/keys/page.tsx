@@ -85,7 +85,7 @@ const apiKeysData = [
   },
 ]
 
-const DOCS_URL = "https://docs.seevero.com"
+const DOCS_URL = "https://docs.veroreceipts.com"
 
 const mainNavItems = [
   { name: "Overview", href: "/issuer-dashboard", icon: LayoutDashboard },

@@ -40,12 +40,12 @@ export function Footer() {
             <h4 className="text-gray-900 font-semibold mb-4 text-sm">Resources</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="https://docs.seevero.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="https://docs.veroreceipts.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Documentation
                 </a>
               </li>
               <li>
-                <a href="https://docs.seevero.com/api-reference/introduction" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="https://docs.veroreceipts.com/api-reference/introduction" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">
                   API Reference
                 </a>
               </li>

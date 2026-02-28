@@ -39,7 +39,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const DOCS_URL = "https://docs.seevero.com"
+const DOCS_URL = "https://docs.veroreceipts.com"
 
 const mainNavItems = [
   { name: "Overview", href: "/issuer-dashboard", icon: LayoutDashboard, active: false },

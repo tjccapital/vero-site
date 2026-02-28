@@ -172,7 +172,7 @@ const posIntegrations = [
   },
 ]
 
-const DOCS_URL = "https://docs.seevero.com/pos-plugins/overview"
+const DOCS_URL = "https://docs.veroreceipts.com/pos-plugins/overview"
 
 const mainNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, active: true },

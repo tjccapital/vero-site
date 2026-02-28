@@ -1,12 +1,8 @@
-"use client";
-
-import { Store, ShieldCheck, DollarSign, Zap } from "lucide-react";
-
 const stats = [
-  { value: "80%", label: "Chargeback Reduction", icon: ShieldCheck },
-  { value: "$0", label: "Integration Cost", icon: DollarSign },
-  { value: "89%", label: "Consumers Want Digital Receipts", icon: Store },
-  { value: "<1 Day", label: "To Go Live", icon: Zap },
+  { value: "80%", label: "Chargeback Reduction" },
+  { value: "$0", label: "Integration Cost" },
+  { value: "89%", label: "Consumers Want Digital Receipts" },
+  { value: "<2 Min", label: "To Go Live" },
 ];
 
 export function MerchantStats() {
@@ -19,7 +15,6 @@ export function MerchantStats() {
               key={stat.label}
               className={`text-center ${index > 0 ? "md:border-l md:border-gray-300" : ""}`}
             >
-              <stat.icon className="w-5 h-5 text-gray-500 mx-auto mb-3" />
               <div className="text-3xl sm:text-4xl font-bold text-gray-900 mb-1">
                 {stat.value}
               </div>
