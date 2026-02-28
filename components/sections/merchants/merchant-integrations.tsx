@@ -35,15 +35,20 @@ export function MerchantIntegrations() {
               key={partner.name}
               className="flex flex-col items-center gap-2"
             >
-              <div className="w-16 h-16 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-gray-300 hover:shadow-sm transition-all">
+              <a
+                href="https://docs.veroreceipts.com/pos-plugins/overview"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-16 h-16 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-gray-300 hover:shadow-sm transition-all"
+              >
                 <Image
                   src={partner.logo}
                   alt={partner.name}
-                  width={40}
-                  height={40}
+                  width={50}
+                  height={50}
                   className="object-contain"
                 />
-              </div>
+              </a>
               <span className="text-xs text-gray-500">{partner.name}</span>
             </div>
           ))}

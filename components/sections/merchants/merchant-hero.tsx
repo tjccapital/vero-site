@@ -14,7 +14,7 @@ export function MerchantHero() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
               Join the Vero
               <br />
-              Merchant Network
+              Merchants
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-lg">
               Deliver digital receipts to your customers, reduce chargebacks,
