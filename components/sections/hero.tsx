@@ -21,7 +21,7 @@ export function Hero() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Announcement banner */}
           <a
-            href="/contact"
+            href="/merchants"
             className="pointer-events-auto inline-flex items-center gap-2 px-4 py-2 mb-6 sm:mb-8 text-sm font-medium bg-white text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm"
           >
             <span className="w-2 h-2 rounded-full bg-primary-600 animate-pulse" />
@@ -51,7 +51,7 @@ export function Hero() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8 sm:mb-12">
             <a
-              href="/contact"
+              href="/merchants"
               className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors shadow-sm"
             >
               Join the Vero Merchant Network
