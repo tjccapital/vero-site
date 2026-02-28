@@ -4,31 +4,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, X, ChevronDown, ChevronUp, CreditCard, Store, Users, Play, BookOpen, Mail, LayoutDashboard, LogOut } from "lucide-react";
-
-const solutionItems = [
-  {
-    icon: CreditCard,
-    title: "Card Issuers",
-    description: "Deliver digital receipts to cardholders and reduce friendly fraud.",
-    href: "/#issuers",
-    image: "/issuer-dashboard.png",
-  },
-  {
-    icon: Store,
-    title: "Merchants",
-    description: "Free plugin for your POS. Send receipts in minutes.",
-    href: "/merchants",
-    image: "/merchant-dashboard.png",
-  },
-  {
-    icon: Users,
-    title: "Consumers",
-    description: "Your receipts, automatically in your card app.",
-    href: "/#consumers",
-    image: "/consumer-app.png",
-  },
-];
+import { Menu, X, ChevronDown, ChevronUp, Play, BookOpen, Mail, LayoutDashboard, LogOut } from "lucide-react";
 
 const resourceItems = [
   {
@@ -107,35 +83,6 @@ export function Navbar() {
     setMobileSection(mobileSection === section ? null : section);
   };
 
-  const handleSolutionClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, isMobile: boolean = false) => {
-    e.preventDefault();
-    const hash = href.replace("/#", "");
-
-    // Update URL hash
-    window.history.pushState(null, "", `/#${hash}`);
-
-    // Dispatch hashchange event to trigger tab switch
-    window.dispatchEvent(new HashChangeEvent("hashchange"));
-
-    if (isMobile) {
-      // Close menu first to restore body scroll
-      setIsOpen(false);
-      // Wait for menu to close and overflow to be restored, then scroll
-      setTimeout(() => {
-        const section = document.getElementById("integration");
-        if (section) {
-          section.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 50);
-    } else {
-      // Desktop: scroll immediately
-      const section = document.getElementById("integration");
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 bg-white md:bg-white/80 md:backdrop-blur-lg border-b border-gray-100 transition-transform duration-300 ${!isVisible ? '-translate-y-full' : 'translate-y-0'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -154,42 +101,10 @@ export function Navbar() {
               App
             </a>
 
-            {/* Solutions Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setActiveDropdown("solutions")}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button className="flex items-center gap-1 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                Solutions
-                <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === "solutions" ? "rotate-180" : ""}`} />
-              </button>
-
-              {activeDropdown === "solutions" && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
-                  <div className="bg-white border border-gray-200 shadow-lg p-4 w-[400px]">
-                    <div className="space-y-1">
-                      {solutionItems.map((item) => (
-                        <a
-                          key={item.title}
-                          href={item.href}
-                          onClick={(e) => handleSolutionClick(e, item.href)}
-                          className="flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="flex-shrink-0 w-10 h-10 bg-primary-50 flex items-center justify-center">
-                            <item.icon className="w-5 h-5 text-primary-900" />
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-900 text-sm">{item.title}</span>
-                            <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
-                          </div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Merchant Network */}
+            <a href="/merchants" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Merchant Network
+            </a>
 
             {/* Resources Dropdown */}
             <div
@@ -302,36 +217,14 @@ export function Navbar() {
                 App
               </a>
 
-              {/* Solutions Section */}
-              <div>
-                <button
-                  onClick={() => toggleMobileSection('solutions')}
-                  className="flex items-center justify-between w-full rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                >
-                  Solutions
-                  {mobileSection === 'solutions' ? (
-                    <ChevronUp className="w-4 h-4 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
-                  )}
-                </button>
-
-                {mobileSection === 'solutions' && (
-                  <div className="ml-3 mt-1 space-y-1 border-l-2 border-gray-100 pl-3">
-                    {solutionItems.map((item) => (
-                      <a
-                        key={item.title}
-                        href={item.href}
-                        onClick={(e) => handleSolutionClick(e, item.href, true)}
-                        className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                      >
-                        <item.icon className="w-4 h-4" />
-                        {item.title}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {/* Merchant Network */}
+              <a
+                href="/merchants"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              >
+                Merchant Network
+              </a>
 
               {/* Resources Section */}
               <div>
