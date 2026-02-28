@@ -10,21 +10,21 @@ export function CTA() {
           Join the Vero Merchant Network
         </h2>
         <p className="text-base sm:text-lg text-primary-100 mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto">
-          We're working with early partners to prove Vero in production. Shape the product as a founding partner.
+          Deliver value to your customers, and save money in chargeback fees.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href="/contact"
+            href="/merchants"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-primary-900 bg-white hover:bg-primary-50 transition-colors group shadow-sm"
           >
-            Join the Pilot
+            Join the Network
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
-            href="/demo"
+            href="/contact"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white border border-white/30 hover:bg-white/10 transition-colors"
           >
-            Try the Demo
+            Get in Touch
           </a>
         </div>
       </div>

@@ -27,16 +27,16 @@ function createWalker(maxX: number, maxY: number): Walker {
   return {
     x: Math.random() * maxX,
     y: Math.random() * maxY,
-    dx: (Math.random() - 0.5) * 3,
-    dy: (Math.random() - 0.5) * 3,
+    dx: (Math.random() - 0.5) * 1.5,
+    dy: (Math.random() - 0.5) * 1.5,
   };
 }
 
 function stepWalker(w: Walker, maxX: number, maxY: number): void {
   // Gradually shift direction for organic movement
-  w.dx += (Math.random() - 0.5) * 0.8;
-  w.dy += (Math.random() - 0.5) * 0.8;
-  const maxSpeed = 2.5;
+  w.dx += (Math.random() - 0.5) * 0.5;
+  w.dy += (Math.random() - 0.5) * 0.5;
+  const maxSpeed = 1.2;
   w.dx = Math.max(-maxSpeed, Math.min(maxSpeed, w.dx));
   w.dy = Math.max(-maxSpeed, Math.min(maxSpeed, w.dy));
   w.x += w.dx;
@@ -96,21 +96,11 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
         stepWalker(w, numRows, numCols);
         const ci = Math.floor(w.x);
         const cj = Math.floor(w.y);
-        // Light up a small cluster around the walker
-        for (let di = -1; di <= 1; di++) {
-          for (let dj = -1; dj <= 1; dj++) {
-            // Skip some corners for an organic shape
-            if (Math.abs(di) + Math.abs(dj) > 1 && Math.random() > 0.4)
-              continue;
-            const ni = ci + di;
-            const nj = cj + dj;
-            if (ni >= 0 && ni < numRows && nj >= 0 && nj < numCols) {
-              lightUpCell(ni, nj);
-            }
-          }
+        if (ci >= 0 && ci < numRows && cj >= 0 && cj < numCols) {
+          lightUpCell(ci, cj);
         }
       }
-    }, 60);
+    }, 120);
 
     return () => {
       clearInterval(interval);

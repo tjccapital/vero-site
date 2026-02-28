@@ -29,7 +29,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="/merchants" className="text-gray-600 hover:text-gray-900 transition-colors">
                   For Merchants
                 </a>
               </li>
