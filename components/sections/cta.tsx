@@ -7,7 +7,7 @@ export function CTA() {
     <section className="py-12 sm:py-20 bg-primary-900">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-3 sm:mb-4">
-          Become a Pilot Partner
+          Join the Vero Merchant Network
         </h2>
         <p className="text-base sm:text-lg text-primary-100 mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto">
           We're working with early partners to prove Vero in production. Shape the product as a founding partner.

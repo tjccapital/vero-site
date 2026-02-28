@@ -63,7 +63,7 @@ export function ConsumerDemand() {
 
               {/* Bar chart area */}
               <div className="px-6 pb-6">
-                <div className="flex items-end gap-2 h-40">
+                <div className="flex gap-2 h-40">
                   {[
                     { h: 30, label: "'20" },
                     { h: 42, label: "" },
@@ -78,7 +78,7 @@ export function ConsumerDemand() {
                     { h: 93, label: "'25" },
                     { h: 98, label: "" },
                   ].map((bar, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                    <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
                       <div
                         className="w-full bg-primary-600 rounded-t-sm"
                         style={{ height: `${bar.h}%` }}

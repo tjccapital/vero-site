@@ -25,7 +25,7 @@ export function Hero() {
             className="pointer-events-auto inline-flex items-center gap-2 px-4 py-2 mb-6 sm:mb-8 text-sm font-medium bg-white text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm"
           >
             <span className="w-2 h-2 rounded-full bg-primary-600 animate-pulse" />
-            Now seeking pilot partners
+            Join the Vero Merchant Network
             <ArrowRight className="w-4 h-4" />
           </a>
 
@@ -54,7 +54,7 @@ export function Hero() {
               href="/contact"
               className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors shadow-sm"
             >
-              Become a Pilot Partner
+              Join the Vero Merchant Network
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a
