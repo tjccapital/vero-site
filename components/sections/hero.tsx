@@ -54,7 +54,7 @@ export function Hero() {
               href="/contact"
               className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors shadow-sm"
             >
-              Become a Pilot Partner
+              Join the Vero Merchant Network
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a
