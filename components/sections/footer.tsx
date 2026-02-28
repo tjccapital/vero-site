@@ -11,7 +11,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <Logo className="h-6 text-gray-900 mb-4" />
             <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
-              Digital receipts that consumers own, banks can trust.
+              The first robust digital receipt solution.
             </p>
           </div>
 

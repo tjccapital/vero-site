@@ -5,7 +5,7 @@ import "./globals.css";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://seevero.com"),
+  metadataBase: new URL("https://veroreceipts.com"),
   title: {
     default: "Vero - Digital Receipts",
     template: "%s | Vero",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://seevero.com",
+    url: "https://veroreceipts.com",
     siteName: "Vero",
     title: "Vero - Digital Receipts",
     description:
@@ -76,7 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="canonical" href="https://seevero.com" />
+        <link rel="canonical" href="https://veroreceipts.com" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-NZ8WQ62Z7K"
           strategy="afterInteractive"

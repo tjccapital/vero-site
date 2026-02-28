@@ -11,7 +11,7 @@ import { MerchantCTA } from "@/components/sections/merchants/merchant-cta";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Merchant Network - Join the Vero Digital Receipt Network",
+  title: "Merchants - Join the Vero Digital Receipt Network",
   description:
     "Join the growing Vero merchant network. Deliver digital receipts, reduce chargebacks, earn rewards, and get paid for every receipt you send. Free to integrate.",
   openGraph: {

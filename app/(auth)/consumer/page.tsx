@@ -199,7 +199,7 @@ export default function ConsumerDashboardPage() {
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
 
   const copyReferralLink = () => {
-    const referralUrl = `https://seevero.com/signup?ref=${referralCode}`
+    const referralUrl = `https://veroreceipts.com/signup?ref=${referralCode}`
     navigator.clipboard.writeText(referralUrl)
     setReferralCopied(true)
     setTimeout(() => setReferralCopied(false), 2000)
