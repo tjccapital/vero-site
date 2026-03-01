@@ -185,7 +185,7 @@ export function WhyNow() {
         {/* Interactive Problems Section - Mobile */}
         <div className="lg:hidden mb-16">
           {/* Horizontal scrollable tabs */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="grid grid-cols-2 gap-2 mb-4">
             {problems.map((problem, index) => (
               <button
                 key={index}
@@ -302,7 +302,7 @@ export function WhyNow() {
         {/* Interactive Solutions Section - Mobile */}
         <div className="lg:hidden">
           {/* Horizontal scrollable tabs */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-4">
             {solutions.map((solution, index) => (
               <button
                 key={index}
