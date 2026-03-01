@@ -63,19 +63,19 @@ export function MerchantBenefits() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {benefits.map((benefit) => (
             <div
               key={benefit.title}
-              className="bg-white border border-gray-200 p-6 hover:shadow-lg hover:border-gray-300 transition-all"
+              className="bg-white border border-gray-200 p-4 sm:p-6 hover:shadow-lg hover:border-gray-300 transition-all"
             >
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary-50 text-primary-900 mb-4">
-                <benefit.icon className="w-5 h-5" />
+              <div className="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary-50 text-primary-900 mb-3 sm:mb-4">
+                <benefit.icon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-base font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2">
                 {benefit.title}
               </h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                 {benefit.description}
               </p>
             </div>
