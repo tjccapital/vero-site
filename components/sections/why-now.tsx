@@ -185,12 +185,12 @@ export function WhyNow() {
         {/* Interactive Problems Section - Mobile */}
         <div className="lg:hidden mb-16">
           {/* Horizontal scrollable tabs */}
-          <div className="flex gap-2 overflow-x-auto mb-4 pb-1 scrollbar-hide">
+          <div className="flex flex-wrap gap-2 mb-4">
             {problems.map((problem, index) => (
               <button
                 key={index}
                 onClick={() => handleProblemClick(index)}
-                className={`shrink-0 px-4 py-2 text-sm font-medium transition-all border rounded-full ${
+                className={`px-4 py-2 text-sm font-medium transition-all border ${
                   selectedProblem === index
                     ? "bg-gray-100 border-gray-300 text-gray-900"
                     : "bg-white border-gray-200 text-gray-500"
@@ -302,12 +302,12 @@ export function WhyNow() {
         {/* Interactive Solutions Section - Mobile */}
         <div className="lg:hidden">
           {/* Horizontal scrollable tabs */}
-          <div className="flex gap-2 overflow-x-auto mb-4 pb-1 scrollbar-hide">
+          <div className="flex flex-wrap gap-2 mb-4">
             {solutions.map((solution, index) => (
               <button
                 key={index}
                 onClick={() => handleSolutionClick(index)}
-                className={`shrink-0 px-4 py-2 text-sm font-medium transition-all border rounded-full ${
+                className={`px-4 py-2 text-sm font-medium transition-all border ${
                   selectedSolution === index
                     ? "bg-gray-100 border-gray-300 text-gray-900"
                     : "bg-white border-gray-200 text-gray-500"
