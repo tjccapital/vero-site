@@ -184,23 +184,19 @@ export function WhyNow() {
 
         {/* Interactive Problems Section - Mobile */}
         <div className="lg:hidden mb-16">
-          {/* Clickable list */}
-          <div className="space-y-2 mb-4">
+          {/* Horizontal scrollable tabs */}
+          <div className="flex gap-2 overflow-x-auto mb-4 pb-1 scrollbar-hide">
             {problems.map((problem, index) => (
               <button
                 key={index}
                 onClick={() => handleProblemClick(index)}
-                className={`w-full text-left p-4 transition-all border ${
+                className={`shrink-0 px-4 py-2 text-sm font-medium transition-all border rounded-full ${
                   selectedProblem === index
-                    ? "bg-gray-50 border-gray-200"
-                    : "bg-white border-gray-100"
+                    ? "bg-gray-100 border-gray-300 text-gray-900"
+                    : "bg-white border-gray-200 text-gray-500"
                 }`}
               >
-                <h3 className={`font-semibold ${
-                  selectedProblem === index ? "text-gray-900" : "text-gray-600"
-                }`}>
-                  {problem.title}
-                </h3>
+                {problem.title}
               </button>
             ))}
           </div>
@@ -305,23 +301,19 @@ export function WhyNow() {
 
         {/* Interactive Solutions Section - Mobile */}
         <div className="lg:hidden">
-          {/* Clickable list */}
-          <div className="space-y-2 mb-4">
+          {/* Horizontal scrollable tabs */}
+          <div className="flex gap-2 overflow-x-auto mb-4 pb-1 scrollbar-hide">
             {solutions.map((solution, index) => (
               <button
                 key={index}
                 onClick={() => handleSolutionClick(index)}
-                className={`w-full text-left p-4 transition-all border ${
+                className={`shrink-0 px-4 py-2 text-sm font-medium transition-all border rounded-full ${
                   selectedSolution === index
-                    ? "bg-gray-50 border-gray-200"
-                    : "bg-white border-gray-100"
+                    ? "bg-gray-100 border-gray-300 text-gray-900"
+                    : "bg-white border-gray-200 text-gray-500"
                 }`}
               >
-                <h3 className={`font-semibold ${
-                  selectedSolution === index ? "text-gray-900" : "text-gray-600"
-                }`}>
-                  {solution.title}
-                </h3>
+                {solution.title}
               </button>
             ))}
           </div>

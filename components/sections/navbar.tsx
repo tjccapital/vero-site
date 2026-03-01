@@ -158,7 +158,7 @@ export function Navbar() {
               Contact
             </a>
             <a
-              href="/select-role"
+              href="/merchants"
               className="px-4 py-2 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors"
             >
               Get started
@@ -201,7 +201,7 @@ export function Navbar() {
               <a href="/contact" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors">
                 Contact
               </a>
-              <a href="/select-role" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
+              <a href="/merchants" onClick={() => setIsOpen(false)} className="flex-1 text-center py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors">
                 Get started
               </a>
             </div>
