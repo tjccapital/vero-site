@@ -44,8 +44,8 @@ export function Hero() {
 
           {/* Subtitle */}
           <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed mb-6 sm:mb-8">
-            Stop friendly fraud before it starts. Deliver itemized receipts
-            directly to banking apps, so customers see exactly what they bought.
+            Cryptic bank codes cause disputes that cost merchants.
+            Itemized receipts prevent that — and Vero pays merchants to send them.
           </p>
 
           {/* CTA buttons */}
@@ -54,14 +54,14 @@ export function Hero() {
               href="/merchants"
               className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-primary-900 hover:bg-primary-800 transition-colors shadow-sm"
             >
-              Join the Vero Merchant Network
+              Turn receipts into revenue
               <ArrowRight className="w-4 h-4 ml-2" />
             </a>
             <a
-              href="/demo"
+              href="/app"
               className="pointer-events-auto inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm"
             >
-              Try the Demo
+              Try the App
             </a>
           </div>
 
