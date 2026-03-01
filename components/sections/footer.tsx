@@ -7,8 +7,8 @@ export function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-5 gap-8 mb-12">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+          <div className="col-span-2">
             <Logo className="h-6 text-gray-900 mb-4" />
             <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
               The first robust digital receipt solution.
