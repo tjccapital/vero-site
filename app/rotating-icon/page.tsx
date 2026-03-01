@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { VeroLogo } from "@/components/ui/vero-logo"
 
-const words = ["receipt", "transaction", "merchant"]
+const words = ["merchant", "receipt", "consumer"]
 const PAUSE_MS = 1000
 const ROTATION_DURATION = 0.6
 
@@ -31,7 +31,7 @@ export default function RotatingIconPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-32 bg-white">
-      <div className="flex flex-col items-center gap-12">
+      <div className="flex flex-col items-center gap-8">
         {/* Cycling word */}
         <div className="h-16 flex items-center justify-center">
           <AnimatePresence mode="wait">
@@ -56,6 +56,7 @@ export default function RotatingIconPage() {
             ease: "easeInOut",
           }}
           onAnimationComplete={handleRotationComplete}
+          style={{ transformOrigin: "50% 40%" }}
           className="text-black"
         >
           <VeroLogo size={160} />
