@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Lock, EyeOff, Key, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { EvervaultCard, Icon } from "@/components/ui/evervault-card";
+import { EvervaultCard } from "@/components/ui/evervault-card";
 
 const rotatingTexts = [
   "Merchant POS encrypts receipt with your public key",
@@ -86,11 +86,6 @@ export function Encryption() {
 
           {/* Right side - Evervault Card with rotating text */}
           <div className="border border-white/[0.2] flex flex-col items-start p-4 relative h-[24rem] bg-slate-900/50">
-            <Icon className="absolute h-6 w-6 -top-3 -left-3 text-white" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -left-3 text-white" />
-            <Icon className="absolute h-6 w-6 -top-3 -right-3 text-white" />
-            <Icon className="absolute h-6 w-6 -bottom-3 -right-3 text-white" />
-
             <div className="w-full h-full flex items-center justify-center relative">
               <EvervaultCard />
               {/* Rotating text overlay */}
