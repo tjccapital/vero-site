@@ -23,14 +23,12 @@ export const EvervaultCard = ({
   }, []);
 
   useEffect(() => {
-    if (!isHovering) return;
-
     const interval = setInterval(() => {
       setRandomString(generateRandomString(1500));
     }, 50);
 
     return () => clearInterval(interval);
-  }, [isHovering]);
+  }, []);
 
   function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
