@@ -1,6 +1,4 @@
-"use client";
-
-import { CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 const stats = [
   {
@@ -54,51 +52,14 @@ export function ConsumerDemand() {
 
           {/* Right side - Illustration */}
           <div className="flex justify-center lg:justify-end">
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden w-full max-w-md">
-              {/* Chart header */}
-              <div className="px-6 pt-5 pb-2 flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-900">Consumer Interest in Digital Receipts</span>
-                <span className="text-xs text-gray-400">2020–2025</span>
-              </div>
-
-              {/* Bar chart area */}
-              <div className="px-6 pb-6">
-                <div className="flex gap-2 h-40">
-                  {[
-                    { h: 30, label: "'20" },
-                    { h: 42, label: "" },
-                    { h: 48, label: "'21" },
-                    { h: 55, label: "" },
-                    { h: 62, label: "'22" },
-                    { h: 68, label: "" },
-                    { h: 72, label: "'23" },
-                    { h: 78, label: "" },
-                    { h: 82, label: "'24" },
-                    { h: 88, label: "" },
-                    { h: 93, label: "'25" },
-                    { h: 98, label: "" },
-                  ].map((bar, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
-                      <div
-                        className="w-full bg-primary-600 rounded-t-sm"
-                        style={{ height: `${bar.h}%` }}
-                      />
-                      {bar.label && (
-                        <span className="text-[10px] text-gray-400">{bar.label}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bottom stat bar */}
-              <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between bg-gray-50">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-gray-900">89% want digital receipts</span>
-                </div>
-                <span className="text-xs text-green-600 font-medium">+12% YoY</span>
-              </div>
+            <div className="rounded-lg overflow-hidden w-full max-w-md">
+              <Image
+                src="/vero-reddit-mentions.png"
+                alt="Reddit mentions showing consumer demand for digital receipts"
+                width={800}
+                height={600}
+                className="w-full h-auto"
+              />
             </div>
           </div>
         </div>
