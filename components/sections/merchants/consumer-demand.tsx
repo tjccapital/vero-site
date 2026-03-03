@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 
 const stats = [
@@ -13,6 +16,8 @@ const stats = [
 ];
 
 export function ConsumerDemand() {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
   return (
     <section className="py-12 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,15 +58,37 @@ export function ConsumerDemand() {
           {/* Right side - Illustration */}
           <div className="flex justify-center lg:justify-end">
             <div className="rounded-lg overflow-hidden w-full max-w-md">
-              <Image
-                src="/vero-reddit-mentions.png"
-                alt="Reddit mentions showing consumer demand for digital receipts"
-                width={800}
-                height={600}
-                className="w-full h-auto"
-              />
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(true)}
+                className="cursor-zoom-in"
+              >
+                <Image
+                  src="/vero-reddit-mentions.png"
+                  alt="vero-reddit-mentions.png"
+                  width={800}
+                  height={600}
+                  className="w-full h-auto"
+                />
+              </button>
             </div>
           </div>
+
+          {/* Lightbox */}
+          {lightboxOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out"
+              onClick={() => setLightboxOpen(false)}
+            >
+              <Image
+                src="/vero-reddit-mentions.png"
+                alt="vero-reddit-mentions.png"
+                width={1600}
+                height={1200}
+                className="max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain"
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>
