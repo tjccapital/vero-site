@@ -1,6 +1,7 @@
 "use client";
 
 import { Github, Twitter } from "lucide-react";
+import Image from "next/image";
 import { Logo } from "@/components/ui/logo";
 
 export function Footer() {
@@ -93,7 +94,13 @@ export function Footer() {
               </a>
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
+            <Image
+              src="/soc2.png"
+              alt="SOC 2 Certified"
+              width={40}
+              height={40}
+            />
             <a
               href="#"
               className="text-gray-400 hover:text-gray-600 transition-colors"
