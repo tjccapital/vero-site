@@ -10,7 +10,7 @@ export function MerchantHero() {
       <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left side - Text */}
-          <div>
+          <div className="flex flex-col">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
               Join the Vero
               <br />
@@ -20,7 +20,8 @@ export function MerchantHero() {
               Deliver digital receipts to your customers, reduce chargebacks,
               and get paid for every receipt you send. Free to integrate.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
+            {/* Buttons - visible on lg+, hidden on mobile */}
+            <div className="hidden lg:flex flex-row gap-3">
               <a
                 href="/contact"
                 className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 hover:bg-primary-800 transition-colors"
@@ -50,6 +51,23 @@ export function MerchantHero() {
                 priority
               />
             </div>
+          </div>
+
+          {/* Buttons - visible on mobile only, below image */}
+          <div className="grid grid-cols-2 gap-3 lg:hidden col-span-full">
+            <a
+              href="/contact"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 hover:bg-primary-800 transition-colors"
+            >
+              Get Started
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </a>
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+            >
+              Learn More
+            </a>
           </div>
         </div>
       </div>

@@ -46,7 +46,7 @@ export function OffsetCosts() {
         </div>
 
         {/* Cost cards in a single bordered container */}
-        <div className="bg-white border border-gray-200 divide-x-0 md:divide-x md:divide-gray-200 divide-y md:divide-y-0 divide-gray-200 grid md:grid-cols-3">
+        <div className="bg-white border border-gray-200 rounded-lg md:rounded-none divide-x-0 md:divide-x md:divide-gray-200 divide-y md:divide-y-0 divide-gray-200 grid md:grid-cols-3">
           {costs.map((cost) => (
             <div key={cost.title} className="p-6 sm:p-8">
               <cost.icon className="w-6 h-6 text-gray-900 mb-4" />

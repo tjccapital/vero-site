@@ -1,7 +1,4 @@
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
+import { ArrowRight, Check, X } from "lucide-react";
 
 const stats = [
   {
@@ -15,9 +12,31 @@ const stats = [
   },
 ];
 
-export function ConsumerDemand() {
-  const [lightboxOpen, setLightboxOpen] = useState(false);
+const beforeItems = [
+  { label: "MSTR STR CFFE 4821", amount: "$11.25" },
+  { label: "SQ *LUNCH SPOT NYC", amount: "$24.80" },
+  { label: "TST* CORNER BAKERY", amount: "$8.50" },
+];
 
+const afterItems = [
+  {
+    merchant: "Main Street Coffee",
+    items: ["Oat Milk Latte", "Blueberry Muffin", "Sparkling Water"],
+    amount: "$11.25",
+  },
+  {
+    merchant: "The Lunch Spot",
+    items: ["Turkey Club", "Side Salad", "Iced Tea"],
+    amount: "$24.80",
+  },
+  {
+    merchant: "Corner Bakery",
+    items: ["Croissant", "Drip Coffee"],
+    amount: "$8.50",
+  },
+];
+
+export function ConsumerDemand() {
   return (
     <section className="py-12 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +61,7 @@ export function ConsumerDemand() {
               {stats.map((stat) => (
                 <div
                   key={stat.value}
-                  className="border border-gray-200 p-5"
+                  className="border border-gray-200 rounded-lg p-5"
                 >
                   <div className="text-2xl sm:text-3xl font-bold text-primary-600 mb-2">
                     {stat.value}
@@ -55,40 +74,72 @@ export function ConsumerDemand() {
             </div>
           </div>
 
-          {/* Right side - Illustration */}
+          {/* Right side - Before/After comparison */}
           <div className="flex justify-center lg:justify-end">
-            <div className="rounded-lg overflow-hidden w-full max-w-md">
-              <button
-                type="button"
-                onClick={() => setLightboxOpen(true)}
-                className="cursor-zoom-in"
-              >
-                <Image
-                  src="/vero-reddit-mentions.png"
-                  alt="vero-reddit-mentions.png"
-                  width={800}
-                  height={600}
-                  className="w-full h-auto"
-                />
-              </button>
+            <div className="w-full max-w-md space-y-4">
+              {/* Before - Bank statement */}
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="bg-gray-100 px-4 py-2.5 flex items-center gap-2">
+                  <X className="w-4 h-4 text-red-500" />
+                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Bank Statement
+                  </span>
+                </div>
+                <div className="divide-y divide-gray-100">
+                  {beforeItems.map((item) => (
+                    <div
+                      key={item.label}
+                      className="px-4 py-3 flex items-center justify-between"
+                    >
+                      <span className="text-sm font-mono text-gray-400">
+                        {item.label}
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        {item.amount}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex justify-center">
+                <div className="w-8 h-8 rounded-full bg-primary-900 flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4 text-white rotate-90" />
+                </div>
+              </div>
+
+              {/* After - Vero receipts */}
+              <div className="border border-primary-200 rounded-lg overflow-hidden ring-1 ring-primary-100">
+                <div className="bg-primary-50 px-4 py-2.5 flex items-center gap-2">
+                  <Check className="w-4 h-4 text-primary-600" />
+                  <span className="text-xs font-semibold text-primary-600 uppercase tracking-wider">
+                    With Vero
+                  </span>
+                </div>
+                <div className="divide-y divide-gray-100">
+                  {afterItems.map((item) => (
+                    <div
+                      key={item.merchant}
+                      className="px-4 py-3 flex items-start justify-between gap-4"
+                    >
+                      <div>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {item.merchant}
+                        </span>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {item.items.join(" · ")}
+                        </p>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900 shrink-0">
+                        {item.amount}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Lightbox */}
-          {lightboxOpen && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out"
-              onClick={() => setLightboxOpen(false)}
-            >
-              <Image
-                src="/vero-reddit-mentions.png"
-                alt="vero-reddit-mentions.png"
-                width={1600}
-                height={1200}
-                className="max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain"
-              />
-            </div>
-          )}
         </div>
       </div>
     </section>
