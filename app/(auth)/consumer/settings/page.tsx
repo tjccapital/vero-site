@@ -74,28 +74,50 @@ export default function ConsumerSettingsPage() {
     autoCategorizeTx: true,
   })
 
-  // Gmail integration state
+  // Gmail integration state — mirrors the vero-mobile EmailContext shape so the
+  // backend can return the same payload to web and mobile clients.
+  type EmailAccount = {
+    id?: string
+    email?: string | null
+    provider?: string | null
+    last_scan_at?: string | null
+    status?: string | null
+  }
   type EmailStatus = {
     connected: boolean
+    reauth_required?: boolean
+    account?: EmailAccount | null
+    // Legacy/flat fields, kept for backwards compatibility with older backends.
     email_address?: string | null
     last_scanned_at?: string | null
   }
-  const [emailStatus, setEmailStatus] = useState<EmailStatus | null>(null)
-  const [emailStatusLoading, setEmailStatusLoading] = useState(true)
-  const [emailActionLoading, setEmailActionLoading] = useState<null | "connect" | "disconnect" | "scan">(null)
-  const [emailError, setEmailError] = useState<string | null>(null)
-  const [scanResult, setScanResult] = useState<{
+  type EmailScanResult = {
     emails_scanned: number
     receipts_found: number
     attachments_saved: number
-  } | null>(null)
+    body_extracted?: number
+  }
+  const [emailStatus, setEmailStatus] = useState<EmailStatus | null>(null)
+  const [emailStatusLoading, setEmailStatusLoading] = useState(true)
+  const [emailActionLoading, setEmailActionLoading] = useState<
+    null | "connect" | "disconnect" | "scan" | "force-scan"
+  >(null)
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [scanResult, setScanResult] = useState<EmailScanResult | null>(null)
+
+  const emailAddress = emailStatus?.account?.email ?? emailStatus?.email_address ?? null
+  const lastScanAt = emailStatus?.account?.last_scan_at ?? emailStatus?.last_scanned_at ?? null
+  const provider = emailStatus?.account?.provider ?? null
+  const reauthRequired = !!emailStatus?.reauth_required
 
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.veroreceipts.com"
+  // Email endpoints proxy through this Next.js app (app/api/email/[...path]/route.ts),
+  // which attaches the Auth0 access token server-side and forwards to the
+  // backend. Calling same-origin keeps the token out of the browser.
   const apiFetch = (path: string, init?: RequestInit) =>
-    fetch(`${API_BASE}${path}`, { credentials: "include", ...init })
+    fetch(path, { credentials: "include", ...init })
 
   const fetchEmailStatus = async () => {
     try {
@@ -119,6 +141,9 @@ export default function ConsumerSettingsPage() {
       if (!res.ok) throw new Error("Failed to start Gmail connection")
       const data = await res.json()
       if (!data.auth_url) throw new Error("No authorization URL returned")
+      // Hand off to Google's consent screen. The backend's callback handler
+      // will exchange the code, store the encrypted Gmail tokens, and redirect
+      // back into the Vero web app.
       window.location.href = data.auth_url
     } catch (err) {
       setEmailError(err instanceof Error ? err.message : "Failed to connect Gmail")
@@ -142,12 +167,13 @@ export default function ConsumerSettingsPage() {
     }
   }
 
-  const handleScanInbox = async () => {
+  const runScan = async (force: boolean) => {
     setEmailError(null)
     setScanResult(null)
-    setEmailActionLoading("scan")
+    setEmailActionLoading(force ? "force-scan" : "scan")
     try {
-      const res = await apiFetch("/api/email/scan", { method: "POST" })
+      const path = force ? "/api/email/scan/force" : "/api/email/scan"
+      const res = await apiFetch(path, { method: "POST" })
       if (!res.ok) throw new Error("Failed to scan inbox")
       const data = await res.json()
       if (data?.result) setScanResult(data.result)
@@ -158,6 +184,9 @@ export default function ConsumerSettingsPage() {
       setEmailActionLoading(null)
     }
   }
+
+  const handleScanInbox = () => runScan(false)
+  const handleForceRescan = () => runScan(true)
 
   const copyReferralCode = () => {
     navigator.clipboard.writeText(referralCode)
@@ -516,6 +545,47 @@ export default function ConsumerSettingsPage() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Checking connection...
                   </div>
+                ) : emailStatus?.connected && reauthRequired ? (
+                  // Refresh token revoked — user needs to reconnect.
+                  <div className="rounded-md border border-amber-200 bg-amber-50 p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 flex-shrink-0">
+                        <AlertCircle className="h-5 w-5 text-amber-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-amber-900">Gmail access expired</p>
+                        <p className="mt-1 text-xs text-amber-800">
+                          Your Google authorization was revoked. Reconnect to resume automatic receipt scanning.
+                        </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <button
+                            onClick={handleConnectGmail}
+                            disabled={emailActionLoading !== null}
+                            className="inline-flex items-center gap-2 rounded-md bg-amber-600 px-3 py-2 text-xs font-medium text-white hover:bg-amber-700 transition-colors disabled:opacity-60"
+                          >
+                            {emailActionLoading === "connect" ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <RefreshCw className="h-4 w-4" />
+                            )}
+                            Reconnect Gmail
+                          </button>
+                          <button
+                            onClick={handleDisconnectGmail}
+                            disabled={emailActionLoading !== null}
+                            className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-xs font-medium hover:bg-[var(--muted)] transition-colors disabled:opacity-60"
+                          >
+                            {emailActionLoading === "disconnect" ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Unlink className="h-4 w-4" />
+                            )}
+                            Disconnect
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ) : emailStatus?.connected ? (
                   <div className="rounded-md border border-[var(--border)] bg-[var(--muted)]/40 p-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -525,16 +595,18 @@ export default function ConsumerSettingsPage() {
                         </div>
                         <div>
                           <p className="text-sm font-medium">
-                            {emailStatus.email_address || "Gmail account connected"}
+                            {emailAddress || "Gmail account connected"}
                           </p>
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            {emailStatus.last_scanned_at
-                              ? `Last scanned ${new Date(emailStatus.last_scanned_at).toLocaleString()}`
+                            {provider === "gmail" ? "Gmail" : "Connected"}
+                            {" · "}
+                            {lastScanAt
+                              ? `Last scanned ${new Date(lastScanAt).toLocaleString()}`
                               : "No scans yet"}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <button
                           onClick={handleScanInbox}
                           disabled={emailActionLoading !== null}
@@ -546,6 +618,19 @@ export default function ConsumerSettingsPage() {
                             <RefreshCw className="h-4 w-4" />
                           )}
                           Scan now
+                        </button>
+                        <button
+                          onClick={handleForceRescan}
+                          disabled={emailActionLoading !== null}
+                          title="Re-scan all historical email, ignoring the last scan timestamp."
+                          className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors disabled:opacity-60"
+                        >
+                          {emailActionLoading === "force-scan" ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <RefreshCw className="h-4 w-4" />
+                          )}
+                          Full rescan
                         </button>
                         <button
                           onClick={handleDisconnectGmail}
@@ -562,7 +647,7 @@ export default function ConsumerSettingsPage() {
                       </div>
                     </div>
                     {scanResult && (
-                      <div className="mt-4 grid grid-cols-3 gap-3 border-t border-[var(--border)] pt-4 text-center">
+                      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-[var(--border)] pt-4 text-center">
                         <div>
                           <p className="text-lg font-semibold">{scanResult.emails_scanned}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">Emails scanned</p>
@@ -574,6 +659,10 @@ export default function ConsumerSettingsPage() {
                         <div>
                           <p className="text-lg font-semibold">{scanResult.attachments_saved}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">Attachments saved</p>
+                        </div>
+                        <div>
+                          <p className="text-lg font-semibold">{scanResult.body_extracted ?? 0}</p>
+                          <p className="text-xs text-[var(--muted-foreground)]">Bodies extracted</p>
                         </div>
                       </div>
                     )}
