@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState, useCallback } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import { cn } from "@/lib/utils"
@@ -57,6 +57,7 @@ const bottomNavItems = [
 export default function ConsumerSettingsPage() {
   const { user, isLoading } = useUser()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
@@ -104,6 +105,9 @@ export default function ConsumerSettingsPage() {
   >(null)
   const [emailError, setEmailError] = useState<string | null>(null)
   const [scanResult, setScanResult] = useState<EmailScanResult | null>(null)
+  // Mirrors EmailContext.isSyncingAfterConnect on mobile: true from the moment
+  // we return from the OAuth round-trip until the initial inbox scan resolves.
+  const [isSyncingAfterConnect, setIsSyncingAfterConnect] = useState(false)
 
   const emailAddress = emailStatus?.account?.email ?? emailStatus?.email_address ?? null
   const lastScanAt = emailStatus?.account?.last_scan_at ?? emailStatus?.last_scanned_at ?? null
@@ -116,10 +120,13 @@ export default function ConsumerSettingsPage() {
   // Email endpoints proxy through this Next.js app (app/api/email/[...path]/route.ts),
   // which attaches the Auth0 access token server-side and forwards to the
   // backend. Calling same-origin keeps the token out of the browser.
-  const apiFetch = (path: string, init?: RequestInit) =>
-    fetch(path, { credentials: "include", ...init })
+  const apiFetch = useCallback(
+    (path: string, init?: RequestInit) =>
+      fetch(path, { credentials: "include", ...init }),
+    []
+  )
 
-  const fetchEmailStatus = async () => {
+  const fetchEmailStatus = useCallback(async () => {
     try {
       setEmailStatusLoading(true)
       const res = await apiFetch("/api/email/status")
@@ -131,19 +138,27 @@ export default function ConsumerSettingsPage() {
     } finally {
       setEmailStatusLoading(false)
     }
-  }
+  }, [apiFetch])
 
   const handleConnectGmail = async () => {
     setEmailError(null)
     setEmailActionLoading("connect")
     try {
-      const res = await apiFetch("/api/email/connect/google", { method: "POST" })
+      // Tell the backend where to send the user after the Google callback
+      // succeeds. The backend may use this as the post-callback redirect
+      // (mobile relies on WebBrowser auto-close instead). The query string
+      // also gives us a marker to trigger the auto-scan on return.
+      const returnUrl = `${window.location.origin}/consumer/settings?gmail=connected`
+      const res = await apiFetch(
+        `/api/email/connect/google?return_url=${encodeURIComponent(returnUrl)}`,
+        { method: "POST" }
+      )
       if (!res.ok) throw new Error("Failed to start Gmail connection")
       const data = await res.json()
       if (!data.auth_url) throw new Error("No authorization URL returned")
       // Hand off to Google's consent screen. The backend's callback handler
-      // will exchange the code, store the encrypted Gmail tokens, and redirect
-      // back into the Vero web app.
+      // will exchange the code, store the encrypted Gmail tokens, and
+      // (ideally) redirect back to `returnUrl`.
       window.location.href = data.auth_url
     } catch (err) {
       setEmailError(err instanceof Error ? err.message : "Failed to connect Gmail")
@@ -167,23 +182,26 @@ export default function ConsumerSettingsPage() {
     }
   }
 
-  const runScan = async (force: boolean) => {
-    setEmailError(null)
-    setScanResult(null)
-    setEmailActionLoading(force ? "force-scan" : "scan")
-    try {
-      const path = force ? "/api/email/scan/force" : "/api/email/scan"
-      const res = await apiFetch(path, { method: "POST" })
-      if (!res.ok) throw new Error("Failed to scan inbox")
-      const data = await res.json()
-      if (data?.result) setScanResult(data.result)
-      await fetchEmailStatus()
-    } catch (err) {
-      setEmailError(err instanceof Error ? err.message : "Failed to scan inbox")
-    } finally {
-      setEmailActionLoading(null)
-    }
-  }
+  const runScan = useCallback(
+    async (force: boolean) => {
+      setEmailError(null)
+      setScanResult(null)
+      setEmailActionLoading(force ? "force-scan" : "scan")
+      try {
+        const path = force ? "/api/email/scan/force" : "/api/email/scan"
+        const res = await apiFetch(path, { method: "POST" })
+        if (!res.ok) throw new Error("Failed to scan inbox")
+        const data = await res.json()
+        if (data?.result) setScanResult(data.result)
+        await fetchEmailStatus()
+      } catch (err) {
+        setEmailError(err instanceof Error ? err.message : "Failed to scan inbox")
+      } finally {
+        setEmailActionLoading(null)
+      }
+    },
+    [apiFetch, fetchEmailStatus]
+  )
 
   const handleScanInbox = () => runScan(false)
   const handleForceRescan = () => runScan(true)
@@ -228,7 +246,43 @@ export default function ConsumerSettingsPage() {
     if (user) {
       fetchEmailStatus()
     }
-  }, [user])
+  }, [user, fetchEmailStatus])
+
+  // After the OAuth round-trip the backend redirects to
+  // /consumer/settings?gmail=connected (or ?gmail=error). This mirrors mobile's
+  // post-connect behaviour: poll status, then kick off an initial scan in the
+  // background while showing "Syncing receipts from inbox…".
+  useEffect(() => {
+    if (!user) return
+    const result = searchParams.get("gmail")
+    if (!result) return
+
+    // Strip the query param so refresh doesn't re-trigger the auto-scan.
+    router.replace("/consumer/settings")
+
+    if (result === "connected") {
+      setIsSyncingAfterConnect(true)
+      // Fire-and-forget: refresh status, then run the initial scan.
+      ;(async () => {
+        try {
+          await fetchEmailStatus()
+          const res = await apiFetch("/api/email/scan", { method: "POST" })
+          if (res.ok) {
+            const data = await res.json()
+            if (data?.result) setScanResult(data.result)
+            await fetchEmailStatus()
+          }
+        } catch (err) {
+          console.error("[Email] Auto-scan after connect error:", err)
+        } finally {
+          setIsSyncingAfterConnect(false)
+        }
+      })()
+    } else if (result === "error") {
+      const reason = searchParams.get("reason")
+      setEmailError(reason || "Gmail connection failed. Please try again.")
+    }
+  }, [user, searchParams, router, apiFetch, fetchEmailStatus])
 
   const handleSave = () => {
     // In a real app, this would make an API call
@@ -600,19 +654,21 @@ export default function ConsumerSettingsPage() {
                           <p className="text-xs text-[var(--muted-foreground)]">
                             {provider === "gmail" ? "Gmail" : "Connected"}
                             {" · "}
-                            {lastScanAt
-                              ? `Last scanned ${new Date(lastScanAt).toLocaleString()}`
-                              : "No scans yet"}
+                            {isSyncingAfterConnect
+                              ? "Syncing receipts from inbox…"
+                              : lastScanAt
+                                ? `Last scanned ${new Date(lastScanAt).toLocaleString()}`
+                                : "No scans yet"}
                           </p>
                         </div>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <button
                           onClick={handleScanInbox}
-                          disabled={emailActionLoading !== null}
+                          disabled={emailActionLoading !== null || isSyncingAfterConnect}
                           className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors disabled:opacity-60"
                         >
-                          {emailActionLoading === "scan" ? (
+                          {emailActionLoading === "scan" || isSyncingAfterConnect ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
                             <RefreshCw className="h-4 w-4" />
@@ -621,7 +677,7 @@ export default function ConsumerSettingsPage() {
                         </button>
                         <button
                           onClick={handleForceRescan}
-                          disabled={emailActionLoading !== null}
+                          disabled={emailActionLoading !== null || isSyncingAfterConnect}
                           title="Re-scan all historical email, ignoring the last scan timestamp."
                           className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors disabled:opacity-60"
                         >
@@ -634,7 +690,7 @@ export default function ConsumerSettingsPage() {
                         </button>
                         <button
                           onClick={handleDisconnectGmail}
-                          disabled={emailActionLoading !== null}
+                          disabled={emailActionLoading !== null || isSyncingAfterConnect}
                           className="inline-flex items-center gap-2 rounded-md border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-60"
                         >
                           {emailActionLoading === "disconnect" ? (
