@@ -93,10 +93,14 @@ export default function ConsumerSettingsPage() {
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.veroreceipts.com"
+  const apiFetch = (path: string, init?: RequestInit) =>
+    fetch(`${API_BASE}${path}`, { credentials: "include", ...init })
+
   const fetchEmailStatus = async () => {
     try {
       setEmailStatusLoading(true)
-      const res = await fetch("/api/email/status")
+      const res = await apiFetch("/api/email/status")
       if (!res.ok) throw new Error("Failed to load email status")
       const data = await res.json()
       setEmailStatus(data)
@@ -111,7 +115,7 @@ export default function ConsumerSettingsPage() {
     setEmailError(null)
     setEmailActionLoading("connect")
     try {
-      const res = await fetch("/api/email/connect/google", { method: "POST" })
+      const res = await apiFetch("/api/email/connect/google", { method: "POST" })
       if (!res.ok) throw new Error("Failed to start Gmail connection")
       const data = await res.json()
       if (!data.auth_url) throw new Error("No authorization URL returned")
@@ -127,7 +131,7 @@ export default function ConsumerSettingsPage() {
     setEmailError(null)
     setEmailActionLoading("disconnect")
     try {
-      const res = await fetch("/api/email/disconnect", { method: "DELETE" })
+      const res = await apiFetch("/api/email/disconnect", { method: "DELETE" })
       if (!res.ok) throw new Error("Failed to disconnect Gmail")
       setScanResult(null)
       await fetchEmailStatus()
@@ -143,7 +147,7 @@ export default function ConsumerSettingsPage() {
     setScanResult(null)
     setEmailActionLoading("scan")
     try {
-      const res = await fetch("/api/email/scan", { method: "POST" })
+      const res = await apiFetch("/api/email/scan", { method: "POST" })
       if (!res.ok) throw new Error("Failed to scan inbox")
       const data = await res.json()
       if (data?.result) setScanResult(data.result)
