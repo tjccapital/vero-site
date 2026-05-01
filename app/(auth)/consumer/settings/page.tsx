@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import { cn } from "@/lib/utils"
@@ -57,7 +57,6 @@ const bottomNavItems = [
 export default function ConsumerSettingsPage() {
   const { user, isLoading } = useUser()
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
@@ -279,9 +278,13 @@ export default function ConsumerSettingsPage() {
   // /consumer/settings?gmail=connected (or ?gmail=error). This mirrors mobile's
   // post-connect behaviour: poll status, then kick off an initial scan in the
   // background while showing "Syncing receipts from inbox…".
+  // Reading from window.location.search keeps this page out of the
+  // useSearchParams() prerender-bailout in Next.js 16.
   useEffect(() => {
     if (!user) return
-    const result = searchParams.get("gmail")
+    if (typeof window === "undefined") return
+    const params = new URLSearchParams(window.location.search)
+    const result = params.get("gmail")
     if (!result) return
 
     // Strip the query param so refresh doesn't re-trigger the auto-scan.
@@ -306,10 +309,10 @@ export default function ConsumerSettingsPage() {
         }
       })()
     } else if (result === "error") {
-      const reason = searchParams.get("reason")
+      const reason = params.get("reason")
       setEmailError(reason || "Gmail connection failed. Please try again.")
     }
-  }, [user, searchParams, router, apiFetch, fetchEmailStatus])
+  }, [user, router, apiFetch, fetchEmailStatus])
 
   const handleSave = () => {
     // In a real app, this would make an API call
