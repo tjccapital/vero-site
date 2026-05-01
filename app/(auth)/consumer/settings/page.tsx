@@ -126,11 +126,38 @@ export default function ConsumerSettingsPage() {
     []
   )
 
+  // When the proxy or backend returns non-2xx, surface as much of the
+  // response body as possible so the UI shows what's actually wrong (e.g.
+  // "403: insufficient_scope") instead of a generic "Failed to ..." string.
+  const errorFromResponse = async (
+    res: Response,
+    fallback: string
+  ): Promise<string> => {
+    try {
+      const text = await res.text()
+      if (!text) return `${fallback} (HTTP ${res.status})`
+      try {
+        const parsed = JSON.parse(text)
+        const msg =
+          parsed?.error_description ||
+          parsed?.error ||
+          parsed?.message ||
+          parsed?.detail
+        if (msg) return `${fallback} (HTTP ${res.status}): ${msg}`
+      } catch {
+        // Body wasn't JSON — fall through and append the raw text.
+      }
+      return `${fallback} (HTTP ${res.status}): ${text.slice(0, 300)}`
+    } catch {
+      return `${fallback} (HTTP ${res.status})`
+    }
+  }
+
   const fetchEmailStatus = useCallback(async () => {
     try {
       setEmailStatusLoading(true)
       const res = await apiFetch("/api/email/status")
-      if (!res.ok) throw new Error("Failed to load email status")
+      if (!res.ok) throw new Error(await errorFromResponse(res, "Failed to load email status"))
       const data = await res.json()
       setEmailStatus(data)
     } catch (err) {
@@ -153,7 +180,7 @@ export default function ConsumerSettingsPage() {
         `/api/email/connect/google?return_url=${encodeURIComponent(returnUrl)}`,
         { method: "POST" }
       )
-      if (!res.ok) throw new Error("Failed to start Gmail connection")
+      if (!res.ok) throw new Error(await errorFromResponse(res, "Failed to start Gmail connection"))
       const data = await res.json()
       if (!data.auth_url) throw new Error("No authorization URL returned")
       // Hand off to Google's consent screen. The backend's callback handler
@@ -172,7 +199,7 @@ export default function ConsumerSettingsPage() {
     setEmailActionLoading("disconnect")
     try {
       const res = await apiFetch("/api/email/disconnect", { method: "DELETE" })
-      if (!res.ok) throw new Error("Failed to disconnect Gmail")
+      if (!res.ok) throw new Error(await errorFromResponse(res, "Failed to disconnect Gmail"))
       setScanResult(null)
       await fetchEmailStatus()
     } catch (err) {
@@ -190,7 +217,7 @@ export default function ConsumerSettingsPage() {
       try {
         const path = force ? "/api/email/scan/force" : "/api/email/scan"
         const res = await apiFetch(path, { method: "POST" })
-        if (!res.ok) throw new Error("Failed to scan inbox")
+        if (!res.ok) throw new Error(await errorFromResponse(res, "Failed to scan inbox"))
         const data = await res.json()
         if (data?.result) setScanResult(data.result)
         await fetchEmailStatus()
