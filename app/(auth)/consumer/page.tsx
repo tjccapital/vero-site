@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useCallback, useEffect, useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
@@ -36,10 +36,10 @@ import {
   Landmark,
   Plus,
   CreditCard,
-  ExternalLink,
   CheckCircle2,
   Circle,
   FileText,
+  Loader2,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -50,6 +50,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { PlaidLinkButton } from "@/components/plaid-link-button"
+import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
 import {
   Area,
   AreaChart,
@@ -194,6 +196,37 @@ export default function ConsumerDashboardPage() {
   const [referralCopied, setReferralCopied] = useState(false)
   const [showPlaidModal, setShowPlaidModal] = useState(false)
   const [checklistCollapsed, setChecklistCollapsed] = useState(false)
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
+  const [exchanging, setExchanging] = useState(false)
+
+  // Fetch the Plaid link_token lazily when the modal opens. Tokens are
+  // short-lived (~30 min); drop them on close so a re-open gets a fresh one.
+  useEffect(() => {
+    if (!showPlaidModal) return
+    if (linkToken) return
+    let cancelled = false
+    setLinkTokenError(null)
+    createLinkToken()
+      .then((res) => {
+        if (cancelled) return
+        setLinkToken(res.link_token)
+      })
+      .catch((err) => {
+        console.error("[Plaid] Failed to create link token:", err)
+        if (cancelled) return
+        setLinkTokenError("Couldn't start Plaid Link. Please try again.")
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [showPlaidModal, linkToken])
+
+  const closePlaidModal = useCallback(() => {
+    setShowPlaidModal(false)
+    setLinkToken(null)
+    setLinkTokenError(null)
+  }, [])
 
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
@@ -1020,7 +1053,7 @@ export default function ConsumerDashboardPage() {
                 </div>
               </div>
               <button
-                onClick={() => setShowPlaidModal(false)}
+                onClick={closePlaidModal}
                 className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
               >
                 <X className="h-5 w-5 text-[var(--muted-foreground)]" />
@@ -1064,16 +1097,62 @@ export default function ConsumerDashboardPage() {
               )}
 
               {/* Plaid Button */}
-              <a
-                href="https://plaid.com/docs/link/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                Add New Account
-                <ExternalLink className="h-3.5 w-3.5 ml-1" />
-              </a>
+              {linkTokenError ? (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  {linkTokenError}
+                </div>
+              ) : null}
+
+              {linkToken ? (
+                <PlaidLinkButton
+                  linkToken={linkToken}
+                  disabled={exchanging}
+                  onSuccess={async (publicToken, metadata) => {
+                    setExchanging(true)
+                    try {
+                      await exchangePublicToken(publicToken, {
+                        institution: metadata?.institution
+                          ? {
+                              id: metadata.institution.institution_id,
+                              name: metadata.institution.name,
+                            }
+                          : null,
+                        accounts: metadata?.accounts?.map((a) => ({
+                          id: a.id,
+                          name: a.name,
+                          mask: a.mask ?? undefined,
+                        })),
+                      })
+                      closePlaidModal()
+                      // The dashboard's account list is still sample data; send
+                      // the user to the accounts page so they see the freshly
+                      // linked institution from /api/plaid/accounts.
+                      router.push("/consumer/accounts")
+                    } catch (err) {
+                      console.error("[Plaid] Exchange failed:", err)
+                      setLinkTokenError(
+                        "We couldn't finish linking your account. Please try again."
+                      )
+                    } finally {
+                      setExchanging(false)
+                    }
+                  }}
+                  onExit={(err) => {
+                    if (err) {
+                      console.warn("[Plaid] Link exited with error:", err)
+                    }
+                  }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white opacity-60 cursor-not-allowed"
+                >
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Preparing Plaid...
+                </button>
+              )}
 
               {/* Security Note */}
               <div className="flex items-start gap-2 rounded-lg bg-[var(--muted)]/50 p-3">
