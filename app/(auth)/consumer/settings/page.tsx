@@ -113,9 +113,11 @@ export default function ConsumerSettingsPage() {
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.veroreceipts.com"
+  // Email endpoints proxy through this Next.js app (app/api/email/[...path]/route.ts),
+  // which attaches the Auth0 access token server-side and forwards to the
+  // backend. Calling same-origin keeps the token out of the browser.
   const apiFetch = (path: string, init?: RequestInit) =>
-    fetch(`${API_BASE}${path}`, { credentials: "include", ...init })
+    fetch(path, { credentials: "include", ...init })
 
   const fetchEmailStatus = async () => {
     try {
