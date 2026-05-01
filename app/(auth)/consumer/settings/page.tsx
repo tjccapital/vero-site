@@ -29,6 +29,10 @@ import {
   ExternalLink,
   Sparkles,
   Landmark,
+  Loader2,
+  AlertCircle,
+  RefreshCw,
+  Unlink,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -70,8 +74,90 @@ export default function ConsumerSettingsPage() {
     autoCategorizeTx: true,
   })
 
+  // Gmail integration state
+  type EmailStatus = {
+    connected: boolean
+    email_address?: string | null
+    last_scanned_at?: string | null
+  }
+  const [emailStatus, setEmailStatus] = useState<EmailStatus | null>(null)
+  const [emailStatusLoading, setEmailStatusLoading] = useState(true)
+  const [emailActionLoading, setEmailActionLoading] = useState<null | "connect" | "disconnect" | "scan">(null)
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [scanResult, setScanResult] = useState<{
+    emails_scanned: number
+    receipts_found: number
+    attachments_saved: number
+  } | null>(null)
+
   // Generate a simple referral code based on user
   const referralCode = user?.email ? `VERO${user.email.substring(0, 4).toUpperCase()}5` : "VERO5"
+
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.veroreceipts.com"
+  const apiFetch = (path: string, init?: RequestInit) =>
+    fetch(`${API_BASE}${path}`, { credentials: "include", ...init })
+
+  const fetchEmailStatus = async () => {
+    try {
+      setEmailStatusLoading(true)
+      const res = await apiFetch("/api/email/status")
+      if (!res.ok) throw new Error("Failed to load email status")
+      const data = await res.json()
+      setEmailStatus(data)
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : "Failed to load email status")
+    } finally {
+      setEmailStatusLoading(false)
+    }
+  }
+
+  const handleConnectGmail = async () => {
+    setEmailError(null)
+    setEmailActionLoading("connect")
+    try {
+      const res = await apiFetch("/api/email/connect/google", { method: "POST" })
+      if (!res.ok) throw new Error("Failed to start Gmail connection")
+      const data = await res.json()
+      if (!data.auth_url) throw new Error("No authorization URL returned")
+      window.location.href = data.auth_url
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : "Failed to connect Gmail")
+      setEmailActionLoading(null)
+    }
+  }
+
+  const handleDisconnectGmail = async () => {
+    if (!confirm("Disconnect your Gmail account? Vero will stop scanning your inbox for receipts.")) return
+    setEmailError(null)
+    setEmailActionLoading("disconnect")
+    try {
+      const res = await apiFetch("/api/email/disconnect", { method: "DELETE" })
+      if (!res.ok) throw new Error("Failed to disconnect Gmail")
+      setScanResult(null)
+      await fetchEmailStatus()
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : "Failed to disconnect Gmail")
+    } finally {
+      setEmailActionLoading(null)
+    }
+  }
+
+  const handleScanInbox = async () => {
+    setEmailError(null)
+    setScanResult(null)
+    setEmailActionLoading("scan")
+    try {
+      const res = await apiFetch("/api/email/scan", { method: "POST" })
+      if (!res.ok) throw new Error("Failed to scan inbox")
+      const data = await res.json()
+      if (data?.result) setScanResult(data.result)
+      await fetchEmailStatus()
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : "Failed to scan inbox")
+    } finally {
+      setEmailActionLoading(null)
+    }
+  }
 
   const copyReferralCode = () => {
     navigator.clipboard.writeText(referralCode)
@@ -105,6 +191,13 @@ export default function ConsumerSettingsPage() {
         displayName: user.name || "",
         email: user.email || "",
       }))
+    }
+  }, [user])
+
+  // Load Gmail connection status once authenticated
+  useEffect(() => {
+    if (user) {
+      fetchEmailStatus()
     }
   }, [user])
 
@@ -399,6 +492,122 @@ export default function ConsumerSettingsPage() {
                     <p className="mt-1 text-xs text-[var(--muted-foreground)]">Email is managed by your login provider</p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Email Integration */}
+            <div className="rounded-lg border border-[var(--border)]">
+              <div className="border-b border-[var(--border)] px-4 py-3 sm:px-6">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-[var(--muted-foreground)]" />
+                  <h2 className="font-semibold">Email Integration</h2>
+                </div>
+              </div>
+              <div className="p-4 sm:p-6 space-y-4">
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-medium">Connect Gmail</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    Let Vero scan your Gmail for receipts, invoices, and order confirmations, and attach them to your transactions automatically.
+                  </p>
+                </div>
+
+                {emailStatusLoading ? (
+                  <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Checking connection...
+                  </div>
+                ) : emailStatus?.connected ? (
+                  <div className="rounded-md border border-[var(--border)] bg-[var(--muted)]/40 p-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100">
+                          <CheckCircle2 className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            {emailStatus.email_address || "Gmail account connected"}
+                          </p>
+                          <p className="text-xs text-[var(--muted-foreground)]">
+                            {emailStatus.last_scanned_at
+                              ? `Last scanned ${new Date(emailStatus.last_scanned_at).toLocaleString()}`
+                              : "No scans yet"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleScanInbox}
+                          disabled={emailActionLoading !== null}
+                          className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors disabled:opacity-60"
+                        >
+                          {emailActionLoading === "scan" ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <RefreshCw className="h-4 w-4" />
+                          )}
+                          Scan now
+                        </button>
+                        <button
+                          onClick={handleDisconnectGmail}
+                          disabled={emailActionLoading !== null}
+                          className="inline-flex items-center gap-2 rounded-md border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-60"
+                        >
+                          {emailActionLoading === "disconnect" ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Unlink className="h-4 w-4" />
+                          )}
+                          Disconnect
+                        </button>
+                      </div>
+                    </div>
+                    {scanResult && (
+                      <div className="mt-4 grid grid-cols-3 gap-3 border-t border-[var(--border)] pt-4 text-center">
+                        <div>
+                          <p className="text-lg font-semibold">{scanResult.emails_scanned}</p>
+                          <p className="text-xs text-[var(--muted-foreground)]">Emails scanned</p>
+                        </div>
+                        <div>
+                          <p className="text-lg font-semibold">{scanResult.receipts_found}</p>
+                          <p className="text-xs text-[var(--muted-foreground)]">Receipts found</p>
+                        </div>
+                        <div>
+                          <p className="text-lg font-semibold">{scanResult.attachments_saved}</p>
+                          <p className="text-xs text-[var(--muted-foreground)]">Attachments saved</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleConnectGmail}
+                    disabled={emailActionLoading !== null}
+                    className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors disabled:opacity-60"
+                  >
+                    {emailActionLoading === "connect" ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.75h3.57c2.08-1.92 3.28-4.74 3.28-8.07z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.75c-.99.66-2.25 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.12c-.22-.66-.35-1.36-.35-2.12s.13-1.46.35-2.12V7.04H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.96l3.66-2.84z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.04l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z" />
+                      </svg>
+                    )}
+                    Connect Gmail
+                  </button>
+                )}
+
+                {emailError && (
+                  <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                    <span>{emailError}</span>
+                  </div>
+                )}
+
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  Vero only requests read access to your Gmail. You can disconnect at any time.
+                </p>
               </div>
             </div>
 
