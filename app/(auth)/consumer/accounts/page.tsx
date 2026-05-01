@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
@@ -19,11 +19,9 @@ import {
   Landmark,
   Plus,
   CreditCard,
-  ExternalLink,
   CheckCircle2,
-  Trash2,
-  RefreshCw,
   Shield,
+  Loader2,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -33,30 +31,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
-// Sample linked accounts data
-const linkedAccounts = [
-  {
-    id: "acc_001",
-    name: "Chase Sapphire Preferred",
-    type: "Credit Card",
-    last4: "4242",
-    institution: "Chase",
-    connected: "2025-01-15",
-    status: "active",
-    receiptsCount: 89,
-  },
-  {
-    id: "acc_002",
-    name: "Bank of America Checking",
-    type: "Checking",
-    last4: "8821",
-    institution: "Bank of America",
-    connected: "2025-01-10",
-    status: "active",
-    receiptsCount: 156,
-  },
-]
+import { PlaidLinkButton } from "@/components/plaid-link-button"
+import {
+  createLinkToken,
+  exchangePublicToken,
+  fetchPlaidAccounts,
+  type PlaidAccount,
+} from "@/lib/plaid"
 
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard },
@@ -75,6 +56,60 @@ export default function ConsumerAccountsPage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showPlaidModal, setShowPlaidModal] = useState(false)
+  const [accounts, setAccounts] = useState<PlaidAccount[]>([])
+  const [accountsLoading, setAccountsLoading] = useState(true)
+  const [accountsError, setAccountsError] = useState<string | null>(null)
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
+  const [exchanging, setExchanging] = useState(false)
+
+  const loadAccounts = useCallback(async () => {
+    setAccountsLoading(true)
+    setAccountsError(null)
+    try {
+      const res = await fetchPlaidAccounts()
+      setAccounts(res.accounts ?? [])
+    } catch (err) {
+      console.error("[Plaid] Failed to load accounts:", err)
+      setAccountsError("Couldn't load your connected accounts. Try refreshing.")
+    } finally {
+      setAccountsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!user) return
+    loadAccounts()
+  }, [user, loadAccounts])
+
+  // Fetch the Plaid link_token lazily — only when the user opens the modal,
+  // and only if we don't already have one. Tokens are short-lived (~30 min)
+  // so we drop them when the modal closes.
+  useEffect(() => {
+    if (!showPlaidModal) return
+    if (linkToken) return
+    let cancelled = false
+    setLinkTokenError(null)
+    createLinkToken()
+      .then((res) => {
+        if (cancelled) return
+        setLinkToken(res.link_token)
+      })
+      .catch((err) => {
+        console.error("[Plaid] Failed to create link token:", err)
+        if (cancelled) return
+        setLinkTokenError("Couldn't start Plaid Link. Please try again.")
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [showPlaidModal, linkToken])
+
+  const closePlaidModal = useCallback(() => {
+    setShowPlaidModal(false)
+    setLinkToken(null)
+    setLinkTokenError(null)
+  }, [])
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -340,16 +375,10 @@ export default function ConsumerAccountsPage() {
                   <Landmark className="h-6 w-6 text-[var(--primary)]" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-2xl font-bold">{linkedAccounts.length}</p>
+                  <p className="text-2xl font-bold">{accounts.length}</p>
                   <p className="text-sm text-[var(--muted-foreground)]">
-                    Account{linkedAccounts.length !== 1 ? 's' : ''} connected
+                    Account{accounts.length !== 1 ? 's' : ''} connected
                   </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold">
-                    {linkedAccounts.reduce((sum, acc) => sum + acc.receiptsCount, 0)}
-                  </p>
-                  <p className="text-sm text-[var(--muted-foreground)]">Receipts received</p>
                 </div>
               </div>
             </div>
@@ -358,7 +387,18 @@ export default function ConsumerAccountsPage() {
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Your Accounts</h2>
 
-              {linkedAccounts.length === 0 ? (
+              {accountsLoading ? (
+                <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
+                  <Loader2 className="h-6 w-6 mx-auto animate-spin text-[var(--muted-foreground)]" />
+                  <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                    Loading your accounts...
+                  </p>
+                </div>
+              ) : accountsError ? (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                  {accountsError}
+                </div>
+              ) : accounts.length === 0 ? (
                 <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
                   <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
                     <Landmark className="h-6 w-6 text-[var(--muted-foreground)]" />
@@ -377,46 +417,40 @@ export default function ConsumerAccountsPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {linkedAccounts.map((account) => (
-                    <div
-                      key={account.id}
-                      className="rounded-lg border border-[var(--border)] p-4 sm:p-5"
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--muted)]">
-                          <CreditCard className="h-6 w-6 text-[var(--muted-foreground)]" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <h3 className="font-semibold">{account.name}</h3>
-                              <p className="text-sm text-[var(--muted-foreground)]">
-                                {account.institution} · {account.type} ···· {account.last4}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
-                              <CheckCircle2 className="h-3 w-3" />
-                              Active
-                            </div>
+                  {accounts.map((account) => {
+                    const institution =
+                      account.institutionName || account.institution_name || account.institution
+                    const subtitle = [institution, account.subtype || account.type]
+                      .filter(Boolean)
+                      .join(" · ")
+                    return (
+                      <div
+                        key={account.id}
+                        className="rounded-lg border border-[var(--border)] p-4 sm:p-5"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--muted)]">
+                            <CreditCard className="h-6 w-6 text-[var(--muted-foreground)]" />
                           </div>
-                          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--muted-foreground)]">
-                            <span>{account.receiptsCount} receipts</span>
-                            <span>Connected {new Date(account.connected).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                          </div>
-                          <div className="mt-4 flex items-center gap-2">
-                            <button className="flex items-center gap-1.5 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--muted)] transition-colors">
-                              <RefreshCw className="h-3.5 w-3.5" />
-                              Refresh
-                            </button>
-                            <button className="flex items-center gap-1.5 rounded-md border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors">
-                              <Trash2 className="h-3.5 w-3.5" />
-                              Disconnect
-                            </button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <h3 className="font-semibold">{account.name}</h3>
+                                <p className="text-sm text-[var(--muted-foreground)]">
+                                  {subtitle}
+                                  {account.mask ? ` ···· ${account.mask}` : null}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                                <CheckCircle2 className="h-3 w-3" />
+                                Active
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -443,7 +477,7 @@ export default function ConsumerAccountsPage() {
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowPlaidModal(false)}
+            onClick={closePlaidModal}
           />
 
           {/* Modal */}
@@ -460,7 +494,7 @@ export default function ConsumerAccountsPage() {
                 </div>
               </div>
               <button
-                onClick={() => setShowPlaidModal(false)}
+                onClick={closePlaidModal}
                 className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
               >
                 <X className="h-5 w-5 text-[var(--muted-foreground)]" />
@@ -489,16 +523,59 @@ export default function ConsumerAccountsPage() {
               </p>
 
               {/* Plaid Button */}
-              <a
-                href="https://plaid.com/docs/link/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                Continue with Plaid
-                <ExternalLink className="h-3.5 w-3.5 ml-1" />
-              </a>
+              {linkTokenError ? (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  {linkTokenError}
+                </div>
+              ) : null}
+
+              {linkToken ? (
+                <PlaidLinkButton
+                  linkToken={linkToken}
+                  disabled={exchanging}
+                  onSuccess={async (publicToken, metadata) => {
+                    setExchanging(true)
+                    try {
+                      await exchangePublicToken(publicToken, {
+                        institution: metadata?.institution
+                          ? {
+                              id: metadata.institution.institution_id,
+                              name: metadata.institution.name,
+                            }
+                          : null,
+                        accounts: metadata?.accounts?.map((a) => ({
+                          id: a.id,
+                          name: a.name,
+                          mask: a.mask ?? undefined,
+                        })),
+                      })
+                      await loadAccounts()
+                      closePlaidModal()
+                    } catch (err) {
+                      console.error("[Plaid] Exchange failed:", err)
+                      setLinkTokenError(
+                        "We couldn't finish linking your account. Please try again."
+                      )
+                    } finally {
+                      setExchanging(false)
+                    }
+                  }}
+                  onExit={(err) => {
+                    if (err) {
+                      console.warn("[Plaid] Link exited with error:", err)
+                    }
+                  }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white opacity-60 cursor-not-allowed"
+                >
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Preparing Plaid...
+                </button>
+              )}
 
               {/* Security Note */}
               <div className="flex items-start gap-2 rounded-lg bg-[var(--muted)]/50 p-3">
