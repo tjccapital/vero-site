@@ -196,6 +196,8 @@ export default function ConsumerDashboardPage() {
   const [referralCopied, setReferralCopied] = useState(false)
   const [showPlaidModal, setShowPlaidModal] = useState(false)
   const [checklistCollapsed, setChecklistCollapsed] = useState(false)
+  const [referralDismissed, setReferralDismissed] = useState(false)
+  const [gettingStartedDismissed, setGettingStartedDismissed] = useState(false)
   const [linkToken, setLinkToken] = useState<string | null>(null)
   const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
   const [exchanging, setExchanging] = useState(false)
@@ -524,31 +526,40 @@ export default function ConsumerDashboardPage() {
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
           <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
             {/* Referral Banner - Compact */}
-            <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 p-4 sm:p-5 text-white">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 flex-shrink-0">
-                    <Gift className="h-5 w-5" />
+            {!referralDismissed && (
+              <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 p-4 sm:p-5 pr-10 sm:pr-12 text-white">
+                <button
+                  onClick={() => setReferralDismissed(true)}
+                  aria-label="Dismiss referral banner"
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 flex-shrink-0">
+                      <Gift className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="font-semibold">Refer a Friend, Get $5</h2>
+                      <p className="text-white/80 text-sm hidden sm:block">
+                        Share Vero and you both get $5 when they join
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="font-semibold">Refer a Friend, Get $5</h2>
-                    <p className="text-white/80 text-sm hidden sm:block">
-                      Share Vero and you both get $5 when they join
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs bg-white/20 rounded px-2.5 py-1.5 font-mono">{referralCode}</span>
+                    <button
+                      onClick={copyReferralLink}
+                      className="flex items-center gap-1.5 rounded bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
+                    >
+                      {referralCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span className="hidden sm:inline">{referralCopied ? 'Copied!' : 'Copy Link'}</span>
+                    </button>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs bg-white/20 rounded px-2.5 py-1.5 font-mono">{referralCode}</span>
-                  <button
-                    onClick={copyReferralLink}
-                    className="flex items-center gap-1.5 rounded bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--primary)] hover:bg-white/90 transition-colors"
-                  >
-                    {referralCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                    <span className="hidden sm:inline">{referralCopied ? 'Copied!' : 'Copy Link'}</span>
-                  </button>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Welcome Header */}
             <div>
@@ -559,43 +570,53 @@ export default function ConsumerDashboardPage() {
             </div>
 
             {/* Getting Started Checklist - Clean Version */}
+            {!gettingStartedDismissed && (
             <div className="rounded-lg border border-[var(--border)] overflow-hidden">
-              <button
-                onClick={() => setChecklistCollapsed(!checklistCollapsed)}
-                className="flex w-full items-center justify-between px-4 py-3 hover:bg-[var(--muted)]/30 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)]/10">
-                    <Zap className="h-3.5 w-3.5 text-[var(--primary)]" />
+              <div className="flex items-stretch hover:bg-[var(--muted)]/30 transition-colors">
+                <button
+                  onClick={() => setChecklistCollapsed(!checklistCollapsed)}
+                  className="flex flex-1 items-center justify-between px-4 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)]/10">
+                      <Zap className="h-3.5 w-3.5 text-[var(--primary)]" />
+                    </div>
+                    <div className="text-left">
+                      <h2 className="font-medium text-sm">Getting Started</h2>
+                      <p className="text-xs text-[var(--muted-foreground)]">
+                        {onboardingSteps.filter(s => s.status === 'completed').length} of {onboardingSteps.length} completed
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <h2 className="font-medium text-sm">Getting Started</h2>
-                    <p className="text-xs text-[var(--muted-foreground)]">
-                      {onboardingSteps.filter(s => s.status === 'completed').length} of {onboardingSteps.length} completed
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-0.5">
+                      {onboardingSteps.map((step) => (
+                        <div
+                          key={step.id}
+                          className={cn(
+                            "h-1.5 w-6 rounded-full transition-colors",
+                            step.status === 'completed' ? "bg-green-500" :
+                            step.status === 'current' ? "bg-[var(--primary)]" :
+                            "bg-[var(--muted)]"
+                          )}
+                        />
+                      ))}
+                    </div>
+                    {checklistCollapsed ? (
+                      <ChevronDown className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    ) : (
+                      <ChevronUp className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    )}
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-0.5">
-                    {onboardingSteps.map((step) => (
-                      <div
-                        key={step.id}
-                        className={cn(
-                          "h-1.5 w-6 rounded-full transition-colors",
-                          step.status === 'completed' ? "bg-green-500" :
-                          step.status === 'current' ? "bg-[var(--primary)]" :
-                          "bg-[var(--muted)]"
-                        )}
-                      />
-                    ))}
-                  </div>
-                  {checklistCollapsed ? (
-                    <ChevronDown className="h-4 w-4 text-[var(--muted-foreground)]" />
-                  ) : (
-                    <ChevronUp className="h-4 w-4 text-[var(--muted-foreground)]" />
-                  )}
-                </div>
-              </button>
+                </button>
+                <button
+                  onClick={() => setGettingStartedDismissed(true)}
+                  aria-label="Dismiss Getting Started"
+                  className="flex items-center justify-center px-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] border-l border-[var(--border)]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
 
               {!checklistCollapsed && (
                 <div className="border-t border-[var(--border)]">
@@ -709,6 +730,7 @@ export default function ConsumerDashboardPage() {
                 </div>
               )}
             </div>
+            )}
 
             {/* Linked Accounts Card */}
             <button
