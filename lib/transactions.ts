@@ -221,6 +221,22 @@ export async function fetchTransactionReceipt(
   return (await res.json()) as TransactionReceiptResponse
 }
 
+// Items live behind their own endpoint
+// (GET /api/receipts/:id/items) — the transaction-receipt response only
+// returns the receipt header (subtotal, tax, total, match metadata).
+export async function fetchReceiptItems(
+  receiptId: string
+): Promise<ReceiptItem[]> {
+  const url = `/api/receipts/${encodeURIComponent(receiptId)}/items`
+  const res = await fetch(url)
+  if (!res.ok) {
+    const text = await res.text().catch(() => "")
+    throw new Error(`GET ${url} failed (${res.status}): ${text || res.statusText}`)
+  }
+  const body = (await res.json()) as { items?: ReceiptItem[] | null }
+  return body.items ?? []
+}
+
 // Pull a single transaction by id from the list endpoint. Useful for
 // rendering the detail page header without keeping a global cache. We use
 // `search` so the backend filters server-side; if it returns multiple rows
