@@ -202,6 +202,30 @@ export default function ConsumerDashboardPage() {
   const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
   const [exchanging, setExchanging] = useState(false)
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.localStorage.getItem('vero:consumer:referralDismissed') === '1') {
+      setReferralDismissed(true)
+    }
+    if (window.localStorage.getItem('vero:consumer:gettingStartedDismissed') === '1') {
+      setGettingStartedDismissed(true)
+    }
+  }, [])
+
+  const dismissReferral = useCallback(() => {
+    setReferralDismissed(true)
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('vero:consumer:referralDismissed', '1')
+    }
+  }, [])
+
+  const dismissGettingStarted = useCallback(() => {
+    setGettingStartedDismissed(true)
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('vero:consumer:gettingStartedDismissed', '1')
+    }
+  }, [])
+
   // Fetch the Plaid link_token lazily when the modal opens. Tokens are
   // short-lived (~30 min); drop them on close so a re-open gets a fresh one.
   useEffect(() => {
@@ -529,7 +553,7 @@ export default function ConsumerDashboardPage() {
             {!referralDismissed && (
               <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 p-4 sm:p-5 pr-10 sm:pr-12 text-white">
                 <button
-                  onClick={() => setReferralDismissed(true)}
+                  onClick={dismissReferral}
                   aria-label="Dismiss referral banner"
                   className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-white/80 hover:bg-white/20 hover:text-white transition-colors"
                 >
@@ -610,7 +634,7 @@ export default function ConsumerDashboardPage() {
                   </div>
                 </button>
                 <button
-                  onClick={() => setGettingStartedDismissed(true)}
+                  onClick={dismissGettingStarted}
                   aria-label="Dismiss Getting Started"
                   className="flex items-center justify-center px-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] border-l border-[var(--border)]"
                 >
