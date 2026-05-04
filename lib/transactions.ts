@@ -141,3 +141,112 @@ export function transactionDisplayName(tx: Transaction): string {
     tx.name
   )
 }
+
+// ─── Receipt detail ────────────────────────────────────────────────────────
+
+export interface ReceiptItem {
+  id?: string
+  // Backends serialise items with a mix of camelCase and snake_case; declare
+  // both so the UI doesn't need a mapping layer.
+  description?: string
+  name?: string
+  quantity?: number
+  unitPrice?: number
+  unit_price?: number
+  totalPrice?: number
+  total_price?: number
+  price?: number
+  sku?: string
+  sortOrder?: number
+  sort_order?: number
+}
+
+export interface Receipt {
+  id: string
+  merchantName?: string
+  merchant_name?: string
+  merchantAddress?: string
+  merchant_address?: string
+  total?: number
+  subtotal?: number
+  tax?: number
+  date?: string
+  imageUrl?: string
+  image_url?: string
+  items?: ReceiptItem[]
+}
+
+export interface TransactionReceiptResponse {
+  receipt: Receipt | null
+  match_method?: string
+  matchMethod?: string
+  confidence_score?: number
+  confidenceScore?: number
+  match_reason?: string
+  matchReason?: string
+  attachment_url?: string | null
+  attachmentUrl?: string | null
+  attachment_name?: string | null
+  attachmentName?: string | null
+  email_subject?: string | null
+  emailSubject?: string | null
+  email_snippet?: string | null
+  emailSnippet?: string | null
+  email_html_url?: string | null
+  emailHTMLURL?: string | null
+}
+
+// Thrown when GET /api/transactions/:id/receipt returns 404 — i.e. the
+// transaction has no matched receipt yet. Pages can catch this specifically
+// to render an "unmatched" empty state without logging it as an error.
+export class TransactionReceiptNotFoundError extends Error {
+  constructor(public transactionId: string) {
+    super(`No receipt matched to transaction ${transactionId}`)
+    this.name = "TransactionReceiptNotFoundError"
+  }
+}
+
+export async function fetchTransactionReceipt(
+  transactionId: string
+): Promise<TransactionReceiptResponse> {
+  const url = `/api/transactions/${encodeURIComponent(transactionId)}/receipt`
+  const res = await fetch(url)
+  if (res.status === 404) {
+    throw new TransactionReceiptNotFoundError(transactionId)
+  }
+  if (!res.ok) {
+    const text = await res.text().catch(() => "")
+    throw new Error(`GET ${url} failed (${res.status}): ${text || res.statusText}`)
+  }
+  return (await res.json()) as TransactionReceiptResponse
+}
+
+// Pull a single transaction by id from the list endpoint. Useful for
+// rendering the detail page header without keeping a global cache. We use
+// `search` so the backend filters server-side; if it returns multiple rows
+// we filter client-side to pick the exact id match.
+export async function fetchTransactionById(
+  transactionId: string
+): Promise<Transaction | null> {
+  const res = await fetchTransactions({ search: transactionId })
+  return res.transactions.find((tx) => tx.id === transactionId) ?? null
+}
+
+// Helpers used by the detail page so callers don't have to re-implement
+// the camelCase/snake_case pick logic each time.
+export function receiptItemDescription(item: ReceiptItem): string {
+  return item.description || item.name || "Item"
+}
+
+export function receiptItemUnitPrice(item: ReceiptItem): number | undefined {
+  if (item.unitPrice !== undefined) return item.unitPrice
+  if (item.unit_price !== undefined) return item.unit_price
+  return undefined
+}
+
+export function receiptItemTotalPrice(item: ReceiptItem): number | undefined {
+  if (item.totalPrice !== undefined) return item.totalPrice
+  if (item.total_price !== undefined) return item.total_price
+  if (item.price !== undefined) return item.price
+  return undefined
+}

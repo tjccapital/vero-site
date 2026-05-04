@@ -37,7 +37,7 @@ import {
 
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard },
-  { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+  { name: "Transactions", href: "/consumer/transactions", icon: Receipt },
   { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
 ]
 

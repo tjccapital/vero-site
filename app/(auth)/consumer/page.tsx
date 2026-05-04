@@ -51,7 +51,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { PlaidLinkButton } from "@/components/plaid-link-button"
-import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
+import {
+  createLinkToken,
+  exchangePublicToken,
+  fetchPlaidAccounts,
+  type PlaidAccount,
+} from "@/lib/plaid"
 import {
   fetchTransactions,
   transactionDisplayName,
@@ -66,31 +71,9 @@ import {
   Tooltip,
 } from "recharts"
 
-// Sample spending data over time
-const spendingData7Days = [
-  { date: "Mon", amount: 45.20 },
-  { date: "Tue", amount: 128.50 },
-  { date: "Wed", amount: 32.00 },
-  { date: "Thu", amount: 89.75 },
-  { date: "Fri", amount: 156.30 },
-  { date: "Sat", amount: 234.80 },
-  { date: "Sun", amount: 67.45 },
-]
-
-const spendingData30Days = [
-  { date: "Week 1", amount: 425.50 },
-  { date: "Week 2", amount: 512.30 },
-  { date: "Week 3", amount: 389.20 },
-  { date: "Week 4", amount: 478.60 },
-]
-
-const spendingData3Months = [
-  { date: "Nov", amount: 1245.80 },
-  { date: "Dec", amount: 1892.30 },
-  { date: "Jan", amount: 1156.45 },
-]
-
-// Sample recent receipts
+// Sample receipts shown in the "Recent Transactions" card while we're still
+// loading or before the user has connected an account. Once /api/transactions
+// returns rows, this fallback is replaced by real data.
 const recentReceipts = [
   {
     id: "rcpt_001",
@@ -134,21 +117,6 @@ const recentReceipts = [
   },
 ]
 
-// Category spending breakdown
-const categorySpending = [
-  { name: "Groceries", amount: 423.50, percentage: 32, icon: ShoppingBag, color: "bg-green-500" },
-  { name: "Dining", amount: 287.20, percentage: 22, icon: Utensils, color: "bg-orange-500" },
-  { name: "Gas & Auto", amount: 198.45, percentage: 15, icon: Car, color: "bg-blue-500" },
-  { name: "Coffee", amount: 89.30, percentage: 7, icon: Coffee, color: "bg-amber-600" },
-  { name: "Shopping", amount: 312.60, percentage: 24, icon: Store, color: "bg-purple-500" },
-]
-
-// Sample linked accounts data
-const linkedAccounts = [
-  { id: "acc_001", name: "Chase Sapphire", type: "Credit Card", last4: "4242", institution: "Chase" },
-  { id: "acc_002", name: "Bank of America Checking", type: "Checking", last4: "8821", institution: "Bank of America" },
-]
-
 // Onboarding steps - status can be 'completed', 'current', or 'pending'
 const onboardingSteps = [
   {
@@ -170,7 +138,7 @@ const onboardingSteps = [
     title: "View receipt details",
     description: "See itemized receipt information",
     status: "current" as const,
-    href: "/consumer/receipts",
+    href: "/consumer/transactions",
   },
   {
     id: 4,
@@ -183,7 +151,7 @@ const onboardingSteps = [
 
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard, active: true },
-  { name: "Receipts", href: "/consumer/receipts", icon: Receipt },
+  { name: "Transactions", href: "/consumer/transactions", icon: Receipt },
   { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
 ]
 
@@ -209,6 +177,7 @@ export default function ConsumerDashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
+  const [accounts, setAccounts] = useState<PlaidAccount[]>([])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -316,17 +285,99 @@ export default function ConsumerDashboardPage() {
     }
   }, [user])
 
-  const chartData = useMemo(() => {
-    switch (chartRange) {
-      case "7days":
-        return spendingData7Days
-      case "30days":
-        return spendingData30Days
-      case "3months":
-      default:
-        return spendingData3Months
+  // Pull the list of Plaid-connected accounts so the "Linked Accounts" card
+  // renders the user's real institutions instead of placeholder chips.
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    fetchPlaidAccounts()
+      .then((res) => {
+        if (cancelled) return
+        setAccounts(res.accounts ?? [])
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.error("[Plaid] Failed to load accounts:", err)
+      })
+    return () => {
+      cancelled = true
     }
-  }, [chartRange])
+  }, [user])
+
+  // Derive the "Spending Overview" series from real transactions for the
+  // selected range. Plaid expense amounts are positive; negative values are
+  // refunds/credits and are excluded from spending totals. Buckets are
+  // ordered oldest → newest left-to-right so the chart reads as time
+  // moving forward.
+  const chartData = useMemo(() => {
+    const now = new Date()
+    const dayMs = 86_400_000
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+    const expenses = transactions.filter((tx) => tx.amount > 0)
+
+    if (chartRange === "7days") {
+      const start = new Date(now)
+      start.setHours(0, 0, 0, 0)
+      start.setDate(start.getDate() - 6)
+      const buckets: { date: string; amount: number }[] = []
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(start.getTime() + i * dayMs)
+        buckets.push({ date: dayNames[d.getDay()], amount: 0 })
+      }
+      for (const tx of expenses) {
+        const d = new Date(tx.date)
+        if (Number.isNaN(d.getTime())) continue
+        d.setHours(0, 0, 0, 0)
+        const idx = Math.floor((d.getTime() - start.getTime()) / dayMs)
+        if (idx >= 0 && idx < 7) buckets[idx].amount += tx.amount
+      }
+      return buckets
+    }
+
+    if (chartRange === "30days") {
+      // Match the previous sample shape: 4 weekly buckets, oldest → newest.
+      const start = new Date(now)
+      start.setHours(0, 0, 0, 0)
+      start.setDate(start.getDate() - 27)
+      const buckets = [
+        { date: "Week 1", amount: 0 },
+        { date: "Week 2", amount: 0 },
+        { date: "Week 3", amount: 0 },
+        { date: "Week 4", amount: 0 },
+      ]
+      for (const tx of expenses) {
+        const d = new Date(tx.date)
+        if (Number.isNaN(d.getTime())) continue
+        d.setHours(0, 0, 0, 0)
+        const dayIdx = Math.floor((d.getTime() - start.getTime()) / dayMs)
+        if (dayIdx < 0 || dayIdx >= 28) continue
+        buckets[Math.floor(dayIdx / 7)].amount += tx.amount
+      }
+      return buckets
+    }
+
+    // 3 months: one bucket per recent calendar month, oldest → newest.
+    const months: { date: string; amount: number; year: number; month: number }[] = []
+    for (let i = 2; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      months.push({
+        date: d.toLocaleDateString(undefined, { month: "short" }),
+        amount: 0,
+        year: d.getFullYear(),
+        month: d.getMonth(),
+      })
+    }
+    for (const tx of expenses) {
+      const d = new Date(tx.date)
+      if (Number.isNaN(d.getTime())) continue
+      const target = months.find(
+        (m) => m.year === d.getFullYear() && m.month === d.getMonth()
+      )
+      if (target) target.amount += tx.amount
+    }
+    return months.map(({ date, amount }) => ({ date, amount }))
+  }, [chartRange, transactions])
 
   const chartPeriodLabel = useMemo(() => {
     switch (chartRange) {
@@ -393,6 +444,74 @@ export default function ConsumerDashboardPage() {
 
   const recentTransactions = useMemo(() => transactions.slice(0, 5), [transactions])
   const hasRealTransactions = recentTransactions.length > 0
+
+  // Stats derived from real transactions. "This month" sums positive (expense)
+  // amounts whose date falls in the current calendar month. Total Transactions
+  // counts every tx we received from /api/transactions. Merchants is the
+  // distinct count of merchant display names.
+  const thisMonthSpending = useMemo(() => {
+    const now = new Date()
+    let total = 0
+    for (const tx of transactions) {
+      if (tx.amount <= 0) continue
+      const d = new Date(tx.date)
+      if (Number.isNaN(d.getTime())) continue
+      if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) {
+        total += tx.amount
+      }
+    }
+    return total
+  }, [transactions])
+
+  const merchantCount = useMemo(() => {
+    const set = new Set<string>()
+    for (const tx of transactions) {
+      const name = transactionDisplayName(tx)
+      if (name) set.add(name)
+    }
+    return set.size
+  }, [transactions])
+
+  // Spending-by-category bars derived from Plaid PFC tags on each transaction.
+  // We map the various tag strings into a small set of display buckets that
+  // match the existing UI palette. Buckets with zero spend are filtered out
+  // so the bar list collapses gracefully when there's little data.
+  const categorySpending = useMemo(() => {
+    const defs: Array<{
+      name: string
+      icon: typeof ShoppingBag
+      color: string
+      needles: string[]
+    }> = [
+      { name: "Groceries", icon: ShoppingBag, color: "bg-green-500", needles: ["grocery", "supermarket"] },
+      { name: "Dining", icon: Utensils, color: "bg-orange-500", needles: ["restaurant", "food and drink", "dining", "fast food"] },
+      { name: "Gas & Auto", icon: Car, color: "bg-blue-500", needles: ["gas", "fuel", "automotive"] },
+      { name: "Coffee", icon: Coffee, color: "bg-amber-600", needles: ["coffee"] },
+      { name: "Shopping", icon: Store, color: "bg-purple-500", needles: ["shop", "retail", "merchandise"] },
+      { name: "Other", icon: Receipt, color: "bg-gray-500", needles: [] },
+    ]
+    const totals = defs.map((d) => ({ ...d, amount: 0 }))
+    for (const tx of transactions) {
+      if (tx.amount <= 0) continue
+      const tags = (tx.category || []).map((c) => c.toLowerCase())
+      let placed = false
+      for (let i = 0; i < totals.length - 1; i++) {
+        if (totals[i].needles.some((n) => tags.some((t) => t.includes(n)))) {
+          totals[i].amount += tx.amount
+          placed = true
+          break
+        }
+      }
+      if (!placed) totals[totals.length - 1].amount += tx.amount
+    }
+    const grand = totals.reduce((s, b) => s + b.amount, 0)
+    return totals
+      .filter((b) => b.amount > 0)
+      .map((b) => ({
+        ...b,
+        percentage: grand > 0 ? Math.round((b.amount / grand) * 100) : 0,
+      }))
+  }, [transactions])
 
   if (isLoading) {
     return (
@@ -836,22 +955,26 @@ export default function ConsumerDashboardPage() {
                   <div>
                     <h3 className="font-semibold">Linked Accounts</h3>
                     <p className="text-sm text-[var(--muted-foreground)]">
-                      {linkedAccounts.length} account{linkedAccounts.length !== 1 ? 's' : ''} connected
+                      {accounts.length} account{accounts.length !== 1 ? 's' : ''} connected
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {linkedAccounts.length > 0 && (
+                  {accounts.length > 0 && (
                     <div className="hidden sm:flex -space-x-2">
-                      {linkedAccounts.slice(0, 3).map((account) => (
-                        <div
-                          key={account.id}
-                          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)] border-2 border-white text-xs font-medium"
-                          title={account.name}
-                        >
-                          {account.institution.charAt(0)}
-                        </div>
-                      ))}
+                      {accounts.slice(0, 3).map((account) => {
+                        const institution =
+                          account.institutionName || account.institution_name || account.institution || account.name
+                        return (
+                          <div
+                            key={account.id}
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)] border-2 border-white text-xs font-medium"
+                            title={account.name}
+                          >
+                            {institution?.charAt(0) ?? "?"}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-white">
@@ -859,17 +982,22 @@ export default function ConsumerDashboardPage() {
                   </div>
                 </div>
               </div>
-              {linkedAccounts.length > 0 && (
+              {accounts.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {linkedAccounts.map((account) => (
-                    <span
-                      key={account.id}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[var(--muted)] px-3 py-1 text-xs font-medium"
-                    >
-                      <CreditCard className="h-3 w-3" />
-                      {account.institution} ••{account.last4}
-                    </span>
-                  ))}
+                  {accounts.map((account) => {
+                    const institution =
+                      account.institutionName || account.institution_name || account.institution || account.name
+                    return (
+                      <span
+                        key={account.id}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[var(--muted)] px-3 py-1 text-xs font-medium"
+                      >
+                        <CreditCard className="h-3 w-3" />
+                        {institution}
+                        {account.mask ? ` ••${account.mask}` : null}
+                      </span>
+                    )
+                  })}
                 </div>
               )}
             </button>
@@ -882,22 +1010,23 @@ export default function ConsumerDashboardPage() {
                     <Calendar className="h-4 w-4" />
                     <p className="text-xs sm:text-sm">This Month</p>
                   </div>
-                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">$1,311.05</p>
-                  <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
-                    <TrendingUp className="h-3 w-3" />
-                    -12% vs last month
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">
+                    ${thisMonthSpending.toFixed(2)}
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    {hasRealTransactions ? "Spending so far" : "No transactions yet"}
                   </p>
                 </div>
 
                 <Link
-                  href="/consumer/receipts"
+                  href="/consumer/transactions"
                   className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
                 >
                   <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
                     <Receipt className="h-4 w-4" />
-                    <p className="text-xs sm:text-sm">Total Receipts</p>
+                    <p className="text-xs sm:text-sm">Total Transactions</p>
                   </div>
-                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">247</p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">{transactions.length}</p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">All time</p>
                 </Link>
 
@@ -906,7 +1035,7 @@ export default function ConsumerDashboardPage() {
                     <Store className="h-4 w-4" />
                     <p className="text-xs sm:text-sm">Merchants</p>
                   </div>
-                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">34</p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">{merchantCount}</p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">Unique stores</p>
                 </div>
 
@@ -915,21 +1044,8 @@ export default function ConsumerDashboardPage() {
                     <Users className="h-4 w-4" />
                     <p className="text-xs sm:text-sm">Referrals</p>
                   </div>
-                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">3</p>
-                  <p className="mt-1 text-xs text-green-600">$15 earned</p>
-                </div>
-              </div>
-              {/* Sample Data Banner */}
-              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
-                  <p className="text-sm text-center">
-                    <span className="font-medium">Sample Data</span>
-                    <span className="text-[var(--muted-foreground)]"> · </span>
-                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
-                      Link an account
-                    </Link>
-                    <span className="text-[var(--muted-foreground)]"> to see your real data</span>
-                  </p>
+                  <p className="mt-1 sm:mt-2 text-xl sm:text-2xl font-semibold">0</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">Invite to earn</p>
                 </div>
               </div>
             </div>
@@ -1032,19 +1148,21 @@ export default function ConsumerDashboardPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              {/* Sample Data Banner */}
-              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
-                  <p className="text-sm text-center">
-                    <span className="font-medium">Sample Data</span>
-                    <span className="text-[var(--muted-foreground)]"> · </span>
-                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
-                      Link an account
-                    </Link>
-                    <span className="text-[var(--muted-foreground)]"> to see your real data</span>
-                  </p>
+              {/* Empty state when there are no real transactions yet */}
+              {!hasRealTransactions && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                  <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                    <p className="text-sm text-center">
+                      <span className="font-medium">No transactions yet</span>
+                      <span className="text-[var(--muted-foreground)]"> · </span>
+                      <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                        Link an account
+                      </Link>
+                      <span className="text-[var(--muted-foreground)]"> to see your spending</span>
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Two Column Layout: Recent Receipts and Categories */}
@@ -1062,7 +1180,7 @@ export default function ConsumerDashboardPage() {
                     </p>
                   </div>
                   <Link
-                    href="/consumer/receipts"
+                    href="/consumer/transactions"
                     className="flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
                   >
                     View all
@@ -1082,11 +1200,7 @@ export default function ConsumerDashboardPage() {
                       return (
                         <Link
                           key={tx.id}
-                          href={
-                            tx.receipt
-                              ? `/consumer/receipts/${tx.receipt.id}`
-                              : "/consumer/receipts"
-                          }
+                          href={`/consumer/transactions/${tx.id}`}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
@@ -1102,7 +1216,7 @@ export default function ConsumerDashboardPage() {
                           <div className="text-right">
                             <p className="font-semibold">{sign}${magnitude}</p>
                             <p className="text-xs text-[var(--muted-foreground)]">
-                              {tx.receipt ? "Receipt" : "No receipt"}
+                              {tx.receipt ? "Itemized" : "No receipt"}
                             </p>
                           </div>
                         </Link>
@@ -1124,7 +1238,7 @@ export default function ConsumerDashboardPage() {
                       return (
                         <Link
                           key={receipt.id}
-                          href={`/consumer/receipts/${receipt.id}`}
+                          href="/consumer/transactions"
                           className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
@@ -1150,50 +1264,43 @@ export default function ConsumerDashboardPage() {
                 <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
                   <div>
                     <h3 className="font-semibold">Spending by Category</h3>
-                    <p className="text-xs text-[var(--muted-foreground)]">This month's breakdown</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">Across your transactions</p>
                   </div>
                 </div>
-                <div className="p-4 space-y-4">
-                  {categorySpending.map((category) => {
-                    const CategoryIcon = category.icon
-                    return (
-                      <div key={category.name} className="flex items-center gap-3">
-                        <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", category.color)}>
-                          <CategoryIcon className="h-4 w-4 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium">{category.name}</span>
-                            <span className="text-sm font-semibold">${category.amount.toFixed(2)}</span>
+                {categorySpending.length === 0 ? (
+                  <div className="px-4 py-12 text-center text-sm text-[var(--muted-foreground)]">
+                    {hasRealTransactions
+                      ? "No categorised spending yet."
+                      : "Link an account to see your spending breakdown."}
+                  </div>
+                ) : (
+                  <div className="p-4 space-y-4">
+                    {categorySpending.map((category) => {
+                      const CategoryIcon = category.icon
+                      return (
+                        <div key={category.name} className="flex items-center gap-3">
+                          <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", category.color)}>
+                            <CategoryIcon className="h-4 w-4 text-white" />
                           </div>
-                          <div className="h-2 w-full rounded-full bg-[var(--muted)]">
-                            <div
-                              className={cn("h-2 rounded-full", category.color)}
-                              style={{ width: `${category.percentage}%` }}
-                            />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium">{category.name}</span>
+                              <span className="text-sm font-semibold">${category.amount.toFixed(2)}</span>
+                            </div>
+                            <div className="h-2 w-full rounded-full bg-[var(--muted)]">
+                              <div
+                                className={cn("h-2 rounded-full", category.color)}
+                                style={{ width: `${category.percentage}%` }}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )
-                  })}
-                </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
             </div>
-              {/* Sample Data Banner - hidden once we have real transactions */}
-              {!hasRealTransactions && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                  <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
-                    <p className="text-sm text-center">
-                      <span className="font-medium">Sample Data</span>
-                      <span className="text-[var(--muted-foreground)]"> · </span>
-                      <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
-                        Link an account
-                      </Link>
-                      <span className="text-[var(--muted-foreground)]"> to see your real data</span>
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </main>
@@ -1236,13 +1343,21 @@ export default function ConsumerDashboardPage() {
               </p>
 
               {/* Current Accounts */}
-              {linkedAccounts.length > 0 && (
+              {accounts.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
                     Connected Accounts
                   </p>
                   <div className="space-y-2">
-                    {linkedAccounts.map((account) => (
+                    {accounts.map((account) => {
+                      const institution =
+                        account.institutionName ||
+                        account.institution_name ||
+                        account.institution
+                      const subtitle = [account.subtype || account.type, institution]
+                        .filter(Boolean)
+                        .join(" · ")
+                      return (
                       <div
                         key={account.id}
                         className="flex items-center justify-between rounded-lg border border-[var(--border)] p-3"
@@ -1254,13 +1369,15 @@ export default function ConsumerDashboardPage() {
                           <div>
                             <p className="text-sm font-medium">{account.name}</p>
                             <p className="text-xs text-[var(--muted-foreground)]">
-                              {account.type} •••• {account.last4}
+                              {subtitle}
+                              {account.mask ? ` •••• ${account.mask}` : null}
                             </p>
                           </div>
                         </div>
                         <span className="text-xs text-green-600 font-medium">Connected</span>
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
               )}
