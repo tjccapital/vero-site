@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import {
+  fetchReceiptItems,
   fetchTransactionById,
   fetchTransactionReceipt,
   receiptItemDescription,
@@ -49,6 +50,7 @@ import {
   receiptItemTotalPrice,
   transactionDisplayName,
   TransactionReceiptNotFoundError,
+  type ReceiptItem,
   type Transaction,
   type Receipt as ReceiptModel,
 } from "@/lib/transactions"
@@ -120,6 +122,8 @@ export default function TransactionDetailPage() {
 
   const [transaction, setTransaction] = useState<Transaction | null>(null)
   const [receipt, setReceipt] = useState<ReceiptModel | null>(null)
+  const [items, setItems] = useState<ReceiptItem[]>([])
+  const [itemsLoading, setItemsLoading] = useState(false)
   const [matchMethod, setMatchMethod] = useState<string | null>(null)
   const [hasReceipt, setHasReceipt] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -163,12 +167,19 @@ export default function TransactionDetailPage() {
         console.error("[Transactions] Failed to load transaction:", txResult.reason)
       }
 
+      let receiptForItems: ReceiptModel | null = null
       if (receiptResult.status === "fulfilled") {
-        setReceipt(receiptResult.value.receipt)
-        setHasReceipt(!!receiptResult.value.receipt)
+        const r = receiptResult.value.receipt
+        setReceipt(r)
+        setHasReceipt(!!r)
         setMatchMethod(
           receiptResult.value.matchMethod || receiptResult.value.match_method || null
         )
+        // Seed items from whatever the transaction-receipt endpoint
+        // returned inline; we'll backfill from /api/receipts/:id/items
+        // below if the inline list is empty.
+        setItems(r?.items ?? [])
+        receiptForItems = r
       } else {
         if (receiptResult.reason instanceof TransactionReceiptNotFoundError) {
           // Expected — the transaction has no matched receipt yet.
@@ -181,6 +192,33 @@ export default function TransactionDetailPage() {
       }
 
       setLoading(false)
+
+      // Items are served from a separate endpoint
+      // (GET /api/receipts/:id/items) and the transaction-receipt response
+      // only returns the receipt header. Fetch them after the main page
+      // has loaded so the receipt info paints first; the items section
+      // shows its own spinner while this resolves.
+      if (
+        receiptForItems &&
+        receiptForItems.id &&
+        (!receiptForItems.items || receiptForItems.items.length === 0)
+      ) {
+        setItemsLoading(true)
+        fetchReceiptItems(receiptForItems.id)
+          .then((fetched) => {
+            if (cancelled) return
+            setItems(fetched)
+          })
+          .catch((err) => {
+            if (cancelled) return
+            console.error("[Transactions] Failed to load receipt items:", err)
+            // Don't surface a hard error — fall through to the
+            // "merchant didn't provide line items" empty state.
+          })
+          .finally(() => {
+            if (!cancelled) setItemsLoading(false)
+          })
+      }
     })
 
     return () => {
@@ -242,7 +280,6 @@ export default function TransactionDetailPage() {
       : receipt?.total ?? 0
   const transactionDate = transaction?.date || receipt?.date
 
-  const items = receipt?.items ?? []
   const subtotal = receipt?.subtotal
   const tax = receipt?.tax
   const receiptTotal = receipt?.total ?? totalAmount
@@ -542,9 +579,15 @@ export default function TransactionDetailPage() {
               <>
                 <div className="rounded-lg border border-[var(--border)]">
                   <div className="border-b border-[var(--border)] px-4 py-3 sm:px-6">
-                    <h2 className="font-semibold">Items ({items.length})</h2>
+                    <h2 className="font-semibold">
+                      Items{itemsLoading ? "" : ` (${items.length})`}
+                    </h2>
                   </div>
-                  {items.length === 0 ? (
+                  {itemsLoading ? (
+                    <div className="flex items-center justify-center px-4 py-8 sm:px-6">
+                      <Loader2 className="h-5 w-5 animate-spin text-[var(--muted-foreground)]" />
+                    </div>
+                  ) : items.length === 0 ? (
                     <div className="px-4 py-8 sm:px-6 text-center text-sm text-[var(--muted-foreground)]">
                       The merchant didn&apos;t provide line items for this receipt.
                     </div>
