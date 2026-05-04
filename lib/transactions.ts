@@ -173,7 +173,11 @@ export interface Receipt {
   date?: string
   imageUrl?: string
   image_url?: string
+  // The transaction-receipt endpoint returns line items inline as
+  // `line_items` (snake_case). Newer/CRUD-style endpoints use `items`.
+  // Both are surfaced here so callers can read whichever the upstream sent.
   items?: ReceiptItem[]
+  line_items?: ReceiptItem[]
 }
 
 export interface TransactionReceiptResponse {
@@ -218,7 +222,17 @@ export async function fetchTransactionReceipt(
     const text = await res.text().catch(() => "")
     throw new Error(`GET ${url} failed (${res.status}): ${text || res.statusText}`)
   }
-  return (await res.json()) as TransactionReceiptResponse
+  const body = (await res.json()) as TransactionReceiptResponse
+  // The backend returns inline line items under `line_items` on this
+  // endpoint (the dedicated /api/receipts/:id/items route is for CRUD).
+  // Normalise so the page can always read `receipt.items`.
+  if (body.receipt) {
+    const r = body.receipt
+    if ((!r.items || r.items.length === 0) && r.line_items && r.line_items.length > 0) {
+      r.items = r.line_items
+    }
+  }
+  return body
 }
 
 // Items live behind their own endpoint
