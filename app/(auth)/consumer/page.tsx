@@ -53,6 +53,11 @@ import { Badge } from "@/components/ui/badge"
 import { PlaidLinkButton } from "@/components/plaid-link-button"
 import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
 import {
+  fetchTransactions,
+  transactionDisplayName,
+  type Transaction,
+} from "@/lib/transactions"
+import {
   Area,
   AreaChart,
   ResponsiveContainer,
@@ -201,6 +206,9 @@ export default function ConsumerDashboardPage() {
   const [linkToken, setLinkToken] = useState<string | null>(null)
   const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
   const [exchanging, setExchanging] = useState(false)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [transactionsLoading, setTransactionsLoading] = useState(false)
+  const [transactionsError, setTransactionsError] = useState<string | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -282,6 +290,32 @@ export default function ConsumerDashboardPage() {
     }
   }, [user, isLoading, router])
 
+  // Pull real transactions from /api/transactions once the user is signed in.
+  // The proxy returns an empty array when no Plaid item is connected, so this
+  // is also safe pre-link — the UI just falls back to the sample data below.
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    setTransactionsLoading(true)
+    setTransactionsError(null)
+    fetchTransactions()
+      .then((res) => {
+        if (cancelled) return
+        setTransactions(res.transactions ?? [])
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.error("[Transactions] Failed to load:", err)
+        setTransactionsError("Couldn't load your transactions.")
+      })
+      .finally(() => {
+        if (!cancelled) setTransactionsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user])
+
   const chartData = useMemo(() => {
     switch (chartRange) {
       case "7days":
@@ -326,6 +360,39 @@ export default function ConsumerDashboardPage() {
         return Receipt
     }
   }
+
+  // Map a transaction's Plaid category (which arrives as an array of strings,
+  // most-specific last) to one of our category icons. Falls back to a generic
+  // Receipt icon for anything we don't recognise.
+  const getTransactionIcon = (tx: Transaction) => {
+    const tags = (tx.category || []).map((c) => c.toLowerCase())
+    const has = (...needles: string[]) =>
+      tags.some((tag) => needles.some((n) => tag.includes(n)))
+    if (has("grocery", "supermarket")) return ShoppingBag
+    if (has("coffee")) return Coffee
+    if (has("restaurant", "food and drink", "fast food", "dining")) return Utensils
+    if (has("gas", "fuel", "automotive")) return Car
+    if (has("shop", "retail", "merchandise")) return Store
+    return Receipt
+  }
+
+  const formatTransactionDate = (iso: string) => {
+    if (!iso) return ""
+    const d = new Date(iso)
+    if (Number.isNaN(d.getTime())) return iso
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const dayStart = new Date(d)
+    dayStart.setHours(0, 0, 0, 0)
+    if (dayStart.getTime() === today.getTime()) return "Today"
+    if (dayStart.getTime() === yesterday.getTime()) return "Yesterday"
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+  }
+
+  const recentTransactions = useMemo(() => transactions.slice(0, 5), [transactions])
+  const hasRealTransactions = recentTransactions.length > 0
 
   if (isLoading) {
     return (
@@ -983,12 +1050,16 @@ export default function ConsumerDashboardPage() {
             {/* Two Column Layout: Recent Receipts and Categories */}
             <div className="relative">
               <div className="grid gap-4 lg:grid-cols-2">
-                {/* Recent Receipts */}
+                {/* Recent Transactions */}
                 <div className="rounded-lg border border-[var(--border)]">
                 <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
                   <div>
-                    <h3 className="font-semibold">Recent Receipts</h3>
-                    <p className="text-xs text-[var(--muted-foreground)]">Your latest transactions</p>
+                    <h3 className="font-semibold">Recent Transactions</h3>
+                    <p className="text-xs text-[var(--muted-foreground)]">
+                      {hasRealTransactions
+                        ? "Your latest transactions"
+                        : "Your latest transactions (sample)"}
+                    </p>
                   </div>
                   <Link
                     href="/consumer/receipts"
@@ -998,30 +1069,80 @@ export default function ConsumerDashboardPage() {
                     <ChevronRight className="h-4 w-4" />
                   </Link>
                 </div>
-                <div className="divide-y divide-[var(--border)]">
-                  {recentReceipts.map((receipt) => {
-                    const CategoryIcon = getCategoryIcon(receipt.category)
-                    return (
-                      <Link
-                        key={receipt.id}
-                        href={`/consumer/receipts/${receipt.id}`}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
-                          <CategoryIcon className="h-5 w-5 text-[var(--muted-foreground)]" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{receipt.merchant}</p>
-                          <p className="text-xs text-[var(--muted-foreground)]">{receipt.date}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold">${receipt.amount.toFixed(2)}</p>
-                          <p className="text-xs text-[var(--muted-foreground)]">{receipt.items} items</p>
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
+                {hasRealTransactions ? (
+                  <div className="divide-y divide-[var(--border)]">
+                    {recentTransactions.map((tx) => {
+                      const CategoryIcon = getTransactionIcon(tx)
+                      const merchant = transactionDisplayName(tx)
+                      // Plaid expense transactions arrive with a positive amount;
+                      // payments/credits arrive negative. Display the magnitude
+                      // and let the sign decide the prefix so credits read "+$x".
+                      const sign = tx.amount < 0 ? "+" : ""
+                      const magnitude = Math.abs(tx.amount).toFixed(2)
+                      return (
+                        <Link
+                          key={tx.id}
+                          href={
+                            tx.receipt
+                              ? `/consumer/receipts/${tx.receipt.id}`
+                              : "/consumer/receipts"
+                          }
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
+                        >
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
+                            <CategoryIcon className="h-5 w-5 text-[var(--muted-foreground)]" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{merchant}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">
+                              {formatTransactionDate(tx.date)}
+                              {tx.pending ? " · Pending" : ""}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">{sign}${magnitude}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">
+                              {tx.receipt ? "Receipt" : "No receipt"}
+                            </p>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                ) : transactionsLoading ? (
+                  <div className="flex items-center justify-center px-4 py-12">
+                    <Loader2 className="h-5 w-5 animate-spin text-[var(--muted-foreground)]" />
+                  </div>
+                ) : transactionsError ? (
+                  <div className="px-4 py-6 text-sm text-red-600">
+                    {transactionsError}
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[var(--border)]">
+                    {recentReceipts.map((receipt) => {
+                      const CategoryIcon = getCategoryIcon(receipt.category)
+                      return (
+                        <Link
+                          key={receipt.id}
+                          href={`/consumer/receipts/${receipt.id}`}
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
+                        >
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
+                            <CategoryIcon className="h-5 w-5 text-[var(--muted-foreground)]" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{receipt.merchant}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">{receipt.date}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">${receipt.amount.toFixed(2)}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">{receipt.items} items</p>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Spending by Category */}
@@ -1058,19 +1179,21 @@ export default function ConsumerDashboardPage() {
                 </div>
               </div>
             </div>
-              {/* Sample Data Banner */}
-              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
-                  <p className="text-sm text-center">
-                    <span className="font-medium">Sample Data</span>
-                    <span className="text-[var(--muted-foreground)]"> · </span>
-                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
-                      Link an account
-                    </Link>
-                    <span className="text-[var(--muted-foreground)]"> to see your real data</span>
-                  </p>
+              {/* Sample Data Banner - hidden once we have real transactions */}
+              {!hasRealTransactions && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                  <div className="bg-white/95 backdrop-blur-[2px] rounded-lg px-4 py-3 shadow-[0_0_20px_rgba(0,0,0,0.15),0_0_40px_rgba(0,0,0,0.08),0_0_60px_rgba(0,0,0,0.04)] animate-[halo-pulse_3s_ease-in-out_infinite] pointer-events-auto">
+                    <p className="text-sm text-center">
+                      <span className="font-medium">Sample Data</span>
+                      <span className="text-[var(--muted-foreground)]"> · </span>
+                      <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                        Link an account
+                      </Link>
+                      <span className="text-[var(--muted-foreground)]"> to see your real data</span>
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </main>
