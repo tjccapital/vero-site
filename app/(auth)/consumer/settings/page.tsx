@@ -24,6 +24,7 @@ import {
   RefreshCw,
   Unlink,
   ShieldCheck,
+  Clock,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -44,6 +45,23 @@ const bottomNavItems = [
   { name: "Settings", href: "/consumer/settings", icon: Settings, active: true },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
 ]
+
+function formatRelativeTime(date: Date): string {
+  const diffMs = Date.now() - date.getTime()
+  if (diffMs < 0) return "just now"
+  const seconds = Math.floor(diffMs / 1000)
+  if (seconds < 60) return "just now"
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`
+  const days = Math.floor(hours / 24)
+  if (days < 30) return `${days} day${days === 1 ? "" : "s"} ago`
+  const months = Math.floor(days / 30)
+  if (months < 12) return `${months} month${months === 1 ? "" : "s"} ago`
+  const years = Math.floor(days / 365)
+  return `${years} year${years === 1 ? "" : "s"} ago`
+}
 
 export default function ConsumerSettingsPage() {
   const { user, isLoading } = useUser()
@@ -77,7 +95,21 @@ export default function ConsumerSettingsPage() {
 
   const emailAddress = emailStatus?.account?.email ?? emailStatus?.email_address ?? null
   const lastScanAt = emailStatus?.account?.last_scan_at ?? emailStatus?.last_scanned_at ?? null
+  const accountStatus = emailStatus?.account?.status ?? null
   const reauthRequired = !!emailStatus?.reauth_required
+
+  const lastScanDate = lastScanAt ? new Date(lastScanAt) : null
+  const lastScanAbsolute = lastScanDate
+    ? lastScanDate.toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : null
+  const lastScanRelative = lastScanDate ? formatRelativeTime(lastScanDate) : null
 
   const apiFetch = useCallback(
     (path: string, init?: RequestInit) =>
@@ -528,7 +560,7 @@ export default function ConsumerSettingsPage() {
                     </div>
                   </div>
                 ) : emailStatus?.connected ? (
-                  <div className="rounded-md border border-[var(--border)] bg-[var(--muted)]/40 p-4">
+                  <div className="rounded-md border border-[var(--border)] bg-[var(--muted)]/40 p-4 space-y-3">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 flex-shrink-0">
@@ -538,13 +570,7 @@ export default function ConsumerSettingsPage() {
                           <p className="text-sm font-medium truncate">
                             {emailAddress || "Gmail account connected"}
                           </p>
-                          <p className="text-xs text-[var(--muted-foreground)]">
-                            {scanInProgress
-                              ? "Syncing receipts from inbox…"
-                              : lastScanAt
-                                ? `Last scanned ${new Date(lastScanAt).toLocaleString()}`
-                                : "No scans yet"}
-                          </p>
+                          <p className="text-xs text-[var(--muted-foreground)]">Connected</p>
                         </div>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -573,6 +599,32 @@ export default function ConsumerSettingsPage() {
                           Disconnect
                         </button>
                       </div>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-xs">
+                      {scanInProgress ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--primary)] flex-shrink-0" />
+                      ) : (
+                        <Clock className="h-3.5 w-3.5 text-[var(--muted-foreground)] flex-shrink-0" />
+                      )}
+                      <span className="font-medium text-[var(--foreground)]">Last scan:</span>
+                      {scanInProgress ? (
+                        <span className="text-[var(--muted-foreground)]">Scanning inbox…</span>
+                      ) : lastScanRelative && lastScanAbsolute ? (
+                        <span
+                          className="text-[var(--muted-foreground)]"
+                          title={lastScanAbsolute}
+                        >
+                          {lastScanRelative}
+                          <span className="hidden sm:inline"> · {lastScanAbsolute}</span>
+                        </span>
+                      ) : (
+                        <span className="text-[var(--muted-foreground)]">Never scanned</span>
+                      )}
+                      {accountStatus && accountStatus !== "active" && (
+                        <span className="ml-auto rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-700">
+                          {accountStatus}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ) : (
