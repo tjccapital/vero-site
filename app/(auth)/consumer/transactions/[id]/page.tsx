@@ -19,6 +19,9 @@ import {
   Share2,
   CheckCircle2,
   FileText,
+  Image as ImageIcon,
+  Mail,
+  ExternalLink,
   Loader2,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -82,6 +85,11 @@ function formatLongDate(iso?: string): string {
   })
 }
 
+function isPdfUrl(url: string | null | undefined): boolean {
+  if (!url) return false
+  return url.split("?")[0].toLowerCase().endsWith(".pdf")
+}
+
 export default function TransactionDetailPage() {
   const params = useParams()
   const transactionId = params.id as string
@@ -94,6 +102,14 @@ export default function TransactionDetailPage() {
   const [hasReceipt, setHasReceipt] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  // Asset URLs surfaced from the transaction-receipt response — image
+  // (typically the photo of the receipt), pdf (image_url ending in .pdf
+  // or a separate attachment_url), and the rendered email HTML when the
+  // receipt was matched from an inbox scan.
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [pdfLabel, setPdfLabel] = useState<string | null>(null)
+  const [emailHtmlUrl, setEmailHtmlUrl] = useState<string | null>(null)
 
   // On mount, fetch the transaction (for the page header) and the matched
   // receipt (for the itemized layout). The receipt request is allowed to
@@ -118,22 +134,56 @@ export default function TransactionDetailPage() {
 
       let receiptForItems: ReceiptModel | null = null
       if (receiptResult.status === "fulfilled") {
-        const r = receiptResult.value.receipt
+        const value = receiptResult.value
+        const r = value.receipt
         setReceipt(r)
         setHasReceipt(!!r)
-        setMatchMethod(
-          receiptResult.value.matchMethod || receiptResult.value.match_method || null
-        )
+        setMatchMethod(value.matchMethod || value.match_method || null)
         // Seed items from whatever the transaction-receipt endpoint
         // returned inline; we'll backfill from /api/receipts/:id/items
         // below if the inline list is empty.
         setItems(r?.items ?? [])
         receiptForItems = r
+
+        // Sort the receipt's primary asset (image or PDF), the email's
+        // attached document (usually a PDF invoice) and the rendered email
+        // body into the three buckets the "Receipt Files" card renders.
+        const primary = r?.imageUrl || r?.image_url || null
+        const attachment = value.attachmentUrl || value.attachment_url || null
+        const attachmentName = value.attachmentName || value.attachment_name || null
+        const html = value.emailHTMLURL || value.email_html_url || null
+
+        let nextImage: string | null = null
+        let nextPdf: string | null = null
+        let nextPdfLabel: string | null = null
+        if (primary) {
+          if (isPdfUrl(primary)) {
+            nextPdf = primary
+          } else {
+            nextImage = primary
+          }
+        }
+        if (attachment) {
+          if (isPdfUrl(attachment) || (attachmentName && /\.pdf$/i.test(attachmentName))) {
+            nextPdf = nextPdf || attachment
+            nextPdfLabel = attachmentName
+          } else if (!nextImage) {
+            nextImage = attachment
+          }
+        }
+        setImageUrl(nextImage)
+        setPdfUrl(nextPdf)
+        setPdfLabel(nextPdfLabel)
+        setEmailHtmlUrl(html)
       } else {
         if (receiptResult.reason instanceof TransactionReceiptNotFoundError) {
           // Expected — the transaction has no matched receipt yet.
           setReceipt(null)
           setHasReceipt(false)
+          setImageUrl(null)
+          setPdfUrl(null)
+          setPdfLabel(null)
+          setEmailHtmlUrl(null)
         } else {
           console.error("[Transactions] Failed to load receipt:", receiptResult.reason)
           setError("Couldn't load this transaction's receipt.")
@@ -412,6 +462,72 @@ export default function TransactionDetailPage() {
               </div>
             </div>
           </div>
+
+          {imageUrl || pdfUrl || emailHtmlUrl ? (
+            <div className="rounded-lg border border-[var(--border)]">
+              <div className="border-b border-[var(--border)] px-4 py-3 sm:px-6">
+                <h2 className="font-semibold">Receipt Files</h2>
+                <p className="mt-0.5 text-xs text-[var(--muted-foreground)]">
+                  Open the original receipt or related documents
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
+                {imageUrl ? (
+                  <a
+                    href={imageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--border)] p-3 hover:bg-[var(--muted)]/50 transition-colors"
+                  >
+                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)]">
+                      <ImageIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">View image</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">Receipt photo</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </a>
+                ) : null}
+                {pdfUrl ? (
+                  <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--border)] p-3 hover:bg-[var(--muted)]/50 transition-colors"
+                  >
+                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)]">
+                      <FileText className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">View PDF</p>
+                      <p className="truncate text-xs text-[var(--muted-foreground)]">
+                        {pdfLabel || "Receipt document"}
+                      </p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </a>
+                ) : null}
+                {emailHtmlUrl ? (
+                  <a
+                    href={emailHtmlUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-[var(--border)] p-3 hover:bg-[var(--muted)]/50 transition-colors"
+                  >
+                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)]">
+                      <Mail className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">View email</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">Original message</p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
 
           <div className="rounded-lg bg-[var(--muted)]/50 p-4 text-center">
             <div className="flex items-center justify-center gap-2 text-sm text-[var(--muted-foreground)]">
