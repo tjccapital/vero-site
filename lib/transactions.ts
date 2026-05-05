@@ -251,15 +251,48 @@ export async function fetchReceiptItems(
   return body.items ?? []
 }
 
-// Pull a single transaction by id from the list endpoint. Useful for
-// rendering the detail page header without keeping a global cache. We use
-// `search` so the backend filters server-side; if it returns multiple rows
-// we filter client-side to pick the exact id match.
+// Pull a single transaction by id. The backend's `?search=` filter only
+// matches against name / merchant_name (not transaction id) and there's no
+// GET /api/transactions/:id endpoint, so we list and pick. To avoid making
+// every detail page reload the whole list, pages that already hold the row
+// in memory call cacheTransactionForDetail() before navigating; we read
+// from that sessionStorage cache here before falling back to the network.
 export async function fetchTransactionById(
   transactionId: string
 ): Promise<Transaction | null> {
-  const res = await fetchTransactions({ search: transactionId })
+  const cached = readCachedTransaction(transactionId)
+  if (cached) return cached
+  const res = await fetchTransactions()
   return res.transactions.find((tx) => tx.id === transactionId) ?? null
+}
+
+// Per-tab cache used by /consumer/transactions and the dashboard's "Recent
+// Transactions" links to seed the detail page without a round-trip. A single
+// key holds the most recently clicked row; the detail page validates the id
+// before trusting the payload (cache miss is fine — fetchTransactionById
+// will fall through to the list endpoint).
+const TX_CACHE_KEY = "vero:tx:current"
+
+export function cacheTransactionForDetail(tx: Transaction): void {
+  if (typeof window === "undefined") return
+  try {
+    sessionStorage.setItem(TX_CACHE_KEY, JSON.stringify(tx))
+  } catch {
+    // sessionStorage can throw on quota / disabled storage — silently fall
+    // back to the network path.
+  }
+}
+
+export function readCachedTransaction(id: string): Transaction | null {
+  if (typeof window === "undefined") return null
+  try {
+    const raw = sessionStorage.getItem(TX_CACHE_KEY)
+    if (!raw) return null
+    const tx = JSON.parse(raw) as Transaction
+    return tx?.id === id ? tx : null
+  } catch {
+    return null
+  }
 }
 
 // Helpers used by the detail page so callers don't have to re-implement

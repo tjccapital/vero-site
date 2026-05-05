@@ -14,7 +14,8 @@ import {
   Utensils,
   Car,
   Store,
-  CalendarDays,
+  ArrowUp,
+  ArrowDown,
   ArrowUpDown,
   Landmark,
   CheckCircle2,
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/table"
 import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import {
+  cacheTransactionForDetail,
   fetchTransactions,
   transactionDisplayName,
   type Transaction,
@@ -51,8 +53,28 @@ import {
 import { useMainScrollRestore } from "@/lib/use-main-scroll-restore"
 
 type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopping"
-type SortOrder = "newest" | "oldest" | "highest" | "lowest"
+type SortColumn = "merchant" | "category" | "date" | "receipt" | "amount"
+type SortDirection = "asc" | "desc"
 type ReceiptFilter = "all" | "matched" | "unmatched"
+
+const sortLabels: Record<SortColumn, string> = {
+  merchant: "Merchant",
+  category: "Category",
+  date: "Date",
+  receipt: "Receipt",
+  amount: "Amount",
+}
+
+// What direction to start a column in when the user picks it cold. Date and
+// amount default to desc (newest / highest first); name-like columns default
+// to asc; receipt defaults to "matched first".
+const defaultSortDirection: Record<SortColumn, SortDirection> = {
+  merchant: "asc",
+  category: "asc",
+  date: "desc",
+  receipt: "desc",
+  amount: "desc",
+}
 
 const categoryDefs: Array<{
   value: CategoryFilter
@@ -68,6 +90,50 @@ const categoryDefs: Array<{
   { value: "shopping", label: "Shopping", icon: Store, needles: ["shop", "retail", "merchandise"] },
 ]
 
+function SortableTableHead({
+  column,
+  sortColumn,
+  sortDirection,
+  onSort,
+  align,
+  className,
+  children,
+}: {
+  column: SortColumn
+  sortColumn: SortColumn
+  sortDirection: SortDirection
+  onSort: (col: SortColumn) => void
+  align?: "right"
+  className?: string
+  children: React.ReactNode
+}) {
+  const active = sortColumn === column
+  return (
+    <TableHead className={cn("p-0", className)}>
+      <button
+        type="button"
+        onClick={() => onSort(column)}
+        aria-sort={active ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}
+        className={cn(
+          "flex w-full items-center gap-1.5 px-4 py-3 text-left text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors select-none",
+          align === "right" && "justify-end text-right"
+        )}
+      >
+        <span>{children}</span>
+        {active ? (
+          sortDirection === "asc" ? (
+            <ArrowUp className="h-3.5 w-3.5" />
+          ) : (
+            <ArrowDown className="h-3.5 w-3.5" />
+          )
+        ) : (
+          <ArrowUpDown className="h-3.5 w-3.5 opacity-30" />
+        )}
+      </button>
+    </TableHead>
+  )
+}
+
 function getCategoryFilterMatch(tx: Transaction, filter: CategoryFilter): boolean {
   if (filter === "all") return true
   const def = categoryDefs.find((d) => d.value === filter)
@@ -80,8 +146,22 @@ export default function ConsumerTransactionsPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all")
-  const [sortOrder, setSortOrder] = useState<SortOrder>("newest")
+  const [sortColumn, setSortColumn] = useState<SortColumn>("date")
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [receiptFilter, setReceiptFilter] = useState<ReceiptFilter>("all")
+
+  const handleSort = useCallback((col: SortColumn) => {
+    setSortColumn((prevCol) => {
+      if (prevCol === col) {
+        // Same column — flip direction.
+        setSortDirection((d) => (d === "asc" ? "desc" : "asc"))
+        return prevCol
+      }
+      // New column — start at its sensible default direction.
+      setSortDirection(defaultSortDirection[col])
+      return col
+    })
+  }, [])
 
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [transactionsLoading, setTransactionsLoading] = useState(true)
@@ -117,9 +197,11 @@ export default function ConsumerTransactionsPage() {
   )
 
   const navigateToTransaction = useCallback(
-    (id: string) => {
+    (tx: Transaction) => {
       saveListScroll()
-      router.push(`/consumer/transactions/${id}`)
+      // Stash the row so the detail page can render without re-listing.
+      cacheTransactionForDetail(tx)
+      router.push(`/consumer/transactions/${tx.id}`)
     },
     [router, saveListScroll]
   )
@@ -145,23 +227,30 @@ export default function ConsumerTransactionsPage() {
       result = result.filter((tx) => !tx.receipt)
     }
 
-    switch (sortOrder) {
-      case "newest":
-        result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        break
-      case "oldest":
-        result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        break
-      case "highest":
-        result.sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
-        break
-      case "lowest":
-        result.sort((a, b) => Math.abs(a.amount) - Math.abs(b.amount))
-        break
-    }
+    result.sort((a, b) => {
+      let cmp: number
+      switch (sortColumn) {
+        case "merchant":
+          cmp = transactionDisplayName(a).localeCompare(transactionDisplayName(b))
+          break
+        case "category":
+          cmp = (a.category?.[0] || "").localeCompare(b.category?.[0] || "")
+          break
+        case "date":
+          cmp = new Date(a.date).getTime() - new Date(b.date).getTime()
+          break
+        case "receipt":
+          cmp = (a.receipt ? 1 : 0) - (b.receipt ? 1 : 0)
+          break
+        case "amount":
+          cmp = Math.abs(a.amount) - Math.abs(b.amount)
+          break
+      }
+      return sortDirection === "asc" ? cmp : -cmp
+    })
 
     return result
-  }, [transactions, searchQuery, selectedCategory, sortOrder, receiptFilter])
+  }, [transactions, searchQuery, selectedCategory, sortColumn, sortDirection, receiptFilter])
 
   const totalSpent = useMemo(() => {
     return filteredTransactions.reduce((sum, tx) => {
@@ -238,29 +327,37 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[140px]">
+              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[170px]">
                 <ArrowUpDown className="h-4 w-4" />
-                Sort
+                {sortLabels[sortColumn]}
+                {sortDirection === "asc" ? (
+                  <ArrowUp className="h-3.5 w-3.5" />
+                ) : (
+                  <ArrowDown className="h-3.5 w-3.5" />
+                )}
                 <ChevronDown className="h-4 w-4 ml-auto" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => setSortOrder("newest")} className={cn(sortOrder === "newest" && "bg-[var(--muted)]")}>
-                <CalendarDays className="mr-2 h-4 w-4" />
-                Newest first
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortOrder("oldest")} className={cn(sortOrder === "oldest" && "bg-[var(--muted)]")}>
-                <CalendarDays className="mr-2 h-4 w-4" />
-                Oldest first
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortOrder("highest")} className={cn(sortOrder === "highest" && "bg-[var(--muted)]")}>
-                <ArrowUpDown className="mr-2 h-4 w-4" />
-                Highest amount
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortOrder("lowest")} className={cn(sortOrder === "lowest" && "bg-[var(--muted)]")}>
-                <ArrowUpDown className="mr-2 h-4 w-4" />
-                Lowest amount
-              </DropdownMenuItem>
+              {(["date", "amount", "merchant", "category", "receipt"] as const).map((col) => (
+                <DropdownMenuItem
+                  key={col}
+                  onClick={() => handleSort(col)}
+                  className={cn(
+                    "flex items-center justify-between",
+                    sortColumn === col && "bg-[var(--muted)]"
+                  )}
+                >
+                  <span>{sortLabels[col]}</span>
+                  {sortColumn === col ? (
+                    sortDirection === "asc" ? (
+                      <ArrowUp className="h-3.5 w-3.5" />
+                    ) : (
+                      <ArrowDown className="h-3.5 w-3.5" />
+                    )
+                  ) : null}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -328,11 +425,48 @@ export default function ConsumerTransactionsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[40%]">Merchant</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Receipt</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
+                  <SortableTableHead
+                    column="merchant"
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    className="w-[40%]"
+                  >
+                    Merchant
+                  </SortableTableHead>
+                  <SortableTableHead
+                    column="category"
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                  >
+                    Category
+                  </SortableTableHead>
+                  <SortableTableHead
+                    column="date"
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                  >
+                    Date
+                  </SortableTableHead>
+                  <SortableTableHead
+                    column="receipt"
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                  >
+                    Receipt
+                  </SortableTableHead>
+                  <SortableTableHead
+                    column="amount"
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    align="right"
+                  >
+                    Amount
+                  </SortableTableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -345,7 +479,7 @@ export default function ConsumerTransactionsPage() {
                     <TableRow
                       key={tx.id}
                       className="cursor-pointer hover:bg-[var(--muted)]/50"
-                      onClick={() => navigateToTransaction(tx.id)}
+                      onClick={() => navigateToTransaction(tx)}
                     >
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -403,7 +537,7 @@ export default function ConsumerTransactionsPage() {
                   href={`/consumer/transactions/${tx.id}`}
                   onClick={(e) => {
                     e.preventDefault()
-                    navigateToTransaction(tx.id)
+                    navigateToTransaction(tx)
                   }}
                   className="block rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors"
                 >
