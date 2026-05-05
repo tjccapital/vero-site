@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/table"
 import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import {
+  cacheTransactionForDetail,
   fetchTransactions,
   transactionDisplayName,
   type Transaction,
@@ -196,9 +197,11 @@ export default function ConsumerTransactionsPage() {
   )
 
   const navigateToTransaction = useCallback(
-    (id: string) => {
+    (tx: Transaction) => {
       saveListScroll()
-      router.push(`/consumer/transactions/${id}`)
+      // Stash the row so the detail page can render without re-listing.
+      cacheTransactionForDetail(tx)
+      router.push(`/consumer/transactions/${tx.id}`)
     },
     [router, saveListScroll]
   )
@@ -476,7 +479,7 @@ export default function ConsumerTransactionsPage() {
                     <TableRow
                       key={tx.id}
                       className="cursor-pointer hover:bg-[var(--muted)]/50"
-                      onClick={() => navigateToTransaction(tx.id)}
+                      onClick={() => navigateToTransaction(tx)}
                     >
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -534,7 +537,7 @@ export default function ConsumerTransactionsPage() {
                   href={`/consumer/transactions/${tx.id}`}
                   onClick={(e) => {
                     e.preventDefault()
-                    navigateToTransaction(tx.id)
+                    navigateToTransaction(tx)
                   }}
                   className="block rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors"
                 >

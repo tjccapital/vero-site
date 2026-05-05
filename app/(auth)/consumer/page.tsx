@@ -30,6 +30,7 @@ import {
 import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 import {
+  cacheTransactionForDetail,
   fetchTransactions,
   transactionDisplayName,
   type Transaction,
@@ -874,7 +875,10 @@ export default function ConsumerDashboardPage() {
                       <Link
                         key={tx.id}
                         href={`/consumer/transactions/${tx.id}`}
-                        onClick={saveDashboardScroll}
+                        onClick={() => {
+                          saveDashboardScroll()
+                          cacheTransactionForDetail(tx)
+                        }}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
                       >
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
