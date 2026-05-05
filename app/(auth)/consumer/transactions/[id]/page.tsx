@@ -7,11 +7,6 @@ import { cn } from "@/lib/utils"
 import {
   Receipt,
   ArrowLeft,
-  ShoppingBag,
-  Coffee,
-  Utensils,
-  Car,
-  Store,
   CreditCard,
   Calendar,
   Hash,
@@ -38,52 +33,12 @@ import {
   type Transaction,
   type Receipt as ReceiptModel,
 } from "@/lib/transactions"
-
-function getTransactionIcon(tx: Transaction | null) {
-  if (!tx) return Receipt
-  const tags = (tx.category || []).map((c) => c.toLowerCase())
-  const has = (...needles: string[]) =>
-    tags.some((tag) => needles.some((n) => tag.includes(n)))
-  if (has("grocery", "supermarket")) return ShoppingBag
-  if (has("coffee")) return Coffee
-  if (has("restaurant", "food and drink", "fast food", "dining")) return Utensils
-  if (has("gas", "fuel", "automotive")) return Car
-  if (has("shop", "retail", "merchandise")) return Store
-  return Receipt
-}
-
-function getCategoryColor(tx: Transaction | null) {
-  if (!tx) return "bg-gray-100 text-gray-700"
-  const tags = (tx.category || []).map((c) => c.toLowerCase())
-  if (tags.some((t) => /grocery|supermarket/.test(t))) return "bg-green-100 text-green-700"
-  if (tags.some((t) => /coffee/.test(t))) return "bg-amber-100 text-amber-700"
-  if (tags.some((t) => /restaurant|food and drink|dining|fast food/.test(t))) return "bg-orange-100 text-orange-700"
-  if (tags.some((t) => /gas|fuel|automotive/.test(t))) return "bg-blue-100 text-blue-700"
-  if (tags.some((t) => /shop|retail|merchandise/.test(t))) return "bg-purple-100 text-purple-700"
-  return "bg-gray-100 text-gray-700"
-}
-
-function getCategoryLabel(tx: Transaction | null): string {
-  if (!tx) return "transaction"
-  const tags = (tx.category || []).map((c) => c.toLowerCase())
-  if (tags.some((t) => /grocery|supermarket/.test(t))) return "groceries"
-  if (tags.some((t) => /coffee/.test(t))) return "coffee"
-  if (tags.some((t) => /restaurant|food and drink|dining|fast food/.test(t))) return "dining"
-  if (tags.some((t) => /gas|fuel|automotive/.test(t))) return "gas"
-  if (tags.some((t) => /shop|retail|merchandise/.test(t))) return "shopping"
-  return tx.category?.[0]?.toLowerCase() || "other"
-}
-
-function formatLongDate(iso?: string): string {
-  if (!iso) return ""
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return iso
-  return d.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
-}
+import {
+  formatTxLongDate,
+  getCategoryColor,
+  getCategoryLabel,
+  getTransactionIcon,
+} from "@/lib/category-display"
 
 function isPdfUrl(url: string | null | undefined): boolean {
   if (!url) return false
@@ -365,7 +320,7 @@ export default function TransactionDetailPage() {
               <Calendar className="h-5 w-5 text-[var(--muted-foreground)]" />
               <div>
                 <p className="text-xs text-[var(--muted-foreground)]">Date</p>
-                <p className="text-sm font-medium">{formatLongDate(transactionDate)}</p>
+                <p className="text-sm font-medium">{formatTxLongDate(transactionDate)}</p>
               </div>
             </div>
           ) : null}

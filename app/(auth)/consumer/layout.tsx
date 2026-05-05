@@ -263,9 +263,22 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
           </Link>
         </header>
 
-        {/* Mobile drawer */}
+        {/* Mobile drawer — right-side panel with tap-outside-to-close
+            backdrop (web convention). The fullscreen variant we had before
+            was a UX miss: the only way to dismiss was the X button. */}
         {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-14 z-50 bg-white overflow-y-auto">
+          <>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden fixed inset-0 top-14 z-40 bg-black/40 backdrop-blur-[2px]"
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              className="lg:hidden fixed right-0 top-14 bottom-0 z-50 w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto"
+            >
             <div className="px-4 py-4">
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
                 <Avatar className="h-10 w-10">
@@ -340,7 +353,8 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
                 </a>
               </div>
             </div>
-          </div>
+            </div>
+          </>
         )}
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">

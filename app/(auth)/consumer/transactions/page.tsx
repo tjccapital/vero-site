@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useState, useMemo, useCallback } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import {
   Receipt,
-  X,
   Search,
   Filter,
   ChevronDown,
@@ -37,15 +36,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PlaidLinkButton } from "@/components/plaid-link-button"
-import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
+import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import {
   fetchTransactions,
   transactionDisplayName,
   type Transaction,
 } from "@/lib/transactions"
-
-const TX_LIST_SCROLL_KEY = "vero:consumer:transactions:scrollTop"
+import {
+  formatTxDate,
+  getCategoryColor,
+  getCategoryLabel,
+  getTransactionIcon,
+} from "@/lib/category-display"
+import { useMainScrollRestore } from "@/lib/use-main-scroll-restore"
 
 type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopping"
 type SortOrder = "newest" | "oldest" | "highest" | "lowest"
@@ -65,59 +68,12 @@ const categoryDefs: Array<{
   { value: "shopping", label: "Shopping", icon: Store, needles: ["shop", "retail", "merchandise"] },
 ]
 
-function getTransactionIcon(tx: Transaction) {
-  const tags = (tx.category || []).map((c) => c.toLowerCase())
-  const has = (...needles: string[]) =>
-    tags.some((tag) => needles.some((n) => tag.includes(n)))
-  if (has("grocery", "supermarket")) return ShoppingBag
-  if (has("coffee")) return Coffee
-  if (has("restaurant", "food and drink", "fast food", "dining")) return Utensils
-  if (has("gas", "fuel", "automotive")) return Car
-  if (has("shop", "retail", "merchandise")) return Store
-  return Receipt
-}
-
 function getCategoryFilterMatch(tx: Transaction, filter: CategoryFilter): boolean {
   if (filter === "all") return true
   const def = categoryDefs.find((d) => d.value === filter)
   if (!def) return true
   const tags = (tx.category || []).map((c) => c.toLowerCase())
   return def.needles.some((n) => tags.some((t) => t.includes(n)))
-}
-
-function getCategoryColor(tx: Transaction) {
-  const tags = (tx.category || []).map((c) => c.toLowerCase())
-  if (tags.some((t) => /grocery|supermarket/.test(t))) return "bg-gray-100 text-gray-700"
-  if (tags.some((t) => /coffee/.test(t))) return "bg-gray-100 text-gray-600"
-  if (tags.some((t) => /restaurant|food and drink|dining|fast food/.test(t))) return "bg-gray-200 text-gray-800"
-  if (tags.some((t) => /gas|fuel|automotive/.test(t))) return "bg-gray-100 text-gray-700"
-  if (tags.some((t) => /shop|retail|merchandise/.test(t))) return "bg-gray-200 text-gray-700"
-  return "bg-gray-100 text-gray-700"
-}
-
-function getCategoryLabel(tx: Transaction): string {
-  const tags = (tx.category || []).map((c) => c.toLowerCase())
-  if (tags.some((t) => /grocery|supermarket/.test(t))) return "groceries"
-  if (tags.some((t) => /coffee/.test(t))) return "coffee"
-  if (tags.some((t) => /restaurant|food and drink|dining|fast food/.test(t))) return "dining"
-  if (tags.some((t) => /gas|fuel|automotive/.test(t))) return "gas"
-  if (tags.some((t) => /shop|retail|merchandise/.test(t))) return "shopping"
-  return tx.category?.[0]?.toLowerCase() || "other"
-}
-
-function formatTxDate(iso: string): string {
-  if (!iso) return ""
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return iso
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const yesterday = new Date(today)
-  yesterday.setDate(yesterday.getDate() - 1)
-  const dayStart = new Date(d)
-  dayStart.setHours(0, 0, 0, 0)
-  if (dayStart.getTime() === today.getTime()) return "Today"
-  if (dayStart.getTime() === yesterday.getTime()) return "Yesterday"
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
 }
 
 export default function ConsumerTransactionsPage() {
@@ -132,9 +88,6 @@ export default function ConsumerTransactionsPage() {
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
 
   const [showPlaidModal, setShowPlaidModal] = useState(false)
-  const [linkToken, setLinkToken] = useState<string | null>(null)
-  const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
-  const [exchanging, setExchanging] = useState(false)
 
   const loadTransactions = useCallback(async () => {
     setTransactionsLoading(true)
@@ -155,63 +108,21 @@ export default function ConsumerTransactionsPage() {
   }, [loadTransactions])
 
   // Restore the list's scroll position after returning from a transaction
-  // detail. The layout's <main> is the scroll container (the document itself
-  // doesn't scroll), so window.scrollY-based restoration won't work. We save
-  // <main>.scrollTop in sessionStorage when navigating into a transaction
-  // and replay it once the list has rendered enough rows to scroll there.
-  // Restoring once and clearing keeps a stale value from triggering on a
-  // later, unrelated navigation back to the list.
-  useEffect(() => {
-    if (transactionsLoading) return
-    if (typeof window === "undefined") return
-    const saved = sessionStorage.getItem(TX_LIST_SCROLL_KEY)
-    if (saved == null) return
-    sessionStorage.removeItem(TX_LIST_SCROLL_KEY)
-    const top = Number(saved)
-    if (!Number.isFinite(top)) return
-    const scroller = document.querySelector("main")
-    if (scroller) scroller.scrollTop = top
-  }, [transactionsLoading])
+  // detail. Restored once the rows have rendered (transactionsLoading flips
+  // to false); the value is cleared after replay so a later, unrelated
+  // navigation back to the list doesn't get yanked to a stale spot.
+  const saveListScroll = useMainScrollRestore(
+    "vero:consumer:transactions:scrollTop",
+    !transactionsLoading
+  )
 
   const navigateToTransaction = useCallback(
     (id: string) => {
-      if (typeof window !== "undefined") {
-        const scroller = document.querySelector("main")
-        if (scroller) {
-          sessionStorage.setItem(TX_LIST_SCROLL_KEY, String(scroller.scrollTop))
-        }
-      }
+      saveListScroll()
       router.push(`/consumer/transactions/${id}`)
     },
-    [router]
+    [router, saveListScroll]
   )
-
-  // Lazily fetch a Plaid link_token when the empty-state modal opens.
-  useEffect(() => {
-    if (!showPlaidModal) return
-    if (linkToken) return
-    let cancelled = false
-    setLinkTokenError(null)
-    createLinkToken()
-      .then((res) => {
-        if (cancelled) return
-        setLinkToken(res.link_token)
-      })
-      .catch((err) => {
-        console.error("[Plaid] Failed to create link token:", err)
-        if (cancelled) return
-        setLinkTokenError("Couldn't start Plaid Link. Please try again.")
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [showPlaidModal, linkToken])
-
-  const closePlaidModal = useCallback(() => {
-    setShowPlaidModal(false)
-    setLinkToken(null)
-    setLinkTokenError(null)
-  }, [])
 
   const filteredTransactions = useMemo(() => {
     let result = [...transactions]
@@ -533,95 +444,16 @@ export default function ConsumerTransactionsPage() {
         )}
       </div>
 
-      {/* Plaid Link Modal — same flow as the dashboard's "Link an account" CTA. */}
-      {showPlaidModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={closePlaidModal}
-          />
-          <div className="relative w-full max-w-md mx-4 rounded-xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/10">
-                  <Landmark className="h-5 w-5 text-[var(--primary)]" />
-                </div>
-                <div>
-                  <h2 className="font-semibold">Link a Bank Account</h2>
-                  <p className="text-xs text-[var(--muted-foreground)]">Securely connect via Plaid</p>
-                </div>
-              </div>
-              <button
-                onClick={closePlaidModal}
-                className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
-              >
-                <X className="h-5 w-5 text-[var(--muted-foreground)]" />
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Connect your bank or credit card to start receiving transactions and itemized receipts.
-              </p>
-
-              {linkTokenError ? (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  {linkTokenError}
-                </div>
-              ) : null}
-
-              {linkToken ? (
-                <PlaidLinkButton
-                  linkToken={linkToken}
-                  disabled={exchanging}
-                  onSuccess={async (publicToken, metadata) => {
-                    setExchanging(true)
-                    try {
-                      await exchangePublicToken(publicToken, {
-                        institution: metadata?.institution
-                          ? {
-                              id: metadata.institution.institution_id,
-                              name: metadata.institution.name,
-                            }
-                          : null,
-                        accounts: metadata?.accounts?.map((a) => ({
-                          id: a.id,
-                          name: a.name,
-                          mask: a.mask ?? undefined,
-                        })),
-                      })
-                      closePlaidModal()
-                      // Refetch transactions — once Plaid syncs, the user
-                      // should see real data populate this page.
-                      await loadTransactions()
-                    } catch (err) {
-                      console.error("[Plaid] Exchange failed:", err)
-                      setLinkTokenError(
-                        "We couldn't finish linking your account. Please try again."
-                      )
-                    } finally {
-                      setExchanging(false)
-                    }
-                  }}
-                  onExit={(err) => {
-                    if (err) {
-                      console.warn("[Plaid] Link exited with error:", err)
-                    }
-                  }}
-                />
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white opacity-60 cursor-not-allowed"
-                >
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Preparing Plaid...
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <PlaidLinkModal
+        open={showPlaidModal}
+        onClose={() => setShowPlaidModal(false)}
+        onLinked={loadTransactions}
+      >
+        <p className="text-sm text-[var(--muted-foreground)]">
+          Connect your bank or credit card to start receiving transactions and
+          itemized receipts.
+        </p>
+      </PlaidLinkModal>
     </>
   )
 }
