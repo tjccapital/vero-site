@@ -1006,8 +1006,8 @@ export default function ConsumerDashboardPage() {
                     const CategoryIcon = category.icon
                     return (
                       <div key={category.name} className="flex items-center gap-3">
-                        <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", category.color)}>
-                          <CategoryIcon className="h-4 w-4 text-white" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
+                          <CategoryIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">

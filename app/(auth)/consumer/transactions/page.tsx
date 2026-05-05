@@ -45,6 +45,8 @@ import {
   type Transaction,
 } from "@/lib/transactions"
 
+const TX_LIST_SCROLL_KEY = "vero:consumer:transactions:scrollTop"
+
 type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopping"
 type SortOrder = "newest" | "oldest" | "highest" | "lowest"
 type ReceiptFilter = "all" | "matched" | "unmatched"
@@ -152,6 +154,38 @@ export default function ConsumerTransactionsPage() {
     loadTransactions()
   }, [loadTransactions])
 
+  // Restore the list's scroll position after returning from a transaction
+  // detail. The layout's <main> is the scroll container (the document itself
+  // doesn't scroll), so window.scrollY-based restoration won't work. We save
+  // <main>.scrollTop in sessionStorage when navigating into a transaction
+  // and replay it once the list has rendered enough rows to scroll there.
+  // Restoring once and clearing keeps a stale value from triggering on a
+  // later, unrelated navigation back to the list.
+  useEffect(() => {
+    if (transactionsLoading) return
+    if (typeof window === "undefined") return
+    const saved = sessionStorage.getItem(TX_LIST_SCROLL_KEY)
+    if (saved == null) return
+    sessionStorage.removeItem(TX_LIST_SCROLL_KEY)
+    const top = Number(saved)
+    if (!Number.isFinite(top)) return
+    const scroller = document.querySelector("main")
+    if (scroller) scroller.scrollTop = top
+  }, [transactionsLoading])
+
+  const navigateToTransaction = useCallback(
+    (id: string) => {
+      if (typeof window !== "undefined") {
+        const scroller = document.querySelector("main")
+        if (scroller) {
+          sessionStorage.setItem(TX_LIST_SCROLL_KEY, String(scroller.scrollTop))
+        }
+      }
+      router.push(`/consumer/transactions/${id}`)
+    },
+    [router]
+  )
+
   // Lazily fetch a Plaid link_token when the empty-state modal opens.
   useEffect(() => {
     if (!showPlaidModal) return
@@ -254,7 +288,7 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors min-w-[160px]">
+              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
                 <Filter className="h-4 w-4" />
                 {categoryDefs.find((c) => c.value === selectedCategory)?.label || "Category"}
                 <ChevronDown className="h-4 w-4 ml-auto" />
@@ -278,7 +312,7 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors min-w-[160px]">
+              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
                 <Receipt className="h-4 w-4" />
                 {receiptFilter === "all" ? "All receipts" : receiptFilter === "matched" ? "With receipt" : "No receipt"}
                 <ChevronDown className="h-4 w-4 ml-auto" />
@@ -293,7 +327,7 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors min-w-[140px]">
+              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[140px]">
                 <ArrowUpDown className="h-4 w-4" />
                 Sort
                 <ChevronDown className="h-4 w-4 ml-auto" />
@@ -400,7 +434,7 @@ export default function ConsumerTransactionsPage() {
                     <TableRow
                       key={tx.id}
                       className="cursor-pointer hover:bg-[var(--muted)]/50"
-                      onClick={() => router.push(`/consumer/transactions/${tx.id}`)}
+                      onClick={() => navigateToTransaction(tx.id)}
                     >
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -456,6 +490,10 @@ export default function ConsumerTransactionsPage() {
                 <Link
                   key={tx.id}
                   href={`/consumer/transactions/${tx.id}`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    navigateToTransaction(tx.id)
+                  }}
                   className="block rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors"
                 >
                   <div className="flex items-start gap-3">

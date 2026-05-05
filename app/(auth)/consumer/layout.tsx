@@ -231,10 +231,10 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
             Page-specific headings/actions live inside each page's main
             content. */}
         <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-4 lg:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
-              className="lg:hidden flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              className="lg:hidden flex items-center justify-center rounded-md p-2 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -250,10 +250,14 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
                 <PanelLeftClose className="h-4 w-4" />
               )}
             </button>
+            {/* Logo — only on mobile, where the sidebar's logo is hidden. */}
+            <Link href="/consumer" className="lg:hidden flex items-center">
+              <VeroLogoFull height={18} className="text-[var(--foreground)]" />
+            </Link>
           </div>
           <Link
             href="/"
-            className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            className="text-xs sm:text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] whitespace-nowrap"
           >
             Back to Site
           </Link>
