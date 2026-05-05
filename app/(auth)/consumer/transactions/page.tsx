@@ -87,11 +87,11 @@ function getCategoryFilterMatch(tx: Transaction, filter: CategoryFilter): boolea
 
 function getCategoryColor(tx: Transaction) {
   const tags = (tx.category || []).map((c) => c.toLowerCase())
-  if (tags.some((t) => /grocery|supermarket/.test(t))) return "bg-green-100 text-green-700"
-  if (tags.some((t) => /coffee/.test(t))) return "bg-amber-100 text-amber-700"
-  if (tags.some((t) => /restaurant|food and drink|dining|fast food/.test(t))) return "bg-orange-100 text-orange-700"
-  if (tags.some((t) => /gas|fuel|automotive/.test(t))) return "bg-blue-100 text-blue-700"
-  if (tags.some((t) => /shop|retail|merchandise/.test(t))) return "bg-purple-100 text-purple-700"
+  if (tags.some((t) => /grocery|supermarket/.test(t))) return "bg-gray-100 text-gray-700"
+  if (tags.some((t) => /coffee/.test(t))) return "bg-gray-100 text-gray-600"
+  if (tags.some((t) => /restaurant|food and drink|dining|fast food/.test(t))) return "bg-gray-200 text-gray-800"
+  if (tags.some((t) => /gas|fuel|automotive/.test(t))) return "bg-gray-100 text-gray-700"
+  if (tags.some((t) => /shop|retail|merchandise/.test(t))) return "bg-gray-200 text-gray-700"
   return "bg-gray-100 text-gray-700"
 }
 
