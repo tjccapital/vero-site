@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from "react"
 import { Landmark, Loader2, X } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { PlaidLinkButton } from "@/components/plaid-link-button"
 import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
 
@@ -30,6 +31,10 @@ export function PlaidLinkModal({
   const [linkToken, setLinkToken] = useState<string | null>(null)
   const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
   const [exchanging, setExchanging] = useState(false)
+  // True while Plaid Link is on screen — we hide our own chrome so the
+  // user only sees one modal at a time. Plaid renders into a portal on
+  // <body>, so hiding ours visually doesn't affect theirs.
+  const [plaidVisible, setPlaidVisible] = useState(false)
 
   // Tokens are short-lived (~30 min); fetch lazily once the modal opens
   // and drop them on close so the next open gets a fresh one.
@@ -56,13 +61,22 @@ export function PlaidLinkModal({
   const close = useCallback(() => {
     setLinkToken(null)
     setLinkTokenError(null)
+    setPlaidVisible(false)
     onClose()
   }, [onClose])
 
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-center justify-center",
+        // Keep the subtree mounted (PlaidLinkButton owns the active link
+        // handler — unmounting it would tear down Plaid's modal) but hide
+        // our chrome so Plaid stands alone.
+        plaidVisible && "invisible pointer-events-none"
+      )}
+    >
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={close}
@@ -128,9 +142,16 @@ export function PlaidLinkModal({
                 }
               }}
               onExit={(err) => {
+                // Plaid was dismissed without success — bring our chrome
+                // back so the user can see the page (or retry).
+                setPlaidVisible(false)
                 if (err) {
                   console.warn("[Plaid] Link exited with error:", err)
                 }
+              }}
+              onEvent={(eventName) => {
+                if (eventName === "OPEN") setPlaidVisible(true)
+                else if (eventName === "EXIT") setPlaidVisible(false)
               }}
             />
           ) : (
