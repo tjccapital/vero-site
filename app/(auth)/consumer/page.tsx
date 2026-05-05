@@ -373,15 +373,14 @@ export default function ConsumerDashboardPage() {
     const defs: Array<{
       name: string
       icon: typeof ShoppingBag
-      color: string
       needles: string[]
     }> = [
-      { name: "Groceries", icon: ShoppingBag, color: "bg-green-500", needles: ["grocery", "supermarket"] },
-      { name: "Dining", icon: Utensils, color: "bg-orange-500", needles: ["restaurant", "food and drink", "dining", "fast food"] },
-      { name: "Gas & Auto", icon: Car, color: "bg-blue-500", needles: ["gas", "fuel", "automotive"] },
-      { name: "Coffee", icon: Coffee, color: "bg-amber-600", needles: ["coffee"] },
-      { name: "Shopping", icon: Store, color: "bg-purple-500", needles: ["shop", "retail", "merchandise"] },
-      { name: "Other", icon: Receipt, color: "bg-gray-500", needles: [] },
+      { name: "Groceries", icon: ShoppingBag, needles: ["grocery", "supermarket"] },
+      { name: "Dining", icon: Utensils, needles: ["restaurant", "food and drink", "dining", "fast food"] },
+      { name: "Gas & Auto", icon: Car, needles: ["gas", "fuel", "automotive"] },
+      { name: "Coffee", icon: Coffee, needles: ["coffee"] },
+      { name: "Shopping", icon: Store, needles: ["shop", "retail", "merchandise"] },
+      { name: "Other", icon: Receipt, needles: [] },
     ]
     const totals = defs.map((d) => ({ ...d, amount: 0 }))
     for (const tx of transactions) {
@@ -778,8 +777,8 @@ export default function ConsumerDashboardPage() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorSpending" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1e3a8a" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#1e3a8a" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="#525252" stopOpacity={0.7}/>
+                    <stop offset="95%" stopColor="#525252" stopOpacity={0.05}/>
                   </linearGradient>
                 </defs>
                 <XAxis
@@ -802,7 +801,7 @@ export default function ConsumerDashboardPage() {
                       return (
                         <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
                           <p className="text-sm font-medium text-gray-900 mb-1">{label}</p>
-                          <p className="text-lg font-bold text-[var(--primary)]">
+                          <p className="text-lg font-bold text-[var(--foreground)]">
                             ${Number(payload[0].value).toFixed(2)}
                           </p>
                         </div>
@@ -814,7 +813,7 @@ export default function ConsumerDashboardPage() {
                 <Area
                   type="monotone"
                   dataKey="amount"
-                  stroke="#1e3a8a"
+                  stroke="#525252"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorSpending)"
@@ -964,7 +963,7 @@ export default function ConsumerDashboardPage() {
                           </div>
                           <div className="h-2 w-full rounded-full bg-[var(--muted)]">
                             <div
-                              className={cn("h-2 rounded-full", category.color)}
+                              className="h-2 rounded-full bg-gray-500"
                               style={{ width: `${category.percentage}%` }}
                             />
                           </div>
