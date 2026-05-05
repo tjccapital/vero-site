@@ -991,51 +991,7 @@ export default function ConsumerDashboardPage() {
           // institution from /api/plaid/accounts.
           router.push("/consumer/accounts")
         }}
-      >
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Connect your bank account or credit card to automatically receive
-          digital receipts for your transactions.
-        </p>
-
-        {accounts.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
-              Connected Accounts
-            </p>
-            <div className="space-y-2">
-              {accounts.map((account) => {
-                const institution =
-                  account.institutionName ||
-                  account.institution_name ||
-                  account.institution
-                const subtitle = [account.subtype || account.type, institution]
-                  .filter(Boolean)
-                  .join(" · ")
-                return (
-                  <div
-                    key={account.id}
-                    className="flex items-center justify-between rounded-lg border border-[var(--border)] p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
-                        <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{account.name}</p>
-                        <p className="text-xs text-[var(--muted-foreground)]">
-                          {subtitle}
-                          {account.mask ? ` •••• ${account.mask}` : null}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-xs text-green-600 font-medium">Connected</span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-      </PlaidLinkModal>
+      />
     </>
   )
 }

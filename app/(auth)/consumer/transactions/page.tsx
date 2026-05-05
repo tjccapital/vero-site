@@ -582,12 +582,7 @@ export default function ConsumerTransactionsPage() {
         open={showPlaidModal}
         onClose={() => setShowPlaidModal(false)}
         onLinked={loadTransactions}
-      >
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Connect your bank or credit card to start receiving transactions and
-          itemized receipts.
-        </p>
-      </PlaidLinkModal>
+      />
     </>
   )
 }

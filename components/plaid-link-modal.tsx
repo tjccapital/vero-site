@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Landmark, Loader2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { PlaidLinkButton } from "@/components/plaid-link-button"
@@ -12,21 +12,17 @@ interface PlaidLinkModalProps {
   // Called after a successful exchange, before the modal closes. Pages use
   // this to refresh their account/transaction lists or to redirect.
   onLinked?: () => Promise<void> | void
-  // Page-specific copy and extras (intro paragraph, supported-institutions
-  // grid, connected-accounts list, etc.) rendered above the Plaid button.
-  children?: ReactNode
 }
 
 // Each /consumer page used to inline the Plaid Link modal — same header,
-// same loading button, same security note, slightly different page-specific
-// extras above the call-to-action. Centralising the chrome here keeps the
-// flow consistent and means the link_token lifecycle (lazy fetch on open,
-// reset on close) is implemented once.
+// same loading button, same security note, with slightly different page-
+// specific extras above the call-to-action. We've standardised on a single
+// minimal layout so the flow is identical regardless of where the user
+// triggered it from.
 export function PlaidLinkModal({
   open,
   onClose,
   onLinked,
-  children,
 }: PlaidLinkModalProps) {
   const [linkToken, setLinkToken] = useState<string | null>(null)
   const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
@@ -102,7 +98,10 @@ export function PlaidLinkModal({
         </div>
 
         <div className="p-6 space-y-4">
-          {children}
+          <p className="text-sm text-[var(--muted-foreground)]">
+            Connect your bank account or credit card to automatically receive
+            digital receipts for your transactions.
+          </p>
 
           {linkTokenError ? (
             <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
