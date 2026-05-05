@@ -231,10 +231,10 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
             Page-specific headings/actions live inside each page's main
             content. */}
         <header className="flex h-14 items-center justify-between border-b border-[var(--border)] px-4 lg:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
-              className="lg:hidden flex items-center justify-center rounded-md p-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              className="lg:hidden flex items-center justify-center rounded-md p-2 hover:bg-[var(--muted)] text-[var(--muted-foreground)]"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -250,18 +250,35 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
                 <PanelLeftClose className="h-4 w-4" />
               )}
             </button>
+            {/* Logo — only on mobile, where the sidebar's logo is hidden. */}
+            <Link href="/consumer" className="lg:hidden flex items-center">
+              <VeroLogoFull height={18} className="text-[var(--foreground)]" />
+            </Link>
           </div>
           <Link
             href="/"
-            className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            className="text-xs sm:text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] whitespace-nowrap"
           >
             Back to Site
           </Link>
         </header>
 
-        {/* Mobile drawer */}
+        {/* Mobile drawer — right-side panel with tap-outside-to-close
+            backdrop (web convention). The fullscreen variant we had before
+            was a UX miss: the only way to dismiss was the X button. */}
         {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-14 z-50 bg-white overflow-y-auto">
+          <>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden fixed inset-0 top-14 z-40 bg-black/40 backdrop-blur-[2px]"
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              className="lg:hidden fixed right-0 top-14 bottom-0 z-50 w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto"
+            >
             <div className="px-4 py-4">
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
                 <Avatar className="h-10 w-10">
@@ -336,7 +353,8 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
                 </a>
               </div>
             </div>
-          </div>
+            </div>
+          </>
         )}
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
@@ -27,18 +27,18 @@ import {
   CreditCard,
   Loader2,
 } from "lucide-react"
-import { PlaidLinkButton } from "@/components/plaid-link-button"
-import {
-  createLinkToken,
-  exchangePublicToken,
-  fetchPlaidAccounts,
-  type PlaidAccount,
-} from "@/lib/plaid"
+import { PlaidLinkModal } from "@/components/plaid-link-modal"
+import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 import {
   fetchTransactions,
   transactionDisplayName,
   type Transaction,
 } from "@/lib/transactions"
+import {
+  formatTxShortDate,
+  getTransactionIcon,
+} from "@/lib/category-display"
+import { useMainScrollRestore } from "@/lib/use-main-scroll-restore"
 import {
   Area,
   AreaChart,
@@ -135,9 +135,6 @@ export default function ConsumerDashboardPage() {
   const [checklistCollapsed, setChecklistCollapsed] = useState(false)
   const [referralDismissed, setReferralDismissed] = useState(false)
   const [gettingStartedDismissed, setGettingStartedDismissed] = useState(false)
-  const [linkToken, setLinkToken] = useState<string | null>(null)
-  const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
-  const [exchanging, setExchanging] = useState(false)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
@@ -165,34 +162,6 @@ export default function ConsumerDashboardPage() {
     if (typeof window !== 'undefined') {
       window.localStorage.setItem('vero:consumer:gettingStartedDismissed', '1')
     }
-  }, [])
-
-  // Fetch the Plaid link_token lazily when the modal opens. Tokens are
-  // short-lived (~30 min); drop them on close so a re-open gets a fresh one.
-  useEffect(() => {
-    if (!showPlaidModal) return
-    if (linkToken) return
-    let cancelled = false
-    setLinkTokenError(null)
-    createLinkToken()
-      .then((res) => {
-        if (cancelled) return
-        setLinkToken(res.link_token)
-      })
-      .catch((err) => {
-        console.error("[Plaid] Failed to create link token:", err)
-        if (cancelled) return
-        setLinkTokenError("Couldn't start Plaid Link. Please try again.")
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [showPlaidModal, linkToken])
-
-  const closePlaidModal = useCallback(() => {
-    setShowPlaidModal(false)
-    setLinkToken(null)
-    setLinkTokenError(null)
   }, [])
 
   // Generate a simple referral code based on user
@@ -247,6 +216,13 @@ export default function ConsumerDashboardPage() {
       cancelled = true
     }
   }, [])
+
+  // Restore the dashboard's scroll position after returning from a
+  // transaction detail opened from the "Recent Transactions" card.
+  const saveDashboardScroll = useMainScrollRestore(
+    "vero:consumer:dashboard:scrollTop",
+    !transactionsLoading
+  )
 
   // Derive the "Spending Overview" series from real transactions for the
   // selected range. Plaid expense amounts are positive; negative values are
@@ -339,7 +315,10 @@ export default function ConsumerDashboardPage() {
     return chartData.reduce((sum, item) => sum + item.amount, 0)
   }, [chartData])
 
-  const getCategoryIcon = (category: string) => {
+  // The fallback "sample receipts" list (rendered before the user has linked
+  // an account) labels each row by a string category, not a Plaid tag, so
+  // it can't share getTransactionIcon. Keep this small mapping local.
+  const getSampleReceiptIcon = (category: string) => {
     switch (category) {
       case "groceries":
         return ShoppingBag
@@ -354,36 +333,6 @@ export default function ConsumerDashboardPage() {
       default:
         return Receipt
     }
-  }
-
-  // Map a transaction's Plaid category (which arrives as an array of strings,
-  // most-specific last) to one of our category icons. Falls back to a generic
-  // Receipt icon for anything we don't recognise.
-  const getTransactionIcon = (tx: Transaction) => {
-    const tags = (tx.category || []).map((c) => c.toLowerCase())
-    const has = (...needles: string[]) =>
-      tags.some((tag) => needles.some((n) => tag.includes(n)))
-    if (has("grocery", "supermarket")) return ShoppingBag
-    if (has("coffee")) return Coffee
-    if (has("restaurant", "food and drink", "fast food", "dining")) return Utensils
-    if (has("gas", "fuel", "automotive")) return Car
-    if (has("shop", "retail", "merchandise")) return Store
-    return Receipt
-  }
-
-  const formatTransactionDate = (iso: string) => {
-    if (!iso) return ""
-    const d = new Date(iso)
-    if (Number.isNaN(d.getTime())) return iso
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-    const dayStart = new Date(d)
-    dayStart.setHours(0, 0, 0, 0)
-    if (dayStart.getTime() === today.getTime()) return "Today"
-    if (dayStart.getTime() === yesterday.getTime()) return "Yesterday"
-    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
   }
 
   const recentTransactions = useMemo(() => transactions.slice(0, 5), [transactions])
@@ -457,8 +406,6 @@ export default function ConsumerDashboardPage() {
       }))
   }, [transactions])
 
-  if (!user) return null
-
   return (
     <>
       <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
@@ -500,7 +447,7 @@ export default function ConsumerDashboardPage() {
 
         {/* Welcome Header */}
         <div>
-          <h1 className="text-2xl font-semibold">Welcome back, {user.name?.split(' ')[0] || 'there'}</h1>
+          <h1 className="text-2xl font-semibold">Welcome back, {user?.name?.split(' ')[0] || 'there'}</h1>
           <p className="text-sm text-[var(--muted-foreground)]">
             Here&apos;s an overview of your recent spending
           </p>
@@ -928,6 +875,7 @@ export default function ConsumerDashboardPage() {
                       <Link
                         key={tx.id}
                         href={`/consumer/transactions/${tx.id}`}
+                        onClick={saveDashboardScroll}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
                       >
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
@@ -936,7 +884,7 @@ export default function ConsumerDashboardPage() {
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm truncate">{merchant}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            {formatTransactionDate(tx.date)}
+                            {formatTxShortDate(tx.date)}
                             {tx.pending ? " · Pending" : ""}
                           </p>
                         </div>
@@ -961,7 +909,7 @@ export default function ConsumerDashboardPage() {
               ) : (
                 <div className="divide-y divide-[var(--border)]">
                   {recentReceipts.map((receipt) => {
-                    const CategoryIcon = getCategoryIcon(receipt.category)
+                    const CategoryIcon = getSampleReceiptIcon(receipt.category)
                     return (
                       <Link
                         key={receipt.id}
@@ -1006,8 +954,8 @@ export default function ConsumerDashboardPage() {
                     const CategoryIcon = category.icon
                     return (
                       <div key={category.name} className="flex items-center gap-3">
-                        <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", category.color)}>
-                          <CategoryIcon className="h-4 w-4 text-white" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
+                          <CategoryIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
@@ -1031,144 +979,60 @@ export default function ConsumerDashboardPage() {
         </div>
       </div>
 
-      {/* Plaid Link Modal */}
-      {showPlaidModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowPlaidModal(false)}
-          />
+      <PlaidLinkModal
+        open={showPlaidModal}
+        onClose={() => setShowPlaidModal(false)}
+        onLinked={() => {
+          // The dashboard's account list is still sample data; send the
+          // user to the accounts page so they see the freshly linked
+          // institution from /api/plaid/accounts.
+          router.push("/consumer/accounts")
+        }}
+      >
+        <p className="text-sm text-[var(--muted-foreground)]">
+          Connect your bank account or credit card to automatically receive
+          digital receipts for your transactions.
+        </p>
 
-          <div className="relative w-full max-w-md mx-4 rounded-xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/10">
-                  <Landmark className="h-5 w-5 text-[var(--primary)]" />
-                </div>
-                <div>
-                  <h2 className="font-semibold">Link a Bank Account</h2>
-                  <p className="text-xs text-[var(--muted-foreground)]">Securely connect via Plaid</p>
-                </div>
-              </div>
-              <button
-                onClick={closePlaidModal}
-                className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
-              >
-                <X className="h-5 w-5 text-[var(--muted-foreground)]" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Connect your bank account or credit card to automatically receive digital receipts for your transactions.
-              </p>
-
-              {accounts.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
-                    Connected Accounts
-                  </p>
-                  <div className="space-y-2">
-                    {accounts.map((account) => {
-                      const institution =
-                        account.institutionName ||
-                        account.institution_name ||
-                        account.institution
-                      const subtitle = [account.subtype || account.type, institution]
-                        .filter(Boolean)
-                        .join(" · ")
-                      return (
-                      <div
-                        key={account.id}
-                        className="flex items-center justify-between rounded-lg border border-[var(--border)] p-3"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
-                            <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">{account.name}</p>
-                            <p className="text-xs text-[var(--muted-foreground)]">
-                              {subtitle}
-                              {account.mask ? ` •••• ${account.mask}` : null}
-                            </p>
-                          </div>
-                        </div>
-                        <span className="text-xs text-green-600 font-medium">Connected</span>
+        {accounts.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
+              Connected Accounts
+            </p>
+            <div className="space-y-2">
+              {accounts.map((account) => {
+                const institution =
+                  account.institutionName ||
+                  account.institution_name ||
+                  account.institution
+                const subtitle = [account.subtype || account.type, institution]
+                  .filter(Boolean)
+                  .join(" · ")
+                return (
+                  <div
+                    key={account.id}
+                    className="flex items-center justify-between rounded-lg border border-[var(--border)] p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)]">
+                        <CreditCard className="h-4 w-4 text-[var(--muted-foreground)]" />
                       </div>
-                      )
-                    })}
+                      <div>
+                        <p className="text-sm font-medium">{account.name}</p>
+                        <p className="text-xs text-[var(--muted-foreground)]">
+                          {subtitle}
+                          {account.mask ? ` •••• ${account.mask}` : null}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-green-600 font-medium">Connected</span>
                   </div>
-                </div>
-              )}
-
-              {linkTokenError ? (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  {linkTokenError}
-                </div>
-              ) : null}
-
-              {linkToken ? (
-                <PlaidLinkButton
-                  linkToken={linkToken}
-                  disabled={exchanging}
-                  onSuccess={async (publicToken, metadata) => {
-                    setExchanging(true)
-                    try {
-                      await exchangePublicToken(publicToken, {
-                        institution: metadata?.institution
-                          ? {
-                              id: metadata.institution.institution_id,
-                              name: metadata.institution.name,
-                            }
-                          : null,
-                        accounts: metadata?.accounts?.map((a) => ({
-                          id: a.id,
-                          name: a.name,
-                          mask: a.mask ?? undefined,
-                        })),
-                      })
-                      closePlaidModal()
-                      // The dashboard's account list is still sample data; send
-                      // the user to the accounts page so they see the freshly
-                      // linked institution from /api/plaid/accounts.
-                      router.push("/consumer/accounts")
-                    } catch (err) {
-                      console.error("[Plaid] Exchange failed:", err)
-                      setLinkTokenError(
-                        "We couldn't finish linking your account. Please try again."
-                      )
-                    } finally {
-                      setExchanging(false)
-                    }
-                  }}
-                  onExit={(err) => {
-                    if (err) {
-                      console.warn("[Plaid] Link exited with error:", err)
-                    }
-                  }}
-                />
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white opacity-60 cursor-not-allowed"
-                >
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Preparing Plaid...
-                </button>
-              )}
-
-              <div className="flex items-start gap-2 rounded-lg bg-[var(--muted)]/50 p-3">
-                <Landmark className="h-4 w-4 text-[var(--muted-foreground)] mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-[var(--muted-foreground)]">
-                  Your credentials are encrypted and securely transmitted directly to your bank through Plaid. Vero never sees or stores your login information.
-                </p>
-              </div>
+                )
+              })}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </PlaidLinkModal>
     </>
   )
 }

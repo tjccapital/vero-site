@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react"
 import {
-  X,
   Landmark,
   Plus,
   CreditCard,
@@ -10,22 +9,14 @@ import {
   Shield,
   Loader2,
 } from "lucide-react"
-import { PlaidLinkButton } from "@/components/plaid-link-button"
-import {
-  createLinkToken,
-  exchangePublicToken,
-  fetchPlaidAccounts,
-  type PlaidAccount,
-} from "@/lib/plaid"
+import { PlaidLinkModal } from "@/components/plaid-link-modal"
+import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 
 export default function ConsumerAccountsPage() {
   const [showPlaidModal, setShowPlaidModal] = useState(false)
   const [accounts, setAccounts] = useState<PlaidAccount[]>([])
   const [accountsLoading, setAccountsLoading] = useState(true)
   const [accountsError, setAccountsError] = useState<string | null>(null)
-  const [linkToken, setLinkToken] = useState<string | null>(null)
-  const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
-  const [exchanging, setExchanging] = useState(false)
 
   const loadAccounts = useCallback(async () => {
     setAccountsLoading(true)
@@ -44,35 +35,6 @@ export default function ConsumerAccountsPage() {
   useEffect(() => {
     loadAccounts()
   }, [loadAccounts])
-
-  // Fetch the Plaid link_token lazily — only when the user opens the modal,
-  // and only if we don't already have one. Tokens are short-lived (~30 min)
-  // so we drop them when the modal closes.
-  useEffect(() => {
-    if (!showPlaidModal) return
-    if (linkToken) return
-    let cancelled = false
-    setLinkTokenError(null)
-    createLinkToken()
-      .then((res) => {
-        if (cancelled) return
-        setLinkToken(res.link_token)
-      })
-      .catch((err) => {
-        console.error("[Plaid] Failed to create link token:", err)
-        if (cancelled) return
-        setLinkTokenError("Couldn't start Plaid Link. Please try again.")
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [showPlaidModal, linkToken])
-
-  const closePlaidModal = useCallback(() => {
-    setShowPlaidModal(false)
-    setLinkToken(null)
-    setLinkTokenError(null)
-  }, [])
 
   return (
     <>
@@ -195,116 +157,30 @@ export default function ConsumerAccountsPage() {
         </div>
       </div>
 
-      {/* Plaid Link Modal */}
-      {showPlaidModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={closePlaidModal}
-          />
+      <PlaidLinkModal
+        open={showPlaidModal}
+        onClose={() => setShowPlaidModal(false)}
+        onLinked={loadAccounts}
+      >
+        <p className="text-sm text-[var(--muted-foreground)]">
+          Connect your bank account or credit card to automatically receive
+          digital receipts for your transactions.
+        </p>
 
-          <div className="relative w-full max-w-md mx-4 rounded-xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)]/10">
-                  <Landmark className="h-5 w-5 text-[var(--primary)]" />
-                </div>
-                <div>
-                  <h2 className="font-semibold">Link a Bank Account</h2>
-                  <p className="text-xs text-[var(--muted-foreground)]">Securely connect via Plaid</p>
-                </div>
-              </div>
-              <button
-                onClick={closePlaidModal}
-                className="rounded-md p-1 hover:bg-[var(--muted)] transition-colors"
-              >
-                <X className="h-5 w-5 text-[var(--muted-foreground)]" />
-              </button>
+        <div className="grid grid-cols-3 gap-2">
+          {['Chase', 'Bank of America', 'Wells Fargo', 'Citi', 'Capital One', 'US Bank'].map((bank) => (
+            <div
+              key={bank}
+              className="flex items-center justify-center rounded-lg border border-[var(--border)] p-3 text-xs font-medium text-[var(--muted-foreground)]"
+            >
+              {bank}
             </div>
-
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Connect your bank account or credit card to automatically receive digital receipts for your transactions.
-              </p>
-
-              <div className="grid grid-cols-3 gap-2">
-                {['Chase', 'Bank of America', 'Wells Fargo', 'Citi', 'Capital One', 'US Bank'].map((bank) => (
-                  <div
-                    key={bank}
-                    className="flex items-center justify-center rounded-lg border border-[var(--border)] p-3 text-xs font-medium text-[var(--muted-foreground)]"
-                  >
-                    {bank}
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-center text-[var(--muted-foreground)]">
-                + 10,000 more financial institutions
-              </p>
-
-              {linkTokenError ? (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  {linkTokenError}
-                </div>
-              ) : null}
-
-              {linkToken ? (
-                <PlaidLinkButton
-                  linkToken={linkToken}
-                  disabled={exchanging}
-                  onSuccess={async (publicToken, metadata) => {
-                    setExchanging(true)
-                    try {
-                      await exchangePublicToken(publicToken, {
-                        institution: metadata?.institution
-                          ? {
-                              id: metadata.institution.institution_id,
-                              name: metadata.institution.name,
-                            }
-                          : null,
-                        accounts: metadata?.accounts?.map((a) => ({
-                          id: a.id,
-                          name: a.name,
-                          mask: a.mask ?? undefined,
-                        })),
-                      })
-                      await loadAccounts()
-                      closePlaidModal()
-                    } catch (err) {
-                      console.error("[Plaid] Exchange failed:", err)
-                      setLinkTokenError(
-                        "We couldn't finish linking your account. Please try again."
-                      )
-                    } finally {
-                      setExchanging(false)
-                    }
-                  }}
-                  onExit={(err) => {
-                    if (err) {
-                      console.warn("[Plaid] Link exited with error:", err)
-                    }
-                  }}
-                />
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--foreground)] px-4 py-3 text-sm font-medium text-white opacity-60 cursor-not-allowed"
-                >
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Preparing Plaid...
-                </button>
-              )}
-
-              <div className="flex items-start gap-2 rounded-lg bg-[var(--muted)]/50 p-3">
-                <Shield className="h-4 w-4 text-[var(--muted-foreground)] mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-[var(--muted-foreground)]">
-                  Your credentials are encrypted and securely transmitted directly to your bank through Plaid. Vero never sees or stores your login information.
-                </p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      )}
+        <p className="text-xs text-center text-[var(--muted-foreground)]">
+          + 10,000 more financial institutions
+        </p>
+      </PlaidLinkModal>
     </>
   )
 }

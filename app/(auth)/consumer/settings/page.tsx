@@ -207,8 +207,6 @@ export default function ConsumerSettingsPage() {
     }
   }, [router, apiFetch, fetchEmailStatus])
 
-  if (!user) return null
-
   const scanInProgress =
     isSyncingAfterConnect ||
     emailActionLoading === "scan" ||
@@ -228,14 +226,14 @@ export default function ConsumerSettingsPage() {
       <section className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
         <div className="flex items-center gap-4">
           <Avatar className="h-14 w-14">
-            <AvatarImage src={user.picture || undefined} alt={user.name || "User"} />
+            <AvatarImage src={user?.picture || undefined} alt={user?.name || "User"} />
             <AvatarFallback className="bg-[var(--muted)] text-lg">
-              {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+              {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="font-medium truncate">{user.name || "User"}</p>
-            <p className="text-sm text-[var(--muted-foreground)] truncate">{user.email}</p>
+            <p className="font-medium truncate">{user?.name || "User"}</p>
+            <p className="text-sm text-[var(--muted-foreground)] truncate">{user?.email}</p>
           </div>
         </div>
       </section>
