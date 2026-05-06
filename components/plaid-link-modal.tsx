@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Landmark, Loader2, X } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { PlaidLinkButton } from "@/components/plaid-link-button"
 import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
 
@@ -11,25 +12,25 @@ interface PlaidLinkModalProps {
   // Called after a successful exchange, before the modal closes. Pages use
   // this to refresh their account/transaction lists or to redirect.
   onLinked?: () => Promise<void> | void
-  // Page-specific copy and extras (intro paragraph, supported-institutions
-  // grid, connected-accounts list, etc.) rendered above the Plaid button.
-  children?: ReactNode
 }
 
 // Each /consumer page used to inline the Plaid Link modal — same header,
-// same loading button, same security note, slightly different page-specific
-// extras above the call-to-action. Centralising the chrome here keeps the
-// flow consistent and means the link_token lifecycle (lazy fetch on open,
-// reset on close) is implemented once.
+// same loading button, same security note, with slightly different page-
+// specific extras above the call-to-action. We've standardised on a single
+// minimal layout so the flow is identical regardless of where the user
+// triggered it from.
 export function PlaidLinkModal({
   open,
   onClose,
   onLinked,
-  children,
 }: PlaidLinkModalProps) {
   const [linkToken, setLinkToken] = useState<string | null>(null)
   const [linkTokenError, setLinkTokenError] = useState<string | null>(null)
   const [exchanging, setExchanging] = useState(false)
+  // True while Plaid Link is on screen — we hide our own chrome so the
+  // user only sees one modal at a time. Plaid renders into a portal on
+  // <body>, so hiding ours visually doesn't affect theirs.
+  const [plaidVisible, setPlaidVisible] = useState(false)
 
   // Tokens are short-lived (~30 min); fetch lazily once the modal opens
   // and drop them on close so the next open gets a fresh one.
@@ -56,13 +57,22 @@ export function PlaidLinkModal({
   const close = useCallback(() => {
     setLinkToken(null)
     setLinkTokenError(null)
+    setPlaidVisible(false)
     onClose()
   }, [onClose])
 
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-center justify-center",
+        // Keep the subtree mounted (PlaidLinkButton owns the active link
+        // handler — unmounting it would tear down Plaid's modal) but hide
+        // our chrome so Plaid stands alone.
+        plaidVisible && "invisible pointer-events-none"
+      )}
+    >
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={close}
@@ -88,7 +98,10 @@ export function PlaidLinkModal({
         </div>
 
         <div className="p-6 space-y-4">
-          {children}
+          <p className="text-sm text-[var(--muted-foreground)]">
+            Connect your bank account or credit card to automatically receive
+            digital receipts for your transactions.
+          </p>
 
           {linkTokenError ? (
             <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -128,9 +141,16 @@ export function PlaidLinkModal({
                 }
               }}
               onExit={(err) => {
+                // Plaid was dismissed without success — bring our chrome
+                // back so the user can see the page (or retry).
+                setPlaidVisible(false)
                 if (err) {
                   console.warn("[Plaid] Link exited with error:", err)
                 }
+              }}
+              onEvent={(eventName) => {
+                if (eventName === "OPEN") setPlaidVisible(true)
+                else if (eventName === "EXIT") setPlaidVisible(false)
               }}
             />
           ) : (

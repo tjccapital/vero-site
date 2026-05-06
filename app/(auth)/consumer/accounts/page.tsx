@@ -161,26 +161,7 @@ export default function ConsumerAccountsPage() {
         open={showPlaidModal}
         onClose={() => setShowPlaidModal(false)}
         onLinked={loadAccounts}
-      >
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Connect your bank account or credit card to automatically receive
-          digital receipts for your transactions.
-        </p>
-
-        <div className="grid grid-cols-3 gap-2">
-          {['Chase', 'Bank of America', 'Wells Fargo', 'Citi', 'Capital One', 'US Bank'].map((bank) => (
-            <div
-              key={bank}
-              className="flex items-center justify-center rounded-lg border border-[var(--border)] p-3 text-xs font-medium text-[var(--muted-foreground)]"
-            >
-              {bank}
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-center text-[var(--muted-foreground)]">
-          + 10,000 more financial institutions
-        </p>
-      </PlaidLinkModal>
+      />
     </>
   )
 }

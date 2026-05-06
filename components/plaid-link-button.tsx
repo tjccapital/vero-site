@@ -1,13 +1,22 @@
 "use client"
 
 import { useEffect } from "react"
-import { usePlaidLink, type PlaidLinkOnSuccess, type PlaidLinkOnExit } from "react-plaid-link"
+import {
+  usePlaidLink,
+  type PlaidLinkOnEvent,
+  type PlaidLinkOnExit,
+  type PlaidLinkOnSuccess,
+} from "react-plaid-link"
 import { ExternalLink, Plus } from "lucide-react"
 
 interface PlaidLinkButtonProps {
   linkToken: string
   onSuccess: PlaidLinkOnSuccess
   onExit?: PlaidLinkOnExit
+  // Plaid surfaces lifecycle events ('OPEN', 'EXIT', 'TRANSITION_VIEW', …)
+  // through this callback; the modal uses it to hide its own chrome while
+  // Plaid Link is on screen so we don't stack two overlays.
+  onEvent?: PlaidLinkOnEvent
   autoOpen?: boolean
   disabled?: boolean
   className?: string
@@ -20,6 +29,7 @@ export function PlaidLinkButton({
   linkToken,
   onSuccess,
   onExit,
+  onEvent,
   autoOpen = false,
   disabled = false,
   className,
@@ -28,6 +38,7 @@ export function PlaidLinkButton({
     token: linkToken,
     onSuccess,
     onExit,
+    onEvent,
   })
 
   useEffect(() => {
