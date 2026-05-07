@@ -282,7 +282,7 @@ export default function ConsumerTransactionsPage() {
               placeholder="Search by merchant..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-md border border-[var(--border)] bg-white pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] bg-white pl-10 pr-4 py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
             />
           </div>
 
