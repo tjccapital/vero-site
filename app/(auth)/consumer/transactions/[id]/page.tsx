@@ -33,6 +33,7 @@ import {
   type Transaction,
   type Receipt as ReceiptModel,
 } from "@/lib/transactions"
+import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 import {
   formatTxLongDate,
   getCategoryColor,
@@ -65,6 +66,25 @@ export default function TransactionDetailPage() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [pdfLabel, setPdfLabel] = useState<string | null>(null)
   const [emailHtmlUrl, setEmailHtmlUrl] = useState<string | null>(null)
+  // Plaid account list — used to translate transaction.accountId into the
+  // institution + last-4 the user actually recognises. Failure is non-fatal:
+  // we just fall back to hiding the account row.
+  const [accounts, setAccounts] = useState<PlaidAccount[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    fetchPlaidAccounts()
+      .then((res) => {
+        if (cancelled) return
+        setAccounts(res.accounts ?? [])
+      })
+      .catch((err) => {
+        console.error("[Transactions] Failed to load accounts:", err)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   // On mount, fetch the transaction (for the page header) and the matched
   // receipt (for the itemized layout). The receipt request is allowed to
@@ -324,17 +344,40 @@ export default function TransactionDetailPage() {
               </div>
             </div>
           ) : null}
-          {transaction?.accountId || transaction?.account_id ? (
-            <div className="flex items-center gap-3">
-              <CreditCard className="h-5 w-5 text-[var(--muted-foreground)]" />
-              <div>
-                <p className="text-xs text-[var(--muted-foreground)]">Account</p>
-                <p className="text-sm font-medium font-mono">
-                  {transaction.accountId || transaction.account_id}
-                </p>
+          {(() => {
+            const accountId = transaction?.accountId || transaction?.account_id
+            if (!accountId) return null
+            const account = accounts.find((a) => a.id === accountId)
+            const institution =
+              account?.institutionName ||
+              account?.institution_name ||
+              account?.institution ||
+              null
+            const nickname = account?.name
+            const mask = account?.mask
+            const primary = institution || nickname || "Linked account"
+            const secondary =
+              institution && nickname && nickname !== institution
+                ? nickname
+                : null
+            return (
+              <div className="flex items-center gap-3">
+                <CreditCard className="h-5 w-5 text-[var(--muted-foreground)]" />
+                <div className="min-w-0">
+                  <p className="text-xs text-[var(--muted-foreground)]">Account</p>
+                  <p className="text-sm font-medium truncate">
+                    {primary}
+                    {mask ? ` ••${mask}` : ""}
+                  </p>
+                  {secondary ? (
+                    <p className="text-xs text-[var(--muted-foreground)] truncate">
+                      {secondary}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ) : null}
+            )
+          })()}
           <div className="flex items-center gap-3">
             <Hash className="h-5 w-5 text-[var(--muted-foreground)]" />
             <div>
