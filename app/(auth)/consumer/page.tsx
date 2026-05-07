@@ -133,6 +133,7 @@ export default function ConsumerDashboardPage() {
   const [chartRange, setChartRange] = useState("7days")
   const [referralCopied, setReferralCopied] = useState(false)
   const [showPlaidModal, setShowPlaidModal] = useState(false)
+  const [accountsExpanded, setAccountsExpanded] = useState(false)
   const [checklistCollapsed, setChecklistCollapsed] = useState(false)
   const [referralDismissed, setReferralDismissed] = useState(false)
   const [gettingStartedDismissed, setGettingStartedDismissed] = useState(false)
@@ -617,46 +618,55 @@ export default function ConsumerDashboardPage() {
         )}
 
         {/* Linked Accounts Card */}
-        <button
-          onClick={() => setShowPlaidModal(true)}
-          className="w-full rounded-lg border border-[var(--border)] p-4 sm:p-6 hover:bg-[var(--muted)]/50 hover:border-[var(--primary)]/30 transition-colors text-left"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10">
+        <div className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                accounts.length > 0
+                  ? setAccountsExpanded((v) => !v)
+                  : setShowPlaidModal(true)
+              }
+              aria-expanded={accounts.length > 0 ? accountsExpanded : undefined}
+              className="flex flex-1 min-w-0 items-center gap-4 text-left"
+            >
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)]/10">
                 <Landmark className="h-6 w-6 text-[var(--primary)]" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-semibold">Linked Accounts</h3>
                 <p className="text-sm text-[var(--muted-foreground)]">
                   {accounts.length} account{accounts.length !== 1 ? 's' : ''} connected
                 </p>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
+            </button>
+            <div className="flex flex-shrink-0 items-center gap-2">
               {accounts.length > 0 && (
-                <div className="hidden sm:flex -space-x-2">
-                  {accounts.slice(0, 3).map((account) => {
-                    const institution =
-                      account.institutionName || account.institution_name || account.institution || account.name
-                    return (
-                      <div
-                        key={account.id}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--muted)] border-2 border-white text-xs font-medium"
-                        title={account.name}
-                      >
-                        {institution?.charAt(0) ?? "?"}
-                      </div>
-                    )
-                  })}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setAccountsExpanded((v) => !v)}
+                  aria-expanded={accountsExpanded}
+                  aria-label={accountsExpanded ? "Hide accounts" : "Show accounts"}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--muted)] transition-colors"
+                >
+                  {accountsExpanded ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </button>
               )}
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+              <button
+                type="button"
+                onClick={() => setShowPlaidModal(true)}
+                aria-label="Link a new account"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90 transition-colors"
+              >
                 <Plus className="h-4 w-4" />
-              </div>
+              </button>
             </div>
           </div>
-          {accounts.length > 0 && (
+          {accounts.length > 0 && accountsExpanded && (
             <div className="mt-4 flex flex-wrap gap-2">
               {accounts.map((account) => {
                 const institution =
@@ -674,7 +684,7 @@ export default function ConsumerDashboardPage() {
               })}
             </div>
           )}
-        </button>
+        </div>
 
         {/* Stats Cards */}
         <div className="relative">
