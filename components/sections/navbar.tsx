@@ -21,6 +21,12 @@ const resourceItems = [
     external: true,
   },
   {
+    icon: LayoutDashboard,
+    title: "User Dashboard",
+    description: "Sign in to manage your receipts and accounts.",
+    href: "/consumer",
+  },
+  {
     icon: Mail,
     title: "Contact",
     description: "Get in touch with our team.",
