@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  MessageSquare,
   MoreVertical,
   PanelLeft,
   PanelLeftClose,
@@ -36,6 +37,7 @@ const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard },
   { name: "Transactions", href: "/consumer/transactions", icon: Receipt },
   { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
+  { name: "Chat", href: "/consumer/chat", icon: MessageSquare },
 ]
 
 const bottomNavItems = [
