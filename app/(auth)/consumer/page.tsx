@@ -279,9 +279,47 @@ export default function ConsumerDashboardPage() {
       return buckets
     }
 
-    // 3 months: one bucket per recent calendar month, oldest → newest.
+    const monthDayLabel = (d: Date) =>
+      d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+
+    // Generic period bucketing: split the lookback window into N equal-size
+    // chunks and label each by its start date. Used for 3-month (weekly) and
+    // 6-month (biweekly) ranges.
+    const bucketByDays = (totalDays: number, chunkDays: number) => {
+      const bucketCount = Math.ceil(totalDays / chunkDays)
+      const start = new Date(now)
+      start.setHours(0, 0, 0, 0)
+      start.setDate(start.getDate() - (bucketCount * chunkDays - 1))
+      const buckets: { date: string; amount: number }[] = []
+      for (let i = 0; i < bucketCount; i++) {
+        const d = new Date(start.getTime() + i * chunkDays * dayMs)
+        buckets.push({ date: monthDayLabel(d), amount: 0 })
+      }
+      const totalSpan = bucketCount * chunkDays
+      for (const tx of expenses) {
+        const d = new Date(tx.date)
+        if (Number.isNaN(d.getTime())) continue
+        d.setHours(0, 0, 0, 0)
+        const dayIdx = Math.floor((d.getTime() - start.getTime()) / dayMs)
+        if (dayIdx < 0 || dayIdx >= totalSpan) continue
+        buckets[Math.floor(dayIdx / chunkDays)].amount += tx.amount
+      }
+      return buckets
+    }
+
+    if (chartRange === "3months") {
+      // 13 weekly buckets ≈ 91 days.
+      return bucketByDays(91, 7)
+    }
+
+    if (chartRange === "6months") {
+      // 13 biweekly buckets ≈ 182 days.
+      return bucketByDays(182, 14)
+    }
+
+    // 1 year: one bucket per calendar month, oldest → newest.
     const months: { date: string; amount: number; year: number; month: number }[] = []
-    for (let i = 2; i >= 0; i--) {
+    for (let i = 11; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
       months.push({
         date: d.toLocaleDateString(undefined, { month: "short" }),
@@ -308,6 +346,11 @@ export default function ConsumerDashboardPage() {
       case "30days":
         return "last 30 days"
       case "3months":
+        return "last 3 months"
+      case "6months":
+        return "last 6 months"
+      case "1year":
+        return "last year"
       default:
         return "last 3 months"
     }
@@ -742,39 +785,26 @@ export default function ConsumerDashboardPage() {
               <p className="text-sm text-[var(--muted-foreground)]">Your spending for the {chartPeriodLabel}</p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1">
-              <button
-                onClick={() => setChartRange("3months")}
-                className={cn(
-                  "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
-                  chartRange === "3months"
-                    ? "bg-[var(--foreground)] text-white"
-                    : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
-                )}
-              >
-                3 months
-              </button>
-              <button
-                onClick={() => setChartRange("30days")}
-                className={cn(
-                  "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
-                  chartRange === "30days"
-                    ? "bg-[var(--foreground)] text-white"
-                    : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
-                )}
-              >
-                30 days
-              </button>
-              <button
-                onClick={() => setChartRange("7days")}
-                className={cn(
-                  "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
-                  chartRange === "7days"
-                    ? "bg-[var(--foreground)] text-white"
-                    : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
-                )}
-              >
-                7 days
-              </button>
+              {[
+                { id: "7days", label: "7 days" },
+                { id: "30days", label: "30 days" },
+                { id: "3months", label: "3 months" },
+                { id: "6months", label: "6 months" },
+                { id: "1year", label: "1 year" },
+              ].map(({ id, label }) => (
+                <button
+                  key={id}
+                  onClick={() => setChartRange(id)}
+                  className={cn(
+                    "rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap",
+                    chartRange === id
+                      ? "bg-[var(--foreground)] text-white"
+                      : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between">
