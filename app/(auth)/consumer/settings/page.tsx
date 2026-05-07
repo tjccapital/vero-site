@@ -225,16 +225,24 @@ export default function ConsumerSettingsPage() {
       {/* Profile (read-only) */}
       <section className="rounded-lg border border-[var(--border)] p-4 sm:p-6">
         <div className="flex items-center gap-4">
-          <Avatar className="h-14 w-14">
+          <Avatar className="h-14 w-14 flex-shrink-0">
             <AvatarImage src={user?.picture || undefined} alt={user?.name || "User"} />
             <AvatarFallback className="bg-[var(--muted)] text-lg">
               {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="font-medium truncate">{user?.name || "User"}</p>
             <p className="text-sm text-[var(--muted-foreground)] truncate">{user?.email}</p>
           </div>
+          <a
+            href="/auth/logout"
+            aria-label="Sign out"
+            className="inline-flex flex-shrink-0 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">Sign out</span>
+          </a>
         </div>
       </section>
 
@@ -444,16 +452,6 @@ export default function ConsumerSettingsPage() {
         </div>
       </section>
 
-      {/* Sign Out */}
-      <section className="flex justify-end">
-        <a
-          href="/auth/logout"
-          className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
-        >
-          <LogOut className="h-4 w-4" />
-          Sign out
-        </a>
-      </section>
     </div>
   )
 }
