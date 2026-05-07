@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth0 } from "@/lib/auth0"
-
-const API_BASE =
-  process.env.VERO_API_BASE_URL ||
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://api.veroreceipts.com"
+import { API_BASE } from "@/lib/api-base"
 
 // Mirrors app/api/plaid/[...path]/route.ts. Forwards /api/transactions/*
 // calls to the Vero backend with a server-issued Auth0 bearer token. Header
