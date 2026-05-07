@@ -274,7 +274,7 @@ export default function ConsumerTransactionsPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-row sm:gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--muted-foreground)]" />
             <input
@@ -286,12 +286,15 @@ export default function ConsumerTransactionsPage() {
             />
           </div>
 
+          {/* On mobile the three filter chips share a row; on sm+ they
+              dissolve back into the parent flex layout. */}
+          <div className="grid grid-cols-3 gap-2 sm:contents">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
-                <Filter className="h-4 w-4" />
-                {categoryDefs.find((c) => c.value === selectedCategory)?.label || "Category"}
-                <ChevronDown className="h-4 w-4 ml-auto" />
+              <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
+                <Filter className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{categoryDefs.find((c) => c.value === selectedCategory)?.label || "Category"}</span>
+                <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -312,10 +315,10 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
-                <Receipt className="h-4 w-4" />
-                {receiptFilter === "all" ? "All receipts" : receiptFilter === "matched" ? "With receipt" : "No receipt"}
-                <ChevronDown className="h-4 w-4 ml-auto" />
+              <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
+                <Receipt className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{receiptFilter === "all" ? "All receipts" : receiptFilter === "matched" ? "With receipt" : "No receipt"}</span>
+                <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -327,15 +330,15 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[170px]">
-                <ArrowUpDown className="h-4 w-4" />
-                {sortLabels[sortColumn]}
+              <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[170px]">
+                <ArrowUpDown className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{sortLabels[sortColumn]}</span>
                 {sortDirection === "asc" ? (
-                  <ArrowUp className="h-3.5 w-3.5" />
+                  <ArrowUp className="h-3.5 w-3.5 flex-shrink-0" />
                 ) : (
-                  <ArrowDown className="h-3.5 w-3.5" />
+                  <ArrowDown className="h-3.5 w-3.5 flex-shrink-0" />
                 )}
-                <ChevronDown className="h-4 w-4 ml-auto" />
+                <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -360,15 +363,20 @@ export default function ConsumerTransactionsPage() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
 
         {/* Summary */}
-        <div className="flex items-center justify-between py-2 px-1">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2 px-1">
           <p className="text-sm text-[var(--muted-foreground)]">
             Showing {filteredTransactions.length} transaction{filteredTransactions.length !== 1 ? 's' : ''}
           </p>
           <p className="text-sm font-medium">
-            Total spent: ${totalSpent.toFixed(2)}
+            Total spent:{" "}
+            {totalSpent.toLocaleString(undefined, {
+              style: "currency",
+              currency: "USD",
+            })}
           </p>
         </div>
 
