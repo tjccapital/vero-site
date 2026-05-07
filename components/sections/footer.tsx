@@ -34,6 +34,11 @@ export function Footer() {
                   For Merchants
                 </a>
               </li>
+              <li>
+                <a href="/consumer" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  For Consumers
+                </a>
+              </li>
             </ul>
           </div>
 
