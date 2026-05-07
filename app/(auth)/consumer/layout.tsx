@@ -263,9 +263,9 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
           </Link>
         </header>
 
-        {/* Mobile drawer — right-side panel with tap-outside-to-close
-            backdrop (web convention). The fullscreen variant we had before
-            was a UX miss: the only way to dismiss was the X button. */}
+        {/* Mobile drawer — left-side panel that mirrors the hamburger
+            toggle's position and the desktop sidebar. Tap-outside-to-close
+            backdrop keeps dismissal obvious without relying on the X. */}
         {mobileMenuOpen && (
           <>
             <button
@@ -277,7 +277,7 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
             <div
               role="dialog"
               aria-modal="true"
-              className="lg:hidden fixed right-0 top-14 bottom-0 z-50 w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto"
+              className="lg:hidden fixed left-0 top-14 bottom-0 z-50 w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto"
             >
             <div className="px-4 py-4">
               <div className="flex items-center gap-3 pb-4 border-b border-[var(--border)]">
