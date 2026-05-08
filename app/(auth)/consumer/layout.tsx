@@ -359,7 +359,17 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
           </>
         )}
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
+        <main
+          className={cn(
+            "flex-1 overflow-x-hidden",
+            // The chat page owns its own scroll containers and bleeds to the
+            // edges so its conversation sidebar can hug the main nav. Every
+            // other page uses the standard padded scroll container.
+            pathname.startsWith("/consumer/chat")
+              ? "min-h-0"
+              : "overflow-y-auto p-4 sm:p-6"
+          )}
+        >
           {children}
         </main>
       </div>
