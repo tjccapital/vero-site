@@ -881,7 +881,7 @@ export default function ConsumerDashboardPage() {
 
         {/* Two Column Layout: Recent Receipts and Categories */}
         <div className="relative">
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
             {/* Recent Transactions */}
             <div className="rounded-lg border border-[var(--border)]">
               <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
@@ -931,7 +931,7 @@ export default function ConsumerDashboardPage() {
                             {tx.pending ? " · Pending" : ""}
                           </p>
                         </div>
-                        <div className="text-right">
+                        <div className="flex-shrink-0 text-right">
                           <p className="font-semibold">{sign}${magnitude}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">
                             {tx.receipt ? "Itemized" : "No receipt"}
@@ -966,7 +966,7 @@ export default function ConsumerDashboardPage() {
                           <p className="font-medium text-sm truncate">{receipt.merchant}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">{receipt.date}</p>
                         </div>
-                        <div className="text-right">
+                        <div className="flex-shrink-0 text-right">
                           <p className="font-semibold">${receipt.amount.toFixed(2)}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">{receipt.items} items</p>
                         </div>
