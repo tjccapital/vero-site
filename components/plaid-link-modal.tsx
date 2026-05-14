@@ -5,6 +5,7 @@ import { Landmark, Loader2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { PlaidLinkButton } from "@/components/plaid-link-button"
 import { createLinkToken, exchangePublicToken } from "@/lib/plaid"
+import { syncTransactions } from "@/lib/transactions"
 
 interface PlaidLinkModalProps {
   open: boolean
@@ -129,6 +130,20 @@ export function PlaidLinkModal({
                       mask: a.mask ?? undefined,
                     })),
                   })
+                  // Pull the new item's transactions into vero before
+                  // handing off to the page-specific onLinked refresh.
+                  // Plaid's initial sync can return an empty batch
+                  // (transactions take ~30s to land); we don't surface
+                  // that as an error — webhooks and later loads will
+                  // catch up.
+                  try {
+                    await syncTransactions()
+                  } catch (syncErr) {
+                    console.warn(
+                      "[Plaid] Initial transaction sync failed:",
+                      syncErr
+                    )
+                  }
                   if (onLinked) await onLinked()
                   close()
                 } catch (err) {
