@@ -6,11 +6,14 @@ import {
   CheckCircle2,
   ExternalLink,
   FileImage,
+  LayoutGrid,
+  List,
   Loader2,
   Receipt as ReceiptIcon,
   Trash2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   ReceiptDropzone,
   type UploadPhase,
@@ -52,12 +55,55 @@ interface PendingUpload {
 // `fetchReceipts()` returned.
 const MATCH_GRACE_MS = 6000
 
+type ViewMode = "grid" | "list"
+const VIEW_STORAGE_KEY = "vero:consumer:receipts:view"
+
+// First non-whitespace character of the merchant name, upper-cased — used by
+// the avatar fallback when there's no thumbnail (typically PDF receipts).
+// Mirrors the `<Avatar fallback={merchantName} />` shape on mobile.
+function merchantInitial(name: string): string {
+  const trimmed = name.trim()
+  if (!trimmed) return "?"
+  return trimmed.charAt(0).toUpperCase()
+}
+
 export default function ConsumerReceiptsPage() {
   const [receipts, setReceipts] = useState<ReceiptListItem[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pendingUploads, setPendingUploads] = useState<PendingUpload[]>([])
+  const [view, setView] = useState<ViewMode>("grid")
+  // Track image loads that 404 / error so we can swap in the avatar fallback
+  // without ever paying for a re-fetch. Set is keyed by receipt id.
+  const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set())
+
+  // Hydrate the view preference from localStorage on first paint. Kept in a
+  // dedicated effect so the initial server-render uses the default ("grid")
+  // and the client swap-over is the only place that touches storage.
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const stored = window.localStorage.getItem(VIEW_STORAGE_KEY)
+    if (stored === "list" || stored === "grid") {
+      setView(stored)
+    }
+  }, [])
+
+  const changeView = useCallback((next: ViewMode) => {
+    setView(next)
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(VIEW_STORAGE_KEY, next)
+    }
+  }, [])
+
+  const markImageBroken = useCallback((id: string) => {
+    setBrokenImages((prev) => {
+      if (prev.has(id)) return prev
+      const next = new Set(prev)
+      next.add(id)
+      return next
+    })
+  }, [])
 
   const loadReceipts = useCallback(async () => {
     setError(null)
@@ -193,14 +239,54 @@ export default function ConsumerReceiptsPage() {
     return "idle"
   }, [pendingUploads, receipts.length, loading, error])
 
+  const showViewToggle = !loading && !error && receipts.length > 0
+
   return (
     <div className="mx-auto max-w-5xl space-y-4 sm:space-y-6 w-full">
-      <div>
-        <h1 className="text-2xl font-semibold">Receipts</h1>
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Upload photos or PDFs and we&apos;ll match them to the right
-          transactions automatically.
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Receipts</h1>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            Upload photos or PDFs and we&apos;ll match them to the right
+            transactions automatically.
+          </p>
+        </div>
+        {showViewToggle ? (
+          <div
+            role="group"
+            aria-label="View mode"
+            className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] p-1 self-start"
+          >
+            <button
+              type="button"
+              onClick={() => changeView("grid")}
+              aria-pressed={view === "grid"}
+              aria-label="Grid view"
+              className={cn(
+                "flex h-7 w-7 items-center justify-center rounded transition-colors",
+                view === "grid"
+                  ? "bg-[var(--foreground)] text-white"
+                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+              )}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => changeView("list")}
+              aria-pressed={view === "list"}
+              aria-label="List view"
+              className={cn(
+                "flex h-7 w-7 items-center justify-center rounded transition-colors",
+                view === "list"
+                  ? "bg-[var(--foreground)] text-white"
+                  : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"
+              )}
+            >
+              <List className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <ReceiptDropzone
@@ -285,11 +371,12 @@ export default function ConsumerReceiptsPage() {
             will be auto-matched to your transactions.
           </p>
         </div>
-      ) : (
+      ) : view === "grid" ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {receipts.map((r) => {
             const matchedTx = matchByReceiptId.get(r.id)
-            const img = receiptImage(r)
+            const rawImg = receiptImage(r)
+            const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
             const date = receiptDate(r)
             const name = receiptDisplayName(r)
             return (
@@ -305,10 +392,15 @@ export default function ConsumerReceiptsPage() {
                       alt={`${name} receipt`}
                       className="absolute inset-0 h-full w-full object-cover"
                       loading="lazy"
+                      onError={() => markImageBroken(r.id)}
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                      <ReceiptIcon className="h-8 w-8 text-[var(--muted-foreground)]" />
+                      <Avatar className="h-16 w-16 rounded-md">
+                        <AvatarFallback className="rounded-md bg-[var(--muted)] text-xl font-medium text-[var(--muted-foreground)]">
+                          {merchantInitial(name)}
+                        </AvatarFallback>
+                      </Avatar>
                     </div>
                   )}
                   <div className="absolute top-2 left-2">
@@ -362,6 +454,79 @@ export default function ConsumerReceiptsPage() {
             )
           })}
         </div>
+      ) : (
+        <ul className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border border-[var(--border)] bg-white">
+          {receipts.map((r) => {
+            const matchedTx = matchByReceiptId.get(r.id)
+            const rawImg = receiptImage(r)
+            const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
+            const date = receiptDate(r)
+            const name = receiptDisplayName(r)
+            return (
+              <li
+                key={r.id}
+                className="group flex items-center gap-3 px-3 py-2.5 transition-colors hover:bg-[var(--muted)]/50 sm:px-4 sm:py-3"
+              >
+                <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-md bg-[var(--muted)]/40">
+                  {img ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={img}
+                      alt={`${name} receipt`}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading="lazy"
+                      onError={() => markImageBroken(r.id)}
+                    />
+                  ) : (
+                    <Avatar className="h-14 w-14 rounded-md">
+                      <AvatarFallback className="rounded-md bg-[var(--muted)] text-base font-medium text-[var(--muted-foreground)]">
+                        {merchantInitial(name)}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{name}</p>
+                  <p className="truncate text-xs text-[var(--muted-foreground)]">
+                    {date ? formatTxShortDate(date) : "—"}
+                    {typeof r.total === "number"
+                      ? ` · $${r.total.toFixed(2)}`
+                      : ""}
+                  </p>
+                </div>
+                <div className="flex flex-shrink-0 items-center gap-2 sm:gap-3">
+                  {matchedTx ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Matched
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
+                      Unmatched
+                    </span>
+                  )}
+                  {matchedTx ? (
+                    <Link
+                      href={`/consumer/transactions/${matchedTx.id}`}
+                      className="hidden items-center gap-1 text-xs text-[var(--primary)] hover:underline sm:inline-flex"
+                    >
+                      View
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(r.id)}
+                    aria-label="Delete receipt"
+                    className="rounded-md p-1 text-[var(--muted-foreground)] opacity-0 transition-opacity hover:bg-[var(--muted)] hover:text-red-600 group-hover:opacity-100 sm:opacity-0"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
       )}
     </div>
   )
