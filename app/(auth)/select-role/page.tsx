@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { VeroLogoFull } from "@/components/ui/vero-logo"
-import { ArrowRight, CreditCard, Store, User, Receipt } from "lucide-react"
+import { ArrowRight, CreditCard, Handshake, Store, Receipt } from "lucide-react"
 
 export default function SelectRolePage() {
   return (
@@ -64,8 +64,8 @@ export default function SelectRolePage() {
           </div>
 
           {/* Business Cards Grid */}
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Card Issuer Card - Left */}
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Card Issuer Card */}
             <Card className="relative mx-auto w-full">
               <CardHeader className="pt-6">
                 <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--muted)]">
@@ -87,7 +87,7 @@ export default function SelectRolePage() {
               </CardFooter>
             </Card>
 
-            {/* Merchant Card - Right */}
+            {/* Merchant Card */}
             <Card className="relative mx-auto w-full">
               <CardHeader className="pt-6">
                 <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--muted)]">
@@ -104,6 +104,28 @@ export default function SelectRolePage() {
                   className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
                 >
                   Continue as Merchant
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </CardFooter>
+            </Card>
+
+            {/* Affiliate Card */}
+            <Card className="relative mx-auto w-full">
+              <CardHeader className="pt-6">
+                <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--muted)]">
+                  <Handshake className="h-6 w-6 text-[var(--primary)]" />
+                </div>
+                <CardTitle className="text-lg">Affiliate Dashboard</CardTitle>
+                <CardDescription>
+                  Grow the Vero merchant network. Track prospects, confirm signups, and earn rewards for each merchant you bring on.
+                </CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <a
+                  href="/auth/login?returnTo=/affiliate-dashboard"
+                  className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
+                >
+                  Continue as Affiliate
                   <ArrowRight className="h-4 w-4" />
                 </a>
               </CardFooter>
