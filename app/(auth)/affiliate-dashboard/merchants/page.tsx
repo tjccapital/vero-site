@@ -2,7 +2,19 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { Check, Clock, Search, Store, TrendingUp, ChevronRight } from "lucide-react"
+import {
+  Cable,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  HandCoins,
+  MessageCircle,
+  Search,
+  Sparkles,
+  Store,
+  TrendingUp,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AffiliateShell } from "@/components/affiliate-shell"
 import {
@@ -72,6 +84,8 @@ export default function AffiliateMerchantsPage() {
             />
           </div>
         </div>
+
+        <GettingStartedCard />
 
         <div className="rounded-lg border border-[var(--border)]">
           <div className="flex overflow-x-auto border-b border-[var(--border)] px-2 sm:px-4">
@@ -148,6 +162,91 @@ export default function AffiliateMerchantsPage() {
         </div>
       </div>
     </AffiliateShell>
+  )
+}
+
+function GettingStartedCard() {
+  const [open, setOpen] = useState(true)
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-gradient-to-br from-[var(--primary)]/5 to-transparent">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-3 px-4 py-4 sm:px-5 text-left"
+        aria-expanded={open}
+      >
+        <div className="flex items-start gap-3 min-w-0">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-[var(--primary)]/10">
+            <Sparkles className="h-4 w-4 text-[var(--primary)]" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold">How to become a successful affiliate</p>
+            <p className="text-xs text-[var(--muted-foreground)]">
+              Vero is on a mission to make digital receipts the default — here&apos;s how you help.
+            </p>
+          </div>
+        </div>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)] transition-transform",
+            open && "rotate-180"
+          )}
+        />
+      </button>
+      {open && (
+        <div className="px-4 pb-5 sm:px-5">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Step
+              number={1}
+              icon={<MessageCircle className="h-4 w-4" />}
+              title="Talk to a merchant"
+              body="Start the conversation. Share why digital receipts beat paper — searchable, never lost, and they land straight in the customer's banking app."
+            />
+            <Step
+              number={2}
+              icon={<Cable className="h-4 w-4" />}
+              title="Connect their POS"
+              body="Once they're in, Vero plugs into their point-of-sale to capture transactions, organize them, and share them back with the customer automatically."
+            />
+            <Step
+              number={3}
+              icon={<HandCoins className="h-4 w-4" />}
+              title="Both sides earn"
+              body="The merchant gets paid for every receipt sent through Vero, and you earn a finder's fee for every merchant you bring on."
+            />
+          </div>
+          <p className="mt-4 text-sm text-[var(--muted-foreground)]">
+            Ready to start? Begin with the merchants you frequent the most — search the list below
+            to find them.
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function Step({
+  number,
+  icon,
+  title,
+  body,
+}: {
+  number: number
+  icon: React.ReactNode
+  title: string
+  body: string
+}) {
+  return (
+    <div className="rounded-lg border border-[var(--border)] bg-white p-4">
+      <div className="flex items-center gap-2">
+        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[var(--muted)] text-xs font-semibold">
+          {number}
+        </span>
+        <span className="text-[var(--muted-foreground)]">{icon}</span>
+      </div>
+      <p className="mt-3 text-sm font-medium">{title}</p>
+      <p className="mt-1 text-xs leading-relaxed text-[var(--muted-foreground)]">{body}</p>
+    </div>
   )
 }
 
