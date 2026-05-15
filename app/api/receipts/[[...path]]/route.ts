@@ -3,15 +3,17 @@ import { auth0 } from "@/lib/auth0"
 import { API_BASE } from "@/lib/api-base"
 
 // Mirrors app/api/plaid/[...path]/route.ts and app/api/transactions/[[...path]]/route.ts.
-// Forwards /api/receipts/* calls (notably /api/receipts/:id/items) to the
-// Vero backend with a server-issued Auth0 bearer token. Header shape
-// matches vero-mobile's apiClient to avoid WAF false-positives on
-// datacenter source IPs.
+// Forwards /api/receipts and /api/receipts/* calls (the list endpoint at
+// /api/receipts, plus /api/receipts/upload, /api/receipts/:id/match, and
+// /api/receipts/:id/items) to the Vero backend with a server-issued Auth0
+// bearer token. Header shape matches vero-mobile's apiClient to avoid WAF
+// false-positives on datacenter source IPs.
 async function proxy(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> }
+  { params }: { params: Promise<{ path?: string[] }> }
 ) {
   const { path } = await params
+  const segments = path ?? []
 
   let accessToken: string | undefined
   try {
@@ -31,7 +33,8 @@ async function proxy(
     )
   }
 
-  const targetUrl = `${API_BASE}/api/receipts/${path.join("/")}${request.nextUrl.search}`
+  const tail = segments.length > 0 ? `/${segments.join("/")}` : ""
+  const targetUrl = `${API_BASE}/api/receipts${tail}${request.nextUrl.search}`
 
   const headers = new Headers()
   headers.set("authorization", `Bearer ${accessToken}`)

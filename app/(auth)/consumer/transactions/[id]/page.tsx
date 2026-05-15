@@ -1,9 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import {
+  matchReceiptToTransaction,
+  uploadReceipt,
+} from "@/lib/receipts"
+import {
+  ReceiptDropzone,
+  type UploadPhase,
+} from "@/components/receipt-dropzone"
 import {
   Receipt,
   ArrowLeft,
@@ -57,6 +65,11 @@ export default function TransactionDetailPage() {
   const [matchMethod, setMatchMethod] = useState<string | null>(null)
   const [hasReceipt, setHasReceipt] = useState(false)
   const [loading, setLoading] = useState(true)
+  // Bumped after a successful upload+match so the receipt-fetching effect
+  // below re-runs and the just-attached receipt paints over the dropzone.
+  const [receiptReloadKey, setReceiptReloadKey] = useState(0)
+  const [uploadPhase, setUploadPhase] = useState<UploadPhase>("idle")
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   // Asset URLs surfaced from the transaction-receipt response — image
   // (typically the photo of the receipt), pdf (image_url ending in .pdf
@@ -198,7 +211,51 @@ export default function TransactionDetailPage() {
     return () => {
       cancelled = true
     }
-  }, [transactionId])
+  }, [transactionId, receiptReloadKey])
+
+  // Drop / pick handler. We upload the first file, then explicitly match it
+  // to this transaction so the receipt shows up here regardless of whether
+  // the backend's auto-match heuristics would have caught it. The "matching"
+  // phase covers the gap between bytes-on-disk and the receipt detail
+  // re-fetch resolving, so the user always sees motion while we work.
+  const handleUploadForTransaction = useCallback(
+    async (files: File[]) => {
+      const file = files[0]
+      if (!file) return
+      setUploadError(null)
+      setUploadPhase("uploading")
+      try {
+        const result = await uploadReceipt(file)
+        const receiptId = result.receipt?.id
+        if (!receiptId) {
+          throw new Error("Server didn't return a receipt id")
+        }
+        setUploadPhase("matching")
+        try {
+          await matchReceiptToTransaction(
+            receiptId,
+            transactionId,
+            transaction?.accountId || transaction?.account_id
+          )
+        } catch (matchErr) {
+          // The backend may have already auto-matched the upload to this
+          // transaction (in which case `match` returns a conflict). We still
+          // want to refresh — surface the warning in the console but don't
+          // block the success path.
+          console.warn("[Transactions] Match call failed:", matchErr)
+        }
+        setReceiptReloadKey((n) => n + 1)
+        setUploadPhase("done")
+      } catch (err) {
+        console.error("[Transactions] Receipt upload failed:", err)
+        setUploadError(
+          err instanceof Error ? err.message : "Couldn't upload that receipt."
+        )
+        setUploadPhase("error")
+      }
+    },
+    [transactionId, transaction?.accountId, transaction?.account_id]
+  )
 
   if (loading) {
     return (
@@ -535,15 +592,25 @@ export default function TransactionDetailPage() {
           </div>
         </>
       ) : (
-        <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
-          <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
-            <FileText className="h-6 w-6 text-[var(--muted-foreground)]" />
+        <div className="space-y-4">
+          <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
+            <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
+              <FileText className="h-6 w-6 text-[var(--muted-foreground)]" />
+            </div>
+            <h3 className="mt-4 font-medium">No itemized receipt yet</h3>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+              We haven&apos;t matched a receipt to this transaction yet.
+              Upload one below, or let Vero match it automatically from your
+              email.
+            </p>
           </div>
-          <h3 className="mt-4 font-medium">No itemized receipt yet</h3>
-          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-            We haven&apos;t matched a receipt to this transaction yet. Receipts can be
-            matched automatically from your email, or scanned manually.
-          </p>
+          <ReceiptDropzone
+            onFiles={handleUploadForTransaction}
+            phase={uploadPhase}
+            idleTitle="Attach a receipt"
+            idleHint="Drop an image or PDF here, or click to choose a file"
+            message={uploadError}
+          />
         </div>
       )}
     </div>
