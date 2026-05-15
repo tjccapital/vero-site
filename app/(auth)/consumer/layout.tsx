@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import {
   CircleHelp,
+  FileImage,
   Landmark,
   LayoutDashboard,
   LogOut,
@@ -36,6 +37,7 @@ import {
 const mainNavItems = [
   { name: "Home", href: "/consumer", icon: LayoutDashboard },
   { name: "Transactions", href: "/consumer/transactions", icon: Receipt },
+  { name: "Receipts", href: "/consumer/receipts", icon: FileImage },
   { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
   { name: "Chat", href: "/consumer/chat", icon: MessageSquare },
 ]
