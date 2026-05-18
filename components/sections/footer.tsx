@@ -107,7 +107,9 @@ export function Footer() {
               height={40}
             />
             <a
-              href="#"
+              href="https://github.com/Vero-Receipts"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="GitHub"
             >
