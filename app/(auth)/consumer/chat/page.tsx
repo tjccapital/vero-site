@@ -22,28 +22,12 @@ import {
 import { cn } from "@/lib/utils"
 import {
   ChatMessage,
-  clearChatHistory,
+  ConversationSummary,
+  deleteThread,
   fetchChatHistory,
+  getThreads,
   sendChatMessage,
 } from "@/lib/chat"
-import {
-  StoredConversation,
-  StoredMessage,
-  deleteConversation,
-  deriveTitle,
-  getActiveConversationId,
-  getConversation,
-  listConversations,
-  makeConversationId,
-  setActiveConversationId,
-  upsertConversation,
-} from "@/lib/chat-conversations"
-
-// Chat with Vero AI. The MCP backend persists a single conversation per user;
-// we layer a multi-conversation sidebar on top by snapshotting messages into
-// localStorage. Switching conversations clears the server thread and replays
-// the snapshot in the UI — the AI loses server-side context for archived
-// chats, but the user keeps a navigable history.
 
 interface DisplayMessage {
   id: string
@@ -75,29 +59,7 @@ function fromHistory(messages: ChatMessage[]): DisplayMessage[] {
   }))
 }
 
-function toStored(messages: DisplayMessage[]): StoredMessage[] {
-  return messages
-    .filter((m) => m.role === "user" || m.role === "assistant" || m.role === "error")
-    .map((m) => ({
-      id: m.id,
-      role: m.role as StoredMessage["role"],
-      text: m.text,
-      timestamp: m.timestamp,
-    }))
-}
-
-function fromStored(messages: StoredMessage[]): DisplayMessage[] {
-  return messages.map((m) => ({
-    id: m.id,
-    role: m.role,
-    text: m.text,
-    timestamp: m.timestamp,
-  }))
-}
-
-// Render a chat string with bare URL detection. We keep this intentionally
-// small (no full markdown) — anything fancier should be added when we know
-// what the model actually emits.
+// Render a chat string with bare URL detection.
 function MessageText({ text }: { text: string }) {
   const parts = useMemo(() => {
     const regex = /(https?:\/\/[^\s)]+)/g
@@ -140,8 +102,8 @@ function MessageText({ text }: { text: string }) {
 
 export default function ConsumerChatPage() {
   const [messages, setMessages] = useState<DisplayMessage[]>([])
-  const [conversations, setConversations] = useState<StoredConversation[]>([])
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const [threads, setThreads] = useState<ConversationSummary[]>([])
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [input, setInput] = useState("")
   const [search, setSearch] = useState("")
   const [sending, setSending] = useState(false)
@@ -151,112 +113,35 @@ export default function ConsumerChatPage() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const activeIdRef = useRef<string | null>(null)
-  activeIdRef.current = activeId
+  const activeConversationIdRef = useRef<string | null>(null)
+  activeConversationIdRef.current = activeConversationId
 
-  // Refresh the sidebar list from localStorage. Called whenever the active
-  // conversation's messages change or after switch/delete operations.
-  const refreshConversations = useCallback(() => {
-    setConversations(listConversations())
-  }, [])
-
-  // Mount: read the conversation list and reconcile the live server thread
-  // with whichever conversation is marked active in localStorage.
+  // Load thread list and most-recent thread's history on mount.
   useEffect(() => {
-    const stored = listConversations()
-    setConversations(stored)
-    const storedActiveId = getActiveConversationId()
     const controller = new AbortController()
 
-    fetchChatHistory(controller.signal)
-      .then((res) => {
+    getThreads(controller.signal)
+      .then(async (list) => {
         if (controller.signal.aborted) return
-        const serverMsgs = fromHistory(res.messages || [])
-
-        // Pick which local conversation the server thread belongs to. Prefer
-        // the explicitly-marked active id; if none, reuse the most recent
-        // local conversation; otherwise create a fresh one.
-        let conv: StoredConversation | null = null
-        if (storedActiveId) {
-          conv = getConversation(storedActiveId)
+        setThreads(list)
+        if (list.length > 0) {
+          const first = list[0]
+          const history = await fetchChatHistory(first.id, controller.signal)
+          if (controller.signal.aborted) return
+          setMessages(fromHistory(history.messages || []))
+          setActiveConversationId(first.id)
         }
-        if (!conv && stored.length > 0) {
-          conv = stored[0]
-        }
-
-        if (!conv) {
-          if (serverMsgs.length === 0) {
-            // Truly empty state — wait until first message before creating
-            // a conversation entry.
-            setActiveId(null)
-            setActiveConversationId(null)
-            setMessages([])
-            return
-          }
-          conv = {
-            id: makeConversationId(),
-            title: "New chat",
-            messages: toStored(serverMsgs),
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-          }
-          conv.title = deriveTitle(conv.messages)
-          upsertConversation(conv)
-        } else if (serverMsgs.length > 0) {
-          // Server is the source of truth for the active conversation.
-          conv = {
-            ...conv,
-            messages: toStored(serverMsgs),
-            title: conv.title === "New chat" ? deriveTitle(toStored(serverMsgs)) : conv.title,
-            updatedAt: Date.now(),
-          }
-          upsertConversation(conv)
-        }
-
-        setActiveId(conv.id)
-        setActiveConversationId(conv.id)
-        setMessages(serverMsgs.length > 0 ? serverMsgs : fromStored(conv.messages))
-        refreshConversations()
       })
       .catch((err) => {
         if (controller.signal.aborted) return
-        console.warn("Failed to load chat history:", err)
-        // Fall back to whatever we have in localStorage.
-        if (storedActiveId) {
-          const conv = getConversation(storedActiveId)
-          if (conv) {
-            setActiveId(conv.id)
-            setMessages(fromStored(conv.messages))
-          }
-        }
+        console.warn("Failed to load chat threads:", err)
       })
       .finally(() => {
         if (!controller.signal.aborted) setHistoryLoading(false)
       })
 
     return () => controller.abort()
-  }, [refreshConversations])
-
-  // Persist message changes to the active conversation in localStorage so
-  // the sidebar list stays in sync as messages stream in.
-  useEffect(() => {
-    if (!activeId) return
-    const persistable = toStored(messages)
-    if (persistable.length === 0) return
-    const existing = getConversation(activeId)
-    const conv: StoredConversation = {
-      id: activeId,
-      title:
-        existing?.title && existing.title !== "New chat"
-          ? existing.title
-          : deriveTitle(persistable),
-      messages: persistable,
-      createdAt: existing?.createdAt ?? Date.now(),
-      updatedAt: Date.now(),
-    }
-    upsertConversation(conv)
-    refreshConversations()
-  }, [messages, activeId, refreshConversations])
+  }, [])
 
   // Auto-scroll to the bottom whenever the message list grows.
   useEffect(() => {
@@ -273,20 +158,19 @@ export default function ConsumerChatPage() {
     el.style.height = `${Math.min(el.scrollHeight, 200)}px`
   }, [input])
 
+  const refreshThreads = useCallback(async () => {
+    try {
+      const list = await getThreads()
+      setThreads(list)
+    } catch (err) {
+      console.warn("Failed to refresh thread list:", err)
+    }
+  }, [])
+
   const submitMessage = useCallback(
     async (raw: string) => {
       const text = raw.trim()
       if (!text || sending || switching) return
-
-      // First message in an empty state needs a fresh conversation entry so
-      // subsequent persistence has somewhere to go.
-      let convId = activeIdRef.current
-      if (!convId) {
-        convId = makeConversationId()
-        setActiveId(convId)
-        setActiveConversationId(convId)
-        activeIdRef.current = convId
-      }
 
       const userMsg: DisplayMessage = {
         id: makeId(),
@@ -306,19 +190,24 @@ export default function ConsumerChatPage() {
       setSending(true)
 
       try {
-        const res = await sendChatMessage(text)
+        const res = await sendChatMessage(text, activeConversationIdRef.current ?? undefined)
+
+        // If this was a new thread, the server created one — update active ID.
+        if (res.conversationId !== activeConversationIdRef.current) {
+          setActiveConversationId(res.conversationId)
+          activeConversationIdRef.current = res.conversationId
+        }
+
         setMessages((prev) =>
           prev.map((m) =>
             m.id === loadingMsg.id
-              ? {
-                  id: loadingMsg.id,
-                  role: "assistant",
-                  text: res.response,
-                  timestamp: Date.now(),
-                }
+              ? { id: loadingMsg.id, role: "assistant", text: res.response, timestamp: Date.now() }
               : m
           )
         )
+
+        // Refresh sidebar to show the new/updated thread (title may have changed).
+        await refreshThreads()
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Something went wrong. Please try again."
@@ -333,7 +222,7 @@ export default function ConsumerChatPage() {
         setSending(false)
       }
     },
-    [sending, switching]
+    [sending, switching, refreshThreads]
   )
 
   const handleSubmit = (e: FormEvent) => {
@@ -348,62 +237,36 @@ export default function ConsumerChatPage() {
     }
   }
 
-  // Snapshot the current conversation, clear the server thread, and switch
-  // active state to the target. Used by both "New chat" and clicking an
-  // archived conversation in the sidebar.
-  const switchToConversation = useCallback(
-    async (targetId: string | null) => {
+  const handleNewChat = useCallback(() => {
+    if (switching || sending) return
+    setActiveConversationId(null)
+    setMessages([])
+    setMobileSidebarOpen(false)
+  }, [switching, sending])
+
+  const handleSelectConversation = useCallback(
+    async (id: string) => {
       if (switching || sending) return
-      if (targetId && targetId === activeIdRef.current) {
+      if (id === activeConversationIdRef.current) {
         setMobileSidebarOpen(false)
         return
       }
       setSwitching(true)
       try {
-        // The current view's messages are already mirrored to localStorage
-        // by the persistence effect — no extra snapshot needed here.
-        await clearChatHistory()
+        const history = await fetchChatHistory(id)
+        setMessages(fromHistory(history.messages || []))
+        setActiveConversationId(id)
       } catch (err) {
-        console.warn("Failed to clear server chat thread:", err)
+        console.warn("Failed to load thread history:", err)
+      } finally {
+        setSwitching(false)
+        setMobileSidebarOpen(false)
       }
-
-      if (targetId) {
-        const conv = getConversation(targetId)
-        if (conv) {
-          setActiveId(conv.id)
-          setActiveConversationId(conv.id)
-          setMessages(fromStored(conv.messages))
-        } else {
-          setActiveId(null)
-          setActiveConversationId(null)
-          setMessages([])
-        }
-      } else {
-        // New chat — leave the active id null until the first message lands,
-        // matching the "How can I help today?" empty state.
-        setActiveId(null)
-        setActiveConversationId(null)
-        setMessages([])
-      }
-      refreshConversations()
-      setMobileSidebarOpen(false)
-      setSwitching(false)
     },
-    [switching, sending, refreshConversations]
+    [switching, sending]
   )
 
-  const handleNewChat = useCallback(() => {
-    void switchToConversation(null)
-  }, [switchToConversation])
-
-  const handleSelectConversation = useCallback(
-    (id: string) => {
-      void switchToConversation(id)
-    },
-    [switchToConversation]
-  )
-
-  const handleDeleteConversation = useCallback(
+  const handleDeleteThread = useCallback(
     async (id: string) => {
       if (switching || sending) return
       const ok =
@@ -411,36 +274,30 @@ export default function ConsumerChatPage() {
           ? window.confirm("Delete this conversation? This cannot be undone.")
           : true
       if (!ok) return
-      const wasActive = id === activeIdRef.current
-      deleteConversation(id)
-      if (wasActive) {
-        try {
-          await clearChatHistory()
-        } catch (err) {
-          console.warn("Failed to clear server chat thread:", err)
+      try {
+        await deleteThread(id)
+        setThreads((prev) => prev.filter((t) => t.id !== id))
+        if (id === activeConversationIdRef.current) {
+          setActiveConversationId(null)
+          setMessages([])
         }
-        setActiveId(null)
-        setActiveConversationId(null)
-        setMessages([])
+      } catch (err) {
+        console.warn("Failed to delete thread:", err)
       }
-      refreshConversations()
     },
-    [switching, sending, refreshConversations]
+    [switching, sending]
   )
 
-  const filteredConversations = useMemo(() => {
+  const filteredThreads = useMemo(() => {
     const q = search.trim().toLowerCase()
-    if (!q) return conversations
-    return conversations.filter((c) => {
-      if (c.title.toLowerCase().includes(q)) return true
-      return c.messages.some((m) => m.text.toLowerCase().includes(q))
-    })
-  }, [conversations, search])
+    if (!q) return threads
+    return threads.filter((t) => t.title.toLowerCase().includes(q))
+  }, [threads, search])
 
   const showWelcome = !historyLoading && messages.length === 0
   const activeTitle =
-    (activeId && conversations.find((c) => c.id === activeId)?.title) ||
-    (messages.length > 0 ? deriveTitle(toStored(messages)) : "New chat")
+    (activeConversationId && threads.find((t) => t.id === activeConversationId)?.title) ||
+    "New chat"
 
   return (
     <div className="flex h-full min-h-0">
@@ -453,13 +310,13 @@ export default function ConsumerChatPage() {
       >
         <ConversationSidebar
           title="Vero AI"
-          conversations={filteredConversations}
-          activeId={activeId}
+          threads={filteredThreads}
+          activeId={activeConversationId}
           search={search}
           onSearchChange={setSearch}
           onNewChat={handleNewChat}
           onSelect={handleSelectConversation}
-          onDelete={handleDeleteConversation}
+          onDelete={handleDeleteThread}
           onCollapse={() => setSidebarOpen(false)}
           disabled={switching || sending}
         />
@@ -481,13 +338,13 @@ export default function ConsumerChatPage() {
           >
             <ConversationSidebar
               title="Vero AI"
-              conversations={filteredConversations}
-              activeId={activeId}
+              threads={filteredThreads}
+              activeId={activeConversationId}
               search={search}
               onSearchChange={setSearch}
               onNewChat={handleNewChat}
               onSelect={handleSelectConversation}
-              onDelete={handleDeleteConversation}
+              onDelete={handleDeleteThread}
               onCollapse={() => setMobileSidebarOpen(false)}
               disabled={switching || sending}
             />
@@ -536,7 +393,7 @@ export default function ConsumerChatPage() {
             ref={scrollRef}
             className="flex-1 min-h-0 overflow-y-auto rounded-lg border border-[var(--border)] bg-white px-3 py-4 sm:px-4"
           >
-            {historyLoading && messages.length === 0 ? (
+            {historyLoading ? (
               <div className="flex h-full items-center justify-center">
                 <Loader2 className="h-5 w-5 animate-spin text-[var(--muted-foreground)]" />
               </div>
@@ -644,7 +501,7 @@ export default function ConsumerChatPage() {
 
 interface ConversationSidebarProps {
   title: string
-  conversations: StoredConversation[]
+  threads: ConversationSummary[]
   activeId: string | null
   search: string
   onSearchChange: (v: string) => void
@@ -657,7 +514,7 @@ interface ConversationSidebarProps {
 
 function ConversationSidebar({
   title,
-  conversations,
+  threads,
   activeId,
   search,
   onSearchChange,
@@ -711,41 +568,39 @@ function ConversationSidebar({
         Recent chats
       </div>
       <nav className="flex-1 overflow-y-auto px-3 pb-4">
-        {conversations.length === 0 ? (
+        {threads.length === 0 ? (
           <p className="px-2 py-2 text-xs text-[var(--muted-foreground)]">
             {search ? "No matches." : "Your chats will appear here."}
           </p>
         ) : (
           <ul className="space-y-0.5">
-            {conversations.map((c) => {
-              const active = c.id === activeId
+            {threads.map((t) => {
+              const active = t.id === activeId
               return (
-                <li key={c.id} className="min-w-0">
+                <li key={t.id} className="min-w-0">
                   <div
                     className={cn(
                       "group flex min-w-0 items-center gap-1 rounded-md transition-colors",
-                      active
-                        ? "bg-[var(--muted)]"
-                        : "hover:bg-[var(--muted)]"
+                      active ? "bg-[var(--muted)]" : "hover:bg-[var(--muted)]"
                     )}
                   >
                     <button
                       type="button"
-                      onClick={() => onSelect(c.id)}
+                      onClick={() => onSelect(t.id)}
                       disabled={disabled}
-                      title={c.title}
+                      title={t.title}
                       className={cn(
                         "min-w-0 flex-1 truncate px-2 py-2 text-left text-sm text-[var(--foreground)]",
                         "disabled:opacity-50 disabled:pointer-events-none"
                       )}
                     >
-                      {c.title}
+                      {t.title}
                     </button>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation()
-                        onDelete(c.id)
+                        onDelete(t.id)
                       }}
                       disabled={disabled}
                       title="Delete conversation"
