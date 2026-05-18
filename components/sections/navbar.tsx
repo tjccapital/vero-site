@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, X, ChevronDown, ChevronUp, Play, BookOpen, Mail, LayoutDashboard, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp, Play, BookOpen, Mail, LayoutDashboard, LogOut, Receipt, Store, Handshake } from "lucide-react";
 
 const resourceItems = [
   {
@@ -21,16 +21,31 @@ const resourceItems = [
     external: true,
   },
   {
-    icon: LayoutDashboard,
-    title: "User Dashboard",
-    description: "Sign in to manage your receipts and accounts.",
-    href: "/consumer",
-  },
-  {
     icon: Mail,
     title: "Contact",
     description: "Get in touch with our team.",
     href: "/contact",
+  },
+];
+
+const dashboardItems = [
+  {
+    icon: Receipt,
+    title: "User",
+    description: "View your receipts, transactions, and accounts.",
+    href: "/consumer",
+  },
+  {
+    icon: Store,
+    title: "Merchant",
+    description: "Connect your POS, track receipts, and manage payouts.",
+    href: "/dashboard",
+  },
+  {
+    icon: Handshake,
+    title: "Affiliate",
+    description: "Track prospects and earn rewards for new merchants.",
+    href: "/affiliate-dashboard",
   },
 ];
 
@@ -111,6 +126,42 @@ export function Navbar() {
             <a href="/merchants" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Merchants
             </a>
+
+            {/* Dashboards Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setActiveDropdown("dashboards")}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center gap-1 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                Dashboards
+                <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === "dashboards" ? "rotate-180" : ""}`} />
+              </button>
+
+              {activeDropdown === "dashboards" && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2">
+                  <div className="bg-white border border-gray-200 shadow-lg p-4 w-[400px]">
+                    <div className="space-y-1">
+                      {dashboardItems.map((item) => (
+                        <a
+                          key={item.title}
+                          href={item.href}
+                          className="flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-primary-50 flex items-center justify-center">
+                            <item.icon className="w-5 h-5 text-primary-900" />
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-900 text-sm">{item.title}</span>
+                            <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Resources Dropdown */}
             <div
@@ -231,6 +282,37 @@ export function Navbar() {
               >
                 Merchants
               </a>
+
+              {/* Dashboards Section */}
+              <div>
+                <button
+                  onClick={() => toggleMobileSection('dashboards')}
+                  className="flex items-center justify-between w-full rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                >
+                  Dashboards
+                  {mobileSection === 'dashboards' ? (
+                    <ChevronUp className="w-4 h-4 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  )}
+                </button>
+
+                {mobileSection === 'dashboards' && (
+                  <div className="ml-3 mt-1 space-y-1 border-l-2 border-gray-100 pl-3">
+                    {dashboardItems.map((item) => (
+                      <a
+                        key={item.title}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                      >
+                        <item.icon className="w-4 h-4" />
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Resources Section */}
               <div>
