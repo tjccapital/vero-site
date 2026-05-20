@@ -38,12 +38,18 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { PlaidLinkModal } from "@/components/plaid-link-modal"
+import { RefreshButton } from "@/components/refresh-button"
 import {
   cacheTransactionForDetail,
   fetchTransactions,
+  syncTransactions,
   transactionDisplayName,
   type Transaction,
 } from "@/lib/transactions"
+import {
+  readPendingFirstSync,
+  clearPendingFirstSync,
+} from "@/lib/pending-first-sync"
 import {
   formatTxDate,
   getCategoryColor,
@@ -169,10 +175,40 @@ export default function ConsumerTransactionsPage() {
 
   const [showPlaidModal, setShowPlaidModal] = useState(false)
 
+  // sessionStorage marker indicating the user just linked a bank account and
+  // Plaid may still be fetching transactions in the background. Drives the
+  // "Fetching from {bank}..." waiting state below. Re-read after every
+  // transaction load so the marker clears once data arrives.
+  const [pendingFirstSync, setPendingFirstSync] = useState<{
+    institutionName: string
+  } | null>(null)
+  useEffect(() => {
+    const marker = readPendingFirstSync()
+    if (marker && transactions.length === 0) {
+      setPendingFirstSync({ institutionName: marker.institutionName })
+    } else {
+      // Either no marker, or transactions arrived — clear the marker so a
+      // future visit doesn't trigger the waiting state when it isn't needed.
+      if (marker) clearPendingFirstSync()
+      setPendingFirstSync(null)
+    }
+  }, [transactions.length])
+
   const loadTransactions = useCallback(async () => {
     setTransactionsLoading(true)
     setTransactionsError(null)
     try {
+      // Sync first so the cache picks up anything Plaid has cached on its side
+      // (e.g. data the user just linked, or anything a webhook should have
+      // delivered but didn't). Sync is included in the per-Item monthly
+      // Transactions fee, not billed per call. Mirror of mobile's
+      // pull-to-refresh.
+      try {
+        await syncTransactions()
+      } catch (syncErr) {
+        // Non-fatal — the cache read below will still return whatever's there.
+        console.warn("[Transactions] Sync before fetch failed:", syncErr)
+      }
       const res = await fetchTransactions()
       setTransactions(res.transactions ?? [])
     } catch (err) {
@@ -271,6 +307,9 @@ export default function ConsumerTransactionsPage() {
               Click any transaction to see its itemized receipt
             </p>
           </div>
+          <RefreshButton
+            onResult={(txs) => setTransactions(txs)}
+          />
         </div>
 
         {/* Filters */}
@@ -394,8 +433,23 @@ export default function ConsumerTransactionsPage() {
           </div>
         )}
 
-        {/* Empty - no transactions at all */}
-        {!transactionsLoading && !transactionsError && transactions.length === 0 && (
+        {/* Empty - just-linked, Plaid still fetching */}
+        {!transactionsLoading && !transactionsError && transactions.length === 0 && pendingFirstSync && (
+          <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
+            <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
+              <Loader2 className="h-6 w-6 text-[var(--muted-foreground)] animate-spin" />
+            </div>
+            <h3 className="mt-4 font-medium">
+              Fetching your transactions from {pendingFirstSync.institutionName}…
+            </h3>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+              This can take up to a minute. We&apos;ll keep this page in sync as soon as they arrive.
+            </p>
+          </div>
+        )}
+
+        {/* Empty - no transactions and not in the just-linked window */}
+        {!transactionsLoading && !transactionsError && transactions.length === 0 && !pendingFirstSync && (
           <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
             <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
               <Landmark className="h-6 w-6 text-[var(--muted-foreground)]" />
