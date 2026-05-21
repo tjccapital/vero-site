@@ -32,9 +32,14 @@ import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 import {
   cacheTransactionForDetail,
   fetchTransactions,
+  syncTransactions,
   transactionDisplayName,
   type Transaction,
 } from "@/lib/transactions"
+import {
+  clearPendingFirstSync,
+  readPendingFirstSync,
+} from "@/lib/pending-first-sync"
 import {
   formatTxShortDate,
   getTransactionIcon,
@@ -141,6 +146,21 @@ export default function ConsumerDashboardPage() {
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
   const [accounts, setAccounts] = useState<PlaidAccount[]>([])
+  // Mirrors the /transactions page: when the user just linked a bank but
+  // transactions haven't landed yet, show a "Fetching from {bank}…" indicator
+  // in the recent-transactions widget instead of the sample data.
+  const [pendingFirstSync, setPendingFirstSync] = useState<{
+    institutionName: string
+  } | null>(null)
+  useEffect(() => {
+    const marker = readPendingFirstSync()
+    if (marker && transactions.length === 0) {
+      setPendingFirstSync({ institutionName: marker.institutionName })
+    } else {
+      if (marker) clearPendingFirstSync()
+      setPendingFirstSync(null)
+    }
+  }, [transactions.length])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -179,23 +199,35 @@ export default function ConsumerDashboardPage() {
   // Pull real transactions from /api/transactions. The proxy returns an empty
   // array when no Plaid item is connected, so this is also safe pre-link —
   // the UI just falls back to the sample data below.
+  //
+  // We sync first so the cache picks up anything Plaid has cached on its side
+  // since the last visit — covers the case where a webhook should have updated
+  // the cache but didn't. Sync is free (included in the per-Item Transactions
+  // fee, not billed per call) and mirrors what mobile pull-to-refresh does.
   useEffect(() => {
     let cancelled = false
     setTransactionsLoading(true)
     setTransactionsError(null)
-    fetchTransactions()
-      .then((res) => {
+    ;(async () => {
+      try {
+        try {
+          await syncTransactions()
+        } catch (syncErr) {
+          // Non-fatal — the fetch below still returns whatever's cached.
+          console.warn("[Transactions] Sync before fetch failed:", syncErr)
+        }
+        if (cancelled) return
+        const res = await fetchTransactions()
         if (cancelled) return
         setTransactions(res.transactions ?? [])
-      })
-      .catch((err) => {
+      } catch (err) {
         if (cancelled) return
         console.error("[Transactions] Failed to load:", err)
         setTransactionsError("Couldn't load your transactions.")
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setTransactionsLoading(false)
-      })
+      }
+    })()
     return () => {
       cancelled = true
     }
@@ -948,6 +980,16 @@ export default function ConsumerDashboardPage() {
               ) : transactionsError ? (
                 <div className="px-4 py-6 text-sm text-red-600">
                   {transactionsError}
+                </div>
+              ) : pendingFirstSync ? (
+                <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+                  <Loader2 className="h-5 w-5 animate-spin text-[var(--muted-foreground)]" />
+                  <p className="mt-3 text-sm font-medium">
+                    Fetching transactions from {pendingFirstSync.institutionName}…
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    This can take up to a minute.
+                  </p>
                 </div>
               ) : (
                 <div className="divide-y divide-[var(--border)]">

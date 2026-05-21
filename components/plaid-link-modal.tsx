@@ -130,6 +130,29 @@ export function PlaidLinkModal({
                       mask: a.mask ?? undefined,
                     })),
                   })
+                  // Mark "we just linked an Item, transactions may still be
+                  // arriving for the next few minutes." Consumed by /transactions
+                  // and dashboard pages to render a 'Fetching from {bank}...'
+                  // empty state instead of the generic 'No transactions yet'.
+                  // Self-expires after 5 minutes; cleared by the consumer when
+                  // transactions show up.
+                  try {
+                    sessionStorage.setItem(
+                      "vero.pendingFirstSync",
+                      JSON.stringify({
+                        institutionName:
+                          metadata?.institution?.name ?? "your bank",
+                        startedAt: Date.now(),
+                      })
+                    )
+                  } catch (storageErr) {
+                    // sessionStorage may be unavailable in private windows.
+                    // Non-fatal: the empty state just won't be customised.
+                    console.warn(
+                      "[Plaid] Could not set pendingFirstSync marker:",
+                      storageErr
+                    )
+                  }
                   // Pull the new item's transactions into vero before
                   // handing off to the page-specific onLinked refresh.
                   // Plaid's initial sync can return an empty batch
