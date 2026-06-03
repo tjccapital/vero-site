@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import {
+  ArrowLeft,
   CircleHelp,
   FileImage,
   Landmark,
@@ -45,6 +46,7 @@ const mainNavItems = [
 const bottomNavItems = [
   { name: "Settings", href: "/user-dashboard/settings", icon: SettingsIcon },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
+  { name: "Back to Site", href: "/", icon: ArrowLeft },
 ]
 
 function isActive(pathname: string, href: string): boolean {
@@ -259,12 +261,6 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
               <VeroLogoFull height={18} className="text-[var(--foreground)]" />
             </Link>
           </div>
-          <Link
-            href="/"
-            className="text-xs sm:text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] whitespace-nowrap"
-          >
-            Back to Site
-          </Link>
         </header>
 
         {/* Mobile drawer — left-side panel that mirrors the hamburger
