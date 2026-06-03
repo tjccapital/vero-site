@@ -6,8 +6,7 @@ import { useState } from "react";
 const codeExample = `{
   "mcpServers": {
     "vero": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://mcp.veroreceipts.com/mcp"]
+      "url": "https://mcp.veroreceipts.com/mcp"
     }
   }
 }`;
@@ -35,7 +34,7 @@ export function CodePreview() {
                   <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
                   <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                 </div>
-                <span className="text-xs text-slate-500 font-mono">mcp.json</span>
+                <span className="text-xs text-slate-500 font-mono">claude_desktop_config.json</span>
                 <button
                   onClick={handleCopy}
                   className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"
@@ -64,18 +63,9 @@ export function CodePreview() {
                     <span className="text-slate-300">: {"{"}</span>
                     {"\n"}
                     <span className="text-slate-300">      </span>
-                    <span className="text-blue-300">&quot;command&quot;</span>
+                    <span className="text-blue-300">&quot;url&quot;</span>
                     <span className="text-slate-300">: </span>
-                    <span className="text-green-400">&quot;npx&quot;</span>
-                    <span className="text-slate-300">,</span>
-                    {"\n"}
-                    <span className="text-slate-300">      </span>
-                    <span className="text-blue-300">&quot;args&quot;</span>
-                    <span className="text-slate-300">: [</span>
-                    <span className="text-green-400">&quot;mcp-remote&quot;</span>
-                    <span className="text-slate-300">, </span>
                     <span className="text-green-400">&quot;https://mcp.veroreceipts.com/mcp&quot;</span>
-                    <span className="text-slate-300">]</span>
                     {"\n"}
                     <span className="text-slate-300">    {"}"}</span>
                     {"\n"}
@@ -99,9 +89,9 @@ export function CodePreview() {
               An MCP server for all of your<br />transactions and receipts
             </h2>
             <p className="text-lg text-slate-400 mb-8 leading-relaxed">
-              Drop the snippet into your MCP client config to start the Vero
-              server, then let your agents query transactions and receipts in
-              natural language &mdash; no extra plumbing required.
+              A remote server &mdash; nothing to install. Point your MCP client
+              at the server URL, authenticate, and let your agents query
+              transactions and receipts in natural language.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
