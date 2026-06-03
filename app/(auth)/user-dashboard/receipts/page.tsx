@@ -10,6 +10,7 @@ import {
   List,
   Loader2,
   Receipt as ReceiptIcon,
+  Search,
   Trash2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -29,6 +30,7 @@ import {
 } from "@/lib/receipts"
 import {
   fetchTransactions,
+  transactionDisplayName,
   type Transaction,
 } from "@/lib/transactions"
 import { formatTxShortDate } from "@/lib/category-display"
@@ -73,13 +75,14 @@ export default function ConsumerReceiptsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pendingUploads, setPendingUploads] = useState<PendingUpload[]>([])
-  const [view, setView] = useState<ViewMode>("grid")
+  const [view, setView] = useState<ViewMode>("list")
+  const [search, setSearch] = useState("")
   // Track image loads that 404 / error so we can swap in the avatar fallback
   // without ever paying for a re-fetch. Set is keyed by receipt id.
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set())
 
   // Hydrate the view preference from localStorage on first paint. Kept in a
-  // dedicated effect so the initial server-render uses the default ("grid")
+  // dedicated effect so the initial server-render uses the default ("list")
   // and the client swap-over is the only place that touches storage.
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -138,6 +141,24 @@ export default function ConsumerReceiptsPage() {
     }
     return map
   }, [transactions])
+
+  // Filter the library by the search box. Matches the receipt's display name
+  // (merchant), its total, and the name of any transaction it's matched to so
+  // a user can find a receipt by what they remember about the purchase.
+  const filteredReceipts = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return receipts
+    return receipts.filter((r) => {
+      const name = receiptDisplayName(r).toLowerCase()
+      const total =
+        typeof r.total === "number" ? r.total.toFixed(2) : ""
+      const matchedTx = matchByReceiptId.get(r.id)
+      const txName = matchedTx ? transactionDisplayName(matchedTx).toLowerCase() : ""
+      return (
+        name.includes(q) || total.includes(q) || txName.includes(q)
+      )
+    })
+  }, [receipts, search, matchByReceiptId])
 
   // Drop / pick handler for the library dropzone. Each file is uploaded
   // independently so a transient failure on one image doesn't tank the rest.
@@ -289,6 +310,20 @@ export default function ConsumerReceiptsPage() {
         ) : null}
       </div>
 
+      {showViewToggle ? (
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search receipts by merchant, amount, or transaction…"
+            aria-label="Search receipts"
+            className="w-full rounded-md border border-[var(--border)] bg-white py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:border-[var(--foreground)] focus:ring-1 focus:ring-[var(--foreground)]"
+          />
+        </div>
+      ) : null}
+
       <ReceiptDropzone
         onFiles={handleFiles}
         phase={dropzonePhase}
@@ -371,9 +406,20 @@ export default function ConsumerReceiptsPage() {
             will be auto-matched to your transactions.
           </p>
         </div>
+      ) : filteredReceipts.length === 0 && search.trim() ? (
+        <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
+          <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
+            <Search className="h-6 w-6 text-[var(--muted-foreground)]" />
+          </div>
+          <h3 className="mt-4 font-medium">No matching receipts</h3>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            Nothing matched &ldquo;{search.trim()}&rdquo;. Try a different
+            merchant, amount, or transaction name.
+          </p>
+        </div>
       ) : view === "grid" ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {receipts.map((r) => {
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          {filteredReceipts.map((r) => {
             const matchedTx = matchByReceiptId.get(r.id)
             const rawImg = receiptImage(r)
             const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
@@ -456,7 +502,7 @@ export default function ConsumerReceiptsPage() {
         </div>
       ) : (
         <ul className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border border-[var(--border)] bg-white">
-          {receipts.map((r) => {
+          {filteredReceipts.map((r) => {
             const matchedTx = matchByReceiptId.get(r.id)
             const rawImg = receiptImage(r)
             const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
