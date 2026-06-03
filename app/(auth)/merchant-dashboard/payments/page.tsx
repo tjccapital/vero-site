@@ -82,6 +82,7 @@ export default function PaymentsPage() {
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showPortalTooltip, setShowPortalTooltip] = useState(false)
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -115,9 +116,6 @@ export default function PaymentsPage() {
   if (!user) {
     return null
   }
-
-  // Generate Stripe billing portal URL with user sub (Auth0 user ID)
-  const stripeBillingPortalUrl = `https://billing.stripe.com/p/login/test_${user.sub?.replace('|', '_')}`
 
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden">
@@ -374,15 +372,27 @@ export default function PaymentsPage() {
                     <span className="text-sm text-green-600">Account verified</span>
                   </div>
                 </div>
-                <Link
-                  href={stripeBillingPortalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Open Portal
-                </Link>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowPortalTooltip((prev) => !prev)}
+                    onBlur={() => setShowPortalTooltip(false)}
+                    aria-describedby="portal-tooltip"
+                    className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Open Portal
+                  </button>
+                  {showPortalTooltip && (
+                    <div
+                      id="portal-tooltip"
+                      role="tooltip"
+                      className="absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-md bg-[var(--foreground)] px-3 py-1.5 text-xs font-medium text-white shadow-md"
+                    >
+                      Stripe Integration Coming Soon
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
