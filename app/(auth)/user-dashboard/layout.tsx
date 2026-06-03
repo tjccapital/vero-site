@@ -40,7 +40,7 @@ const mainNavItems = [
   { name: "Transactions", href: "/user-dashboard/transactions", icon: Receipt },
   { name: "Receipts", href: "/user-dashboard/receipts", icon: FileImage },
   { name: "Accounts", href: "/user-dashboard/accounts", icon: Landmark },
-  { name: "Chat", href: "/user-dashboard/chat", icon: MessageSquare },
+  { name: "Chat", href: "/user-dashboard/chat?new=1", icon: MessageSquare },
 ]
 
 const bottomNavItems = [
@@ -50,12 +50,14 @@ const bottomNavItems = [
 ]
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/user-dashboard") {
+  // Compare on the path only — nav hrefs may carry a query (e.g. Chat's ?new=1).
+  const path = href.split("?")[0]
+  if (path === "/user-dashboard") {
     // Match the dashboard exactly — otherwise every /user-dashboard/* page would
     // light up Home as well.
     return pathname === "/user-dashboard"
   }
-  return pathname === href || pathname.startsWith(`${href}/`)
+  return pathname === path || pathname.startsWith(`${path}/`)
 }
 
 export default function ConsumerLayout({ children }: { children: ReactNode }) {

@@ -3,13 +3,18 @@
 import {
   FormEvent,
   KeyboardEvent,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import {
+  ArrowUpRight,
+  ExternalLink,
   Loader2,
   PanelLeft,
   PanelLeftClose,
@@ -59,48 +64,105 @@ function fromHistory(messages: ChatMessage[]): DisplayMessage[] {
   }))
 }
 
-// Render a chat string with bare URL detection.
-function MessageText({ text }: { text: string }) {
-  const parts = useMemo(() => {
-    const regex = /(https?:\/\/[^\s)]+)/g
-    const out: Array<{ type: "text" | "link"; value: string }> = []
-    let lastIndex = 0
-    let match: RegExpExecArray | null
-    while ((match = regex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        out.push({ type: "text", value: text.slice(lastIndex, match.index) })
-      }
-      out.push({ type: "link", value: match[0] })
-      lastIndex = match.index + match[0].length
-    }
-    if (lastIndex < text.length) {
-      out.push({ type: "text", value: text.slice(lastIndex) })
-    }
-    return out
-  }, [text])
+type Token =
+  | { type: "text"; value: string }
+  | { type: "bold"; value: string }
+  | { type: "link"; raw: string; label?: string }
 
+// Tokenize a chat string into markdown links ([label](url)), bold (**text**),
+// bare URLs, and plain text. Kept deliberately small — the assistant only
+// emits these inline constructs.
+function tokenize(text: string): Token[] {
+  const pattern =
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+?)\*\*|(https?:\/\/[^\s)]+)/g
+  const out: Token[] = []
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = pattern.exec(text)) !== null) {
+    if (m.index > last) out.push({ type: "text", value: text.slice(last, m.index) })
+    if (m[1] !== undefined && m[2] !== undefined) {
+      out.push({ type: "link", raw: m[2], label: m[1] })
+    } else if (m[3] !== undefined) {
+      out.push({ type: "bold", value: m[3] })
+    } else if (m[4] !== undefined) {
+      out.push({ type: "link", raw: m[4] })
+    }
+    last = m.index + m[0].length
+  }
+  if (last < text.length) out.push({ type: "text", value: text.slice(last) })
+  return out
+}
+
+// Resolve a raw URL into something we can render: links back to our own
+// dashboard become app-relative (rewriting the legacy /consumer prefix) and
+// open in-app; everything else (e.g. signed receipt-image URLs) opens in a new
+// tab. A friendly label is derived when the markdown didn't supply one.
+function resolveLink(rawHref: string, label?: string): {
+  href: string
+  label: string
+  internal: boolean
+} {
+  try {
+    const u = new URL(rawHref, "https://veroreceipts.com")
+    const isVero =
+      u.hostname === "veroreceipts.com" || u.hostname.endsWith(".veroreceipts.com")
+    if (isVero) {
+      const path = u.pathname.replace(/^\/consumer(?=\/|$)/, "/user-dashboard")
+      const isTx = /\/transactions\//.test(path)
+      return {
+        href: `${path}${u.search}`,
+        label: label || (isTx ? "View transaction" : "Open in Vero"),
+        internal: true,
+      }
+    }
+  } catch {
+    // fall through to the raw href
+  }
+  return { href: rawHref, label: label || "View receipt", internal: false }
+}
+
+function MessageLink({ raw, label }: { raw: string; label?: string }) {
+  const link = resolveLink(raw, label)
+  const Icon = link.internal ? ArrowUpRight : ExternalLink
+  const className =
+    "inline-flex items-center gap-0.5 font-medium underline underline-offset-2 hover:opacity-80 break-words"
+  const inner = (
+    <>
+      {link.label}
+      <Icon className="h-3 w-3 flex-shrink-0" />
+    </>
+  )
+  if (link.internal) {
+    return (
+      <Link href={link.href} className={className}>
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <a href={link.href} target="_blank" rel="noreferrer" className={className}>
+      {inner}
+    </a>
+  )
+}
+
+// Render a chat string with markdown links, bold, and bare-URL detection.
+function MessageText({ text }: { text: string }) {
+  const tokens = useMemo(() => tokenize(text), [text])
   return (
     <>
-      {parts.map((p, i) =>
-        p.type === "link" ? (
-          <a
-            key={i}
-            href={p.value}
-            target="_blank"
-            rel="noreferrer"
-            className="underline text-blue-600 hover:text-blue-700 break-words"
-          >
-            {p.value}
-          </a>
-        ) : (
-          <span key={i}>{p.value}</span>
-        )
-      )}
+      {tokens.map((t, i) => {
+        if (t.type === "link") return <MessageLink key={i} raw={t.raw} label={t.label} />
+        if (t.type === "bold") return <strong key={i}>{t.value}</strong>
+        return <span key={i}>{t.value}</span>
+      })}
     </>
   )
 }
 
-export default function ConsumerChatPage() {
+function ConsumerChatPageInner() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [messages, setMessages] = useState<DisplayMessage[]>([])
   const [threads, setThreads] = useState<ConversationSummary[]>([])
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
@@ -116,15 +178,17 @@ export default function ConsumerChatPage() {
   const activeConversationIdRef = useRef<string | null>(null)
   activeConversationIdRef.current = activeConversationId
 
-  // Load thread list and most-recent thread's history on mount.
+  // Load thread list and most-recent thread's history on mount — unless we
+  // arrived via the sidebar Chat icon (?new), in which case we start fresh.
   useEffect(() => {
+    const startNew = searchParams.get("new") != null
     const controller = new AbortController()
 
     getThreads(controller.signal)
       .then(async (list) => {
         if (controller.signal.aborted) return
         setThreads(list)
-        if (list.length > 0) {
+        if (!startNew && list.length > 0) {
           const first = list[0]
           const history = await fetchChatHistory(first.id, controller.signal)
           if (controller.signal.aborted) return
@@ -141,7 +205,21 @@ export default function ConsumerChatPage() {
       })
 
     return () => controller.abort()
+    // Mount-only: the ?new reset is handled by the effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Whenever we land here with ?new (sidebar Chat icon), clear the conversation
+  // to a blank slate and strip the param so refresh/back don't re-trigger it.
+  useEffect(() => {
+    if (searchParams.get("new") == null) return
+    setActiveConversationId(null)
+    activeConversationIdRef.current = null
+    setMessages([])
+    setHistoryLoading(false)
+    setMobileSidebarOpen(false)
+    router.replace("/user-dashboard/chat")
+  }, [searchParams, router])
 
   // Auto-scroll to the bottom whenever the message list grows.
   useEffect(() => {
@@ -496,6 +574,14 @@ export default function ConsumerChatPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ConsumerChatPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConsumerChatPageInner />
+    </Suspense>
   )
 }
 
