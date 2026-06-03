@@ -54,52 +54,6 @@ import {
   Tooltip,
 } from "recharts"
 
-// Sample receipts shown in the "Recent Transactions" card while we're still
-// loading or before the user has connected an account. Once /api/transactions
-// returns rows, this fallback is replaced by real data.
-const recentReceipts = [
-  {
-    id: "rcpt_001",
-    merchant: "Whole Foods Market",
-    amount: 87.45,
-    date: "Today, 2:34 PM",
-    category: "groceries",
-    items: 12,
-  },
-  {
-    id: "rcpt_002",
-    merchant: "Starbucks",
-    amount: 6.75,
-    date: "Today, 9:15 AM",
-    category: "coffee",
-    items: 2,
-  },
-  {
-    id: "rcpt_003",
-    merchant: "Shell Gas Station",
-    amount: 52.30,
-    date: "Yesterday, 5:45 PM",
-    category: "gas",
-    items: 1,
-  },
-  {
-    id: "rcpt_004",
-    merchant: "Chipotle",
-    amount: 14.25,
-    date: "Yesterday, 12:30 PM",
-    category: "dining",
-    items: 3,
-  },
-  {
-    id: "rcpt_005",
-    merchant: "Target",
-    amount: 156.80,
-    date: "Jan 30, 3:20 PM",
-    category: "shopping",
-    items: 8,
-  },
-]
-
 // Onboarding steps - status can be 'completed', 'current', or 'pending'
 const onboardingSteps = [
   {
@@ -391,26 +345,6 @@ export default function ConsumerDashboardPage() {
   const totalSpending = useMemo(() => {
     return chartData.reduce((sum, item) => sum + item.amount, 0)
   }, [chartData])
-
-  // The fallback "sample receipts" list (rendered before the user has linked
-  // an account) labels each row by a string category, not a Plaid tag, so
-  // it can't share getTransactionIcon. Keep this small mapping local.
-  const getSampleReceiptIcon = (category: string) => {
-    switch (category) {
-      case "groceries":
-        return ShoppingBag
-      case "coffee":
-        return Coffee
-      case "dining":
-        return Utensils
-      case "gas":
-        return Car
-      case "shopping":
-        return Store
-      default:
-        return Receipt
-    }
-  }
 
   const recentTransactions = useMemo(() => transactions.slice(0, 5), [transactions])
   const hasRealTransactions = recentTransactions.length > 0
@@ -920,9 +854,7 @@ export default function ConsumerDashboardPage() {
                 <div>
                   <h3 className="font-semibold">Recent Transactions</h3>
                   <p className="text-xs text-[var(--muted-foreground)]">
-                    {hasRealTransactions
-                      ? "Your latest transactions"
-                      : "Your latest transactions (sample)"}
+                    Your latest transactions
                   </p>
                 </div>
                 <Link
@@ -992,29 +924,17 @@ export default function ConsumerDashboardPage() {
                   </p>
                 </div>
               ) : (
-                <div className="divide-y divide-[var(--border)]">
-                  {recentReceipts.map((receipt) => {
-                    const CategoryIcon = getSampleReceiptIcon(receipt.category)
-                    return (
-                      <Link
-                        key={receipt.id}
-                        href="/consumer/transactions"
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
-                          <CategoryIcon className="h-5 w-5 text-[var(--muted-foreground)]" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{receipt.merchant}</p>
-                          <p className="text-xs text-[var(--muted-foreground)]">{receipt.date}</p>
-                        </div>
-                        <div className="flex-shrink-0 text-right">
-                          <p className="font-semibold">${receipt.amount.toFixed(2)}</p>
-                          <p className="text-xs text-[var(--muted-foreground)]">{receipt.items} items</p>
-                        </div>
-                      </Link>
-                    )
-                  })}
+                <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
+                    <Receipt className="h-5 w-5 text-[var(--muted-foreground)]" />
+                  </div>
+                  <p className="mt-3 text-sm font-medium">No transactions yet</p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                      Link an account
+                    </Link>{" "}
+                    to see your transactions
+                  </p>
                 </div>
               )}
             </div>
