@@ -29,29 +29,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// Shared shell for every page under /consumer. Owns the sidebar (desktop),
+// Shared shell for every page under /user-dashboard. Owns the sidebar (desktop),
 // mobile drawer, top bar, and auth gate. Pages render only their main
 // content — including their own page-level "not found" / error states —
 // so the navigation chrome stays consistent across every state.
 
 const mainNavItems = [
-  { name: "Home", href: "/consumer", icon: LayoutDashboard },
-  { name: "Transactions", href: "/consumer/transactions", icon: Receipt },
-  { name: "Receipts", href: "/consumer/receipts", icon: FileImage },
-  { name: "Accounts", href: "/consumer/accounts", icon: Landmark },
-  { name: "Chat", href: "/consumer/chat", icon: MessageSquare },
+  { name: "Home", href: "/user-dashboard", icon: LayoutDashboard },
+  { name: "Transactions", href: "/user-dashboard/transactions", icon: Receipt },
+  { name: "Receipts", href: "/user-dashboard/receipts", icon: FileImage },
+  { name: "Accounts", href: "/user-dashboard/accounts", icon: Landmark },
+  { name: "Chat", href: "/user-dashboard/chat", icon: MessageSquare },
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: "/consumer/settings", icon: SettingsIcon },
+  { name: "Settings", href: "/user-dashboard/settings", icon: SettingsIcon },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
 ]
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/consumer") {
-    // Match the dashboard exactly — otherwise every /consumer/* page would
+  if (href === "/user-dashboard") {
+    // Match the dashboard exactly — otherwise every /user-dashboard/* page would
     // light up Home as well.
-    return pathname === "/consumer"
+    return pathname === "/user-dashboard"
   }
   return pathname === href || pathname.startsWith(`${href}/`)
 }
@@ -59,7 +59,7 @@ function isActive(pathname: string, href: string): boolean {
 export default function ConsumerLayout({ children }: { children: ReactNode }) {
   const { user, isLoading } = useUser()
   const router = useRouter()
-  const pathname = usePathname() ?? "/consumer"
+  const pathname = usePathname() ?? "/user-dashboard"
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -108,7 +108,7 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
         )}
       >
         <div className="flex h-14 items-center px-4">
-          <Link href="/consumer">
+          <Link href="/user-dashboard">
             {!sidebarCollapsed && (
               <VeroLogoFull height={20} className="text-[var(--foreground)]" />
             )}
@@ -255,7 +255,7 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
               )}
             </button>
             {/* Logo — only on mobile, where the sidebar's logo is hidden. */}
-            <Link href="/consumer" className="lg:hidden flex items-center">
+            <Link href="/user-dashboard" className="lg:hidden flex items-center">
               <VeroLogoFull height={18} className="text-[var(--foreground)]" />
             </Link>
           </div>
@@ -367,7 +367,7 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
             // The chat page owns its own scroll containers and bleeds to the
             // edges so its conversation sidebar can hug the main nav. Every
             // other page uses the standard padded scroll container.
-            pathname.startsWith("/consumer/chat")
+            pathname.startsWith("/user-dashboard/chat")
               ? "min-h-0"
               : "overflow-y-auto p-4 sm:p-6"
           )}

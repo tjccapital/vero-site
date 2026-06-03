@@ -35,7 +35,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/consumer" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="/user-dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
                   For Consumers
                 </a>
               </li>

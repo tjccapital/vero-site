@@ -237,7 +237,7 @@ export default function ConsumerTransactionsPage() {
       saveListScroll()
       // Stash the row so the detail page can render without re-listing.
       cacheTransactionForDetail(tx)
-      router.push(`/consumer/transactions/${tx.id}`)
+      router.push(`/user-dashboard/transactions/${tx.id}`)
     },
     [router, saveListScroll]
   )
@@ -596,7 +596,7 @@ export default function ConsumerTransactionsPage() {
               return (
                 <Link
                   key={tx.id}
-                  href={`/consumer/transactions/${tx.id}`}
+                  href={`/user-dashboard/transactions/${tx.id}`}
                   onClick={(e) => {
                     e.preventDefault()
                     navigateToTransaction(tx)

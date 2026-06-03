@@ -125,7 +125,7 @@ export default function ConsumerSettingsPage() {
     setEmailError(null)
     setEmailActionLoading("connect")
     try {
-      const returnUrl = `${window.location.origin}/consumer/settings?gmail=connected`
+      const returnUrl = `${window.location.origin}/user-dashboard/settings?gmail=connected`
       const res = await apiFetch(
         `/api/email/connect/google?return_url=${encodeURIComponent(returnUrl)}`,
         { method: "POST" }
@@ -178,7 +178,7 @@ export default function ConsumerSettingsPage() {
   }, [fetchEmailStatus])
 
   // After the OAuth round-trip the backend redirects to
-  // /consumer/settings?gmail=connected (or ?gmail=error). Mirrors mobile's
+  // /user-dashboard/settings?gmail=connected (or ?gmail=error). Mirrors mobile's
   // post-connect behaviour: refresh status, then run the initial scan in the
   // background while showing "Syncing receipts from inbox…".
   useEffect(() => {
@@ -187,7 +187,7 @@ export default function ConsumerSettingsPage() {
     const result = params.get("gmail")
     if (!result) return
 
-    router.replace("/consumer/settings")
+    router.replace("/user-dashboard/settings")
 
     if (result === "connected") {
       setIsSyncingAfterConnect(true)

@@ -40,20 +40,29 @@ export default function AppPage() {
                   itemized receipts delivered automatically every time you tap
                   your card. No more cryptic bank statement codes.
                 </p>
-                <a
-                  href="https://apps.apple.com/app/vero-receipts/id6504488613"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block"
-                >
-                  <img
-                    src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
-                    alt="Download on the App Store"
-                    width={200}
-                    height={67}
-                    className="hover:opacity-80 transition-opacity"
-                  />
-                </a>
+                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                  <a
+                    href="https://apps.apple.com/app/vero-receipts/id6504488613"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block"
+                  >
+                    <img
+                      src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+                      alt="Download on the App Store"
+                      width={200}
+                      height={67}
+                      className="hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                  <a
+                    href="/auth/login?returnTo=/user-dashboard"
+                    className="inline-flex items-center justify-center px-6 text-sm font-semibold text-gray-900 bg-white border border-gray-300 hover:bg-gray-50 transition-colors h-[67px] rounded-xl"
+                  >
+                    View on Web
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </a>
+                </div>
               </div>
 
               {/* Right - Phone Image */}

@@ -1,5 +1,5 @@
 // sessionStorage marker written by PlaidLinkModal.onSuccess after a successful
-// public-token exchange. Consumed by /consumer/transactions and the dashboard's
+// public-token exchange. Consumed by /user-dashboard/transactions and the dashboard's
 // recent-transactions widget to render a "Fetching from {bank}..." waiting
 // state instead of the generic "No transactions yet" empty state, since Plaid
 // fetches initial transactions asynchronously and they typically take 10-60s

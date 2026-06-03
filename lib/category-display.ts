@@ -1,5 +1,5 @@
 // Shared helpers for rendering Plaid transactions in the consumer surfaces.
-// Each /consumer page used to redefine its own icon mapping, date formatter
+// Each /user-dashboard page used to redefine its own icon mapping, date formatter
 // and category badge palette; consolidating here keeps them in lockstep when
 // the design system shifts (e.g. when we moved category badges to grey).
 

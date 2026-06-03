@@ -266,7 +266,7 @@ export async function fetchTransactionById(
   return res.transactions.find((tx) => tx.id === transactionId) ?? null
 }
 
-// Per-tab cache used by /consumer/transactions and the dashboard's "Recent
+// Per-tab cache used by /user-dashboard/transactions and the dashboard's "Recent
 // Transactions" links to seed the detail page without a round-trip. A single
 // key holds the most recently clicked row; the detail page validates the id
 // before trusting the payload (cache miss is fine — fetchTransactionById
