@@ -175,9 +175,9 @@ const posIntegrations = [
 const DOCS_URL = "https://docs.veroreceipts.com/pos-plugins/overview"
 
 const mainNavItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, active: true },
-  { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
-  { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
+  { name: "Dashboard", href: "/merchant-dashboard", icon: LayoutDashboard, active: true },
+  { name: "Integrations", href: "/merchant-dashboard/integrations", icon: Cable },
+  { name: "Payments", href: "/merchant-dashboard/payments", icon: CreditCard },
   { name: "Analytics", href: DOCS_URL, icon: BarChart3, external: true },
   { name: "Receipts", href: DOCS_URL, icon: Receipt, external: true },
 ]
@@ -190,7 +190,7 @@ const documentNavItems = [
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Settings", href: "/merchant-dashboard/settings", icon: Settings },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
@@ -224,7 +224,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/auth/login?returnTo=/dashboard")
+      router.push("/auth/login?returnTo=/merchant-dashboard")
     }
   }, [user, isLoading, router])
 
@@ -280,7 +280,7 @@ export default function DashboardPage() {
       )}>
         {/* Logo */}
         <div className="flex h-14 items-center px-4">
-          <Link href="/dashboard">
+          <Link href="/merchant-dashboard">
             {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
             {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
           </Link>
@@ -544,7 +544,7 @@ export default function DashboardPage() {
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>
-                    <Link href="/dashboard/integrations" className="text-[var(--primary)] hover:underline">
+                    <Link href="/merchant-dashboard/integrations" className="text-[var(--primary)] hover:underline">
                       Configure your POS
                     </Link>
                     <span className="text-[var(--muted-foreground)]"> in Integrations to see real data</span>
@@ -554,7 +554,7 @@ export default function DashboardPage() {
               <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
                 {/* 30-Day Payout */}
                 <Link
-                  href="/dashboard/payments"
+                  href="/merchant-dashboard/payments"
                   className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block h-full"
                 >
                   <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
@@ -578,7 +578,7 @@ export default function DashboardPage() {
 
                 {/* Active Integrations */}
                 <Link
-                  href="/dashboard/integrations"
+                  href="/merchant-dashboard/integrations"
                   className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block h-full"
                 >
                   <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">Active Integrations</p>
@@ -596,7 +596,7 @@ export default function DashboardPage() {
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>
-                    <Link href="/dashboard/integrations" className="text-[var(--primary)] hover:underline">
+                    <Link href="/merchant-dashboard/integrations" className="text-[var(--primary)] hover:underline">
                       Configure your POS
                     </Link>
                     <span className="text-[var(--muted-foreground)]"> in Integrations to see real data</span>
@@ -744,7 +744,7 @@ export default function DashboardPage() {
                   <p className="text-sm text-center">
                     <span className="font-medium">Sample Data</span>
                     <span className="text-[var(--muted-foreground)]"> · </span>
-                    <Link href="/dashboard/integrations" className="text-[var(--primary)] hover:underline">
+                    <Link href="/merchant-dashboard/integrations" className="text-[var(--primary)] hover:underline">
                       Configure your POS
                     </Link>
                     <span className="text-[var(--muted-foreground)]"> in Integrations to see real data</span>
@@ -844,7 +844,7 @@ export default function DashboardPage() {
                       </DropdownMenuCheckboxItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <Link href="/dashboard/integrations" className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
+                  <Link href="/merchant-dashboard/integrations" className="flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--muted)]">
                     <Plus className="h-4 w-4" />
                     Add Integration
                   </Link>

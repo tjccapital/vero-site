@@ -39,7 +39,7 @@ const dashboardItems = [
     icon: Store,
     title: "Merchant",
     description: "Connect your POS, track receipts, and manage payouts.",
-    href: "/dashboard",
+    href: "/merchant-dashboard",
   },
   {
     icon: Handshake,
@@ -350,7 +350,7 @@ export function Navbar() {
               {/* Dashboard Link (if logged in) */}
               {!isLoading && user && (
                 <a
-                  href="/dashboard"
+                  href="/merchant-dashboard"
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                 >

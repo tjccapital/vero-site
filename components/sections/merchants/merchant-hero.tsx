@@ -23,7 +23,7 @@ export function MerchantHero() {
             {/* Buttons - visible on lg+, hidden on mobile */}
             <div className="hidden lg:flex flex-row gap-3">
               <a
-                href="/contact"
+                href="/auth/login?returnTo=/merchant-dashboard"
                 className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 hover:bg-primary-800 transition-colors"
               >
                 Get Started
@@ -56,7 +56,7 @@ export function MerchantHero() {
           {/* Buttons - visible on mobile only, below image */}
           <div className="grid grid-cols-2 gap-3 lg:hidden col-span-full">
             <a
-              href="/contact"
+              href="/auth/login?returnTo=/merchant-dashboard"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-primary-900 hover:bg-primary-800 transition-colors"
             >
               Get Started

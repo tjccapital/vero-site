@@ -23,12 +23,9 @@ import {
   MoreHorizontal,
   ChevronDown,
   LogOut,
-  CreditCard,
+  ArrowRight,
   ExternalLink,
-  Info,
-  CheckCircle,
-  Building2,
-  MapPin,
+  CreditCard,
   PanelLeftClose,
   PanelLeft,
   Menu,
@@ -48,9 +45,9 @@ import { Badge } from "@/components/ui/badge"
 const DOCS_URL = "https://docs.veroreceipts.com/pos-plugins/overview"
 
 const mainNavItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
-  { name: "Payments", href: "/dashboard/payments", icon: CreditCard, active: true },
+  { name: "Dashboard", href: "/merchant-dashboard", icon: LayoutDashboard },
+  { name: "Integrations", href: "/merchant-dashboard/integrations", icon: Cable, active: true },
+  { name: "Payments", href: "/merchant-dashboard/payments", icon: CreditCard },
   { name: "Analytics", href: DOCS_URL, icon: BarChart3, external: true },
   { name: "Receipts", href: DOCS_URL, icon: Receipt, external: true },
 ]
@@ -63,21 +60,81 @@ const documentNavItems = [
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Settings", href: "/merchant-dashboard/settings", icon: Settings },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
 
-// Demo merchant details
-const merchantDetails = {
-  address: "123 Main Street, Suite 400",
-  city: "San Francisco",
-  state: "CA",
-  zip: "94105",
-  size: "Small Business", // Small Business, Regional, Enterprise
-}
+const posPlugins = [
+  {
+    id: "square",
+    name: "Square",
+    description: "Full POS integration with real-time receipt sync. Perfect for retail stores, restaurants, and service businesses.",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/square",
+    color: "bg-black",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-8 w-8 text-white" fill="currentColor">
+        <path d="M4.5 2A2.5 2.5 0 0 0 2 4.5v15A2.5 2.5 0 0 0 4.5 22h15a2.5 2.5 0 0 0 2.5-2.5v-15A2.5 2.5 0 0 0 19.5 2h-15zm10.03 5.97a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 0 1-1.06-1.06l6-6a.75.75 0 0 1 1.06 0z"/>
+      </svg>
+    ),
+    status: "available",
+  },
+  {
+    id: "toast",
+    name: "Toast",
+    description: "Restaurant-focused POS with itemized receipts. Includes support for tips, modifiers, and split checks.",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/toast",
+    color: "bg-orange-500",
+    icon: <span className="text-2xl font-bold text-white">T</span>,
+    status: "coming_soon",
+  },
+  {
+    id: "clover",
+    name: "Clover",
+    description: "Versatile POS for retail and service businesses. Supports inventory tracking and customer management.",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/clover",
+    color: "bg-green-600",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-8 w-8 text-white" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+      </svg>
+    ),
+    status: "coming_soon",
+  },
+  {
+    id: "spoton",
+    name: "SpotOn",
+    description: "All-in-one platform for restaurants and retail. Includes online ordering and loyalty programs.",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/spoton",
+    color: "bg-blue-600",
+    icon: <span className="text-2xl font-bold text-white">S</span>,
+    status: "coming_soon",
+  },
+  {
+    id: "lightspeed",
+    name: "Lightspeed",
+    description: "Advanced retail and restaurant POS with powerful analytics and multi-location support.",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/lightspeed",
+    color: "bg-red-500",
+    icon: <span className="text-2xl font-bold text-white">L</span>,
+    status: "coming_soon",
+  },
+  {
+    id: "shopify",
+    name: "Shopify POS",
+    description: "Unified commerce platform connecting online and in-store sales with digital receipts.",
+    docsUrl: "https://docs.veroreceipts.com/pos-plugins/shopify",
+    color: "bg-green-500",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-8 w-8 text-white" fill="currentColor">
+        <path d="M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zm-5.337-6.979l.816-2.401s-.866-.448-1.923-.448c-1.555 0-1.632.975-1.632 1.219 0 1.341 1.753 1.855 1.753 3.144 0 1.556-1.184 2.557-2.78 2.557-1.913 0-2.892-1.189-2.892-1.189l.512-1.689s1.007.864 1.856.864c.556 0 .783-.436.783-.756 0-1.317-1.439-1.373-1.439-2.962 0-1.524 1.093-3.001 3.3-3.001 1.189 0 1.756.339 1.756.339l-.61 2.323z"/>
+      </svg>
+    ),
+    status: "coming_soon",
+  },
+]
 
-export default function PaymentsPage() {
+export default function IntegrationsPage() {
   const { user, isLoading } = useUser()
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -97,7 +154,7 @@ export default function PaymentsPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/auth/login?returnTo=/dashboard/payments")
+      router.push("/auth/login?returnTo=/merchant-dashboard/integrations")
     }
   }, [user, isLoading, router])
 
@@ -116,9 +173,6 @@ export default function PaymentsPage() {
     return null
   }
 
-  // Generate Stripe billing portal URL with user sub (Auth0 user ID)
-  const stripeBillingPortalUrl = `https://billing.stripe.com/p/login/test_${user.sub?.replace('|', '_')}`
-
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden">
       {/* Sidebar */}
@@ -128,7 +182,7 @@ export default function PaymentsPage() {
       )}>
         {/* Logo */}
         <div className="flex h-14 items-center px-4">
-          <Link href="/dashboard">
+          <Link href="/merchant-dashboard">
             {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
             {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
           </Link>
@@ -257,7 +311,7 @@ export default function PaymentsPage() {
             >
               {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
             </button>
-            <span className="text-sm font-medium">Payments</span>
+            <span className="text-sm font-medium">Integrations</span>
           </div>
           <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
             Back to Site
@@ -354,94 +408,103 @@ export default function PaymentsPage() {
 
         {/* Page Content */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
-          <div className="mx-auto max-w-3xl space-y-6 w-full">
+          <div className="mx-auto max-w-6xl space-y-6 sm:space-y-8 w-full">
             {/* Page Header */}
             <div>
-              <h1 className="text-2xl font-bold">Payments</h1>
-              <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                Manage payouts and billing settings.
+              <h1 className="text-2xl font-bold">POS Integrations</h1>
+              <p className="mt-1 text-[var(--muted-foreground)]">
+                Connect your point-of-sale system to automatically send digital receipts to customers.
               </p>
             </div>
 
-            {/* Payout Summary Card */}
-            <div className="rounded-xl border border-[var(--border)] p-5">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <p className="text-sm text-[var(--muted-foreground)]">30-Day Payout</p>
-                  <p className="text-3xl font-bold mt-1">$75.00</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm text-green-600">Account verified</span>
+            {/* Available Integrations */}
+            <div>
+              <h2 className="mb-4 text-lg font-semibold">Available Plugins</h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {posPlugins.filter(p => p.status === "available").map((plugin) => (
+                  <div
+                    key={plugin.id}
+                    className="group relative rounded-xl border border-[var(--border)] bg-white p-6 transition-all hover:border-[var(--primary)] hover:shadow-lg"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className={cn("flex h-14 w-14 items-center justify-center rounded-xl", plugin.color)}>
+                        {plugin.icon}
+                      </div>
+                      <Badge variant="success" className="text-xs">Available</Badge>
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold group-hover:text-[var(--primary)]">
+                      {plugin.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                      {plugin.description}
+                    </p>
+                    <div className="mt-4 flex items-center gap-3">
+                      <Link
+                        href={plugin.docsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary)]/90 transition-colors"
+                      >
+                        View Documentation
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Coming Soon */}
+            <div>
+              <h2 className="mb-4 text-lg font-semibold">Coming Soon</h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {posPlugins.filter(p => p.status === "coming_soon").map((plugin) => (
+                  <div
+                    key={plugin.id}
+                    className="relative rounded-xl border border-[var(--border)] bg-[var(--muted)]/30 p-6"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className={cn("flex h-14 w-14 items-center justify-center rounded-xl opacity-60", plugin.color)}>
+                        {plugin.icon}
+                      </div>
+                      <Badge variant="outline" className="text-xs">Coming Soon</Badge>
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold text-[var(--muted-foreground)]">
+                      {plugin.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                      {plugin.description}
+                    </p>
+                    <div className="mt-4">
+                      <button
+                        disabled
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--muted-foreground)] cursor-not-allowed"
+                      >
+                        Notify Me
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Integration CTA */}
+            <div className="rounded-xl border border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">Need a custom integration?</h3>
+                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                    We can build custom plugins for any POS system. Contact our team to discuss your requirements.
+                  </p>
                 </div>
                 <Link
-                  href={stripeBillingPortalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[var(--foreground)] px-4 py-2.5 text-sm font-medium text-white hover:bg-[var(--foreground)]/90 transition-colors"
+                  href="/contact"
+                  className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors whitespace-nowrap"
                 >
-                  <ExternalLink className="h-4 w-4" />
-                  Open Portal
+                  Contact Sales
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-            </div>
-
-            {/* Account Details */}
-            <div className="rounded-xl border border-[var(--border)] p-5">
-              <h2 className="text-base font-semibold mb-4">Account Details</h2>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
-                  <span className="text-sm text-[var(--muted-foreground)]">Business Name</span>
-                  <span className="text-sm font-medium">{user.name || "User"}</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
-                  <span className="text-sm text-[var(--muted-foreground)]">Merchant ID</span>
-                  <code className="rounded bg-[var(--muted)] px-2 py-0.5 text-xs font-mono">{user.sub?.replace('|', '_').slice(0, 16) || "N/A"}...</code>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
-                  <span className="text-sm text-[var(--muted-foreground)]">Payout Account</span>
-                  <span className="text-sm font-medium">••••4242</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border)]">
-                  <span className="text-sm text-[var(--muted-foreground)]">Classification</span>
-                  <Badge variant="outline" className="text-xs">{merchantDetails.size}</Badge>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <span className="text-sm text-[var(--muted-foreground)]">Business Info</span>
-                  <Link
-                    href="/dashboard/settings"
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--primary)] hover:underline"
-                  >
-                    <Settings className="h-3.5 w-3.5" />
-                    Edit in Settings
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* How Payouts Work - Collapsible/Compact */}
-            <details className="rounded-xl border border-[var(--border)] p-5 group">
-              <summary className="flex items-center justify-between cursor-pointer list-none">
-                <div className="flex items-center gap-2">
-                  <Info className="h-4 w-4 text-[var(--muted-foreground)]" />
-                  <span className="text-sm font-medium">How payouts work</span>
-                </div>
-                <ChevronDown className="h-4 w-4 text-[var(--muted-foreground)] transition-transform group-open:rotate-180" />
-              </summary>
-              <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-                Payouts are calculated based on digital receipts sent, receipt quality, consumer engagement, and other metrics.
-              </p>
-            </details>
-
-            {/* Help Link */}
-            <div className="flex items-center justify-between rounded-xl border border-[var(--border)] p-4">
-              <span className="text-sm text-[var(--muted-foreground)]">Need help with payments?</span>
-              <Link
-                href="/contact"
-                className="text-sm font-medium text-[var(--primary)] hover:underline"
-              >
-                Contact Support
-              </Link>
             </div>
           </div>
         </main>
