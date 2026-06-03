@@ -8,7 +8,7 @@ import {
   Receipt,
   Search,
   Filter,
-  Calendar,
+  Calendar as CalendarIcon,
   ChevronDown,
   ShoppingBag,
   Coffee,
@@ -41,6 +41,22 @@ import {
 import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import { RefreshButton } from "@/components/refresh-button"
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { type DateRange } from "react-day-picker"
+import {
+  format,
+  startOfDay,
+  endOfDay,
+  subDays,
+  subMonths,
+  startOfMonth,
+  startOfYear,
+} from "date-fns"
+import {
   cacheTransactionForDetail,
   fetchTransactions,
   syncTransactions,
@@ -63,17 +79,6 @@ type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopp
 type SortColumn = "merchant" | "category" | "date" | "receipt" | "amount"
 type SortDirection = "asc" | "desc"
 type ReceiptFilter = "all" | "matched" | "unmatched"
-type DateRangeFilter = "all" | "7d" | "30d" | "month" | "3m" | "year" | "custom"
-
-const dateRangeLabels: Record<DateRangeFilter, string> = {
-  all: "All time",
-  "7d": "Last 7 days",
-  "30d": "Last 30 days",
-  month: "This month",
-  "3m": "Last 3 months",
-  year: "This year",
-  custom: "Custom range",
-}
 
 const sortLabels: Record<SortColumn, string> = {
   merchant: "Merchant",
@@ -167,61 +172,36 @@ export default function ConsumerTransactionsPage() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("date")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [receiptFilter, setReceiptFilter] = useState<ReceiptFilter>("all")
-  const [dateRange, setDateRange] = useState<DateRangeFilter>("all")
-  const [customFrom, setCustomFrom] = useState("")
-  const [customTo, setCustomTo] = useState("")
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
-  // Resolve the active date filter into a concrete [from, to] window. Presets
-  // are computed off "today"; "custom" reads the two date inputs (either bound
-  // is optional, so a user can filter "since X" or "up to Y" alone).
+  // Concrete [from, to] window the filter compares against. A lone "from"
+  // (no end yet) means "from that day onward".
   const dateWindow = useMemo<{ from: Date | null; to: Date | null }>(() => {
-    const now = new Date()
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    let from: Date | null = null
-    let to: Date | null = null
-    switch (dateRange) {
-      case "7d":
-        from = new Date(startOfToday)
-        from.setDate(from.getDate() - 6)
-        break
-      case "30d":
-        from = new Date(startOfToday)
-        from.setDate(from.getDate() - 29)
-        break
-      case "month":
-        from = new Date(now.getFullYear(), now.getMonth(), 1)
-        break
-      case "3m":
-        from = new Date(startOfToday)
-        from.setMonth(from.getMonth() - 3)
-        break
-      case "year":
-        from = new Date(now.getFullYear(), 0, 1)
-        break
-      case "custom":
-        from = customFrom ? new Date(`${customFrom}T00:00:00`) : null
-        to = customTo ? new Date(`${customTo}T23:59:59`) : null
-        break
-      case "all":
-      default:
-        break
+    return {
+      from: dateRange?.from ? startOfDay(dateRange.from) : null,
+      to: dateRange?.to ? endOfDay(dateRange.to) : null,
     }
-    return { from, to }
-  }, [dateRange, customFrom, customTo])
+  }, [dateRange])
+
+  // Quick-pick presets shown alongside the calendar in the popover.
+  const datePresets = useMemo(() => {
+    const today = new Date()
+    return [
+      { label: "Last 7 days", range: { from: subDays(startOfDay(today), 6), to: today } },
+      { label: "Last 30 days", range: { from: subDays(startOfDay(today), 29), to: today } },
+      { label: "This month", range: { from: startOfMonth(today), to: today } },
+      { label: "Last 3 months", range: { from: subMonths(startOfDay(today), 3), to: today } },
+      { label: "This year", range: { from: startOfYear(today), to: today } },
+    ]
+  }, [])
 
   const dateRangeButtonLabel = useMemo(() => {
-    if (dateRange === "custom" && (customFrom || customTo)) {
-      const fmt = (s: string) =>
-        new Date(`${s}T00:00:00`).toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-        })
-      if (customFrom && customTo) return `${fmt(customFrom)} – ${fmt(customTo)}`
-      if (customFrom) return `From ${fmt(customFrom)}`
-      return `Until ${fmt(customTo)}`
+    if (!dateRange?.from) return "Any date"
+    if (dateRange.to) {
+      return `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d")}`
     }
-    return dateRangeLabels[dateRange]
-  }, [dateRange, customFrom, customTo])
+    return `From ${format(dateRange.from, "MMM d")}`
+  }, [dateRange])
 
   const handleSort = useCallback((col: SortColumn) => {
     setSortColumn((prevCol) => {
@@ -429,26 +409,43 @@ export default function ConsumerTransactionsPage() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
               <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
-                <Calendar className="h-4 w-4 flex-shrink-0" />
+                <CalendarIcon className="h-4 w-4 flex-shrink-0" />
                 <span className="truncate">{dateRangeButtonLabel}</span>
                 <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {(Object.keys(dateRangeLabels) as DateRangeFilter[]).map((key) => (
-                <DropdownMenuItem
-                  key={key}
-                  onClick={() => setDateRange(key)}
-                  className={cn(dateRange === key && "bg-[var(--muted)]")}
+            </PopoverTrigger>
+            <PopoverContent align="end" className="flex w-auto flex-col sm:flex-row">
+              <div className="flex flex-row flex-wrap gap-1 border-b border-[var(--border)] p-2 sm:w-40 sm:flex-col sm:border-b-0 sm:border-r">
+                {datePresets.map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => setDateRange(preset.range)}
+                    className="rounded-md px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setDateRange(undefined)}
+                  className="rounded-md px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
                 >
-                  {dateRangeLabels[key]}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  Clear
+                </button>
+              </div>
+              <Calendar
+                mode="range"
+                numberOfMonths={1}
+                selected={dateRange}
+                onSelect={setDateRange}
+                defaultMonth={dateRange?.from}
+              />
+            </PopoverContent>
+          </Popover>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -501,44 +498,6 @@ export default function ConsumerTransactionsPage() {
             </DropdownMenuContent>
           </DropdownMenu>
           </div>
-
-          {/* Custom range inputs — only shown when "Custom range" is picked. */}
-          {dateRange === "custom" && (
-            <div className="flex flex-wrap items-end gap-3 rounded-md border border-[var(--border)] bg-[var(--muted)]/30 p-3">
-              <label className="flex flex-col gap-1 text-xs font-medium text-[var(--muted-foreground)]">
-                From
-                <input
-                  type="date"
-                  value={customFrom}
-                  max={customTo || undefined}
-                  onChange={(e) => setCustomFrom(e.target.value)}
-                  className="rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-xs font-medium text-[var(--muted-foreground)]">
-                To
-                <input
-                  type="date"
-                  value={customTo}
-                  min={customFrom || undefined}
-                  onChange={(e) => setCustomTo(e.target.value)}
-                  className="rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                />
-              </label>
-              {(customFrom || customTo) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCustomFrom("")
-                    setCustomTo("")
-                  }}
-                  className="ml-auto rounded-md px-3 py-1.5 text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Summary */}
