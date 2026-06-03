@@ -336,8 +336,8 @@ export default function TransactionDetailPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 w-full">
       {/* In-content toolbar — back link + share/download actions. The
-          layout's top bar handles sidebar/menu toggles and the global
-          "Back to Site" link, so page-specific actions live inline. */}
+          layout's top bar handles sidebar/menu toggles (the "Back to Site"
+          link now lives in the sidebar), so page-specific actions live inline. */}
       <div className="flex items-center justify-between gap-2">
         <Link
           href="/user-dashboard/transactions"

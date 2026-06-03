@@ -30,6 +30,7 @@ import {
   PanelLeft,
   Menu,
   X,
+  ArrowLeft,
 } from "lucide-react"
 import { VeroLogo, VeroLogoFull } from "@/components/ui/vero-logo"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
@@ -63,6 +64,7 @@ const bottomNavItems = [
   { name: "Settings", href: "/merchant-dashboard/settings", icon: Settings },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: DOCS_URL, icon: Search, external: true },
+  { name: "Back to Site", href: "/", icon: ArrowLeft },
 ]
 
 const posPlugins = [
@@ -313,9 +315,6 @@ export default function IntegrationsPage() {
             </button>
             <span className="text-sm font-medium">Integrations</span>
           </div>
-          <Link href="/" className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
-            Back to Site
-          </Link>
         </header>
 
         {/* Mobile Navigation - Full Screen Overlay */}
