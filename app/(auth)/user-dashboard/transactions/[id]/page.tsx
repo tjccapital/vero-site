@@ -25,6 +25,8 @@ import {
   Image as ImageIcon,
   Mail,
   ExternalLink,
+  Maximize2,
+  X,
   Loader2,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -83,6 +85,29 @@ export default function TransactionDetailPage() {
   // institution + last-4 the user actually recognises. Failure is non-fatal:
   // we just fall back to hiding the account row.
   const [accounts, setAccounts] = useState<PlaidAccount[]>([])
+  // In-page preview for receipt assets. Image receipts expand to a lightbox;
+  // scanned email receipts render their saved HTML in a sandboxed iframe so we
+  // never navigate the user off to a raw CDN URL.
+  const [preview, setPreview] = useState<{
+    type: "image" | "email"
+    url: string
+  } | null>(null)
+
+  // While the preview is open, close on Escape and lock background scroll so
+  // the lightbox behaves like a proper modal.
+  useEffect(() => {
+    if (!preview) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreview(null)
+    }
+    window.addEventListener("keydown", onKey)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      window.removeEventListener("keydown", onKey)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [preview])
 
   useEffect(() => {
     let cancelled = false
@@ -528,11 +553,10 @@ export default function TransactionDetailPage() {
               </div>
               <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
                 {imageUrl ? (
-                  <a
-                    href={imageUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-lg border border-[var(--border)] p-3 hover:bg-[var(--muted)]/50 transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => setPreview({ type: "image", url: imageUrl })}
+                    className="flex w-full items-center gap-3 rounded-lg border border-[var(--border)] p-3 text-left hover:bg-[var(--muted)]/50 transition-colors"
                   >
                     <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)]">
                       <ImageIcon className="h-4 w-4 text-[var(--muted-foreground)]" />
@@ -541,8 +565,8 @@ export default function TransactionDetailPage() {
                       <p className="text-sm font-medium">View image</p>
                       <p className="text-xs text-[var(--muted-foreground)]">Receipt photo</p>
                     </div>
-                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
-                  </a>
+                    <Maximize2 className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </button>
                 ) : null}
                 {pdfUrl ? (
                   <a
@@ -564,11 +588,10 @@ export default function TransactionDetailPage() {
                   </a>
                 ) : null}
                 {emailHtmlUrl ? (
-                  <a
-                    href={emailHtmlUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-lg border border-[var(--border)] p-3 hover:bg-[var(--muted)]/50 transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => setPreview({ type: "email", url: emailHtmlUrl })}
+                    className="flex w-full items-center gap-3 rounded-lg border border-[var(--border)] p-3 text-left hover:bg-[var(--muted)]/50 transition-colors"
                   >
                     <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)]">
                       <Mail className="h-4 w-4 text-[var(--muted-foreground)]" />
@@ -577,8 +600,8 @@ export default function TransactionDetailPage() {
                       <p className="text-sm font-medium">View email</p>
                       <p className="text-xs text-[var(--muted-foreground)]">Original message</p>
                     </div>
-                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
-                  </a>
+                    <Maximize2 className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </button>
                 ) : null}
               </div>
             </div>
@@ -613,6 +636,64 @@ export default function TransactionDetailPage() {
           />
         </div>
       )}
+
+      {preview ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={preview.type === "image" ? "Receipt photo" : "Original email"}
+          onClick={() => setPreview(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 sm:p-6"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg bg-white shadow-xl"
+          >
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
+              <h3 className="text-sm font-medium">
+                {preview.type === "image" ? "Receipt photo" : "Original email"}
+              </h3>
+              <div className="flex items-center gap-1">
+                <a
+                  href={preview.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open in new tab"
+                  className="rounded-md p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setPreview(null)}
+                  aria-label="Close"
+                  className="rounded-md p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div className="min-h-0 flex-1 overflow-auto bg-[var(--muted)]/30">
+              {preview.type === "image" ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={preview.url}
+                  alt="Receipt"
+                  className="mx-auto block max-h-[80vh] w-auto object-contain"
+                />
+              ) : (
+                <iframe
+                  src={preview.url}
+                  title="Original email"
+                  sandbox=""
+                  referrerPolicy="no-referrer"
+                  className="h-[80vh] w-full border-0 bg-white"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
