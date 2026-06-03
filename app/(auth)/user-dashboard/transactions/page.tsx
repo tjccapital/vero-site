@@ -8,6 +8,7 @@ import {
   Receipt,
   Search,
   Filter,
+  Calendar,
   ChevronDown,
   ShoppingBag,
   Coffee,
@@ -62,6 +63,17 @@ type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopp
 type SortColumn = "merchant" | "category" | "date" | "receipt" | "amount"
 type SortDirection = "asc" | "desc"
 type ReceiptFilter = "all" | "matched" | "unmatched"
+type DateRangeFilter = "all" | "7d" | "30d" | "month" | "3m" | "year" | "custom"
+
+const dateRangeLabels: Record<DateRangeFilter, string> = {
+  all: "All time",
+  "7d": "Last 7 days",
+  "30d": "Last 30 days",
+  month: "This month",
+  "3m": "Last 3 months",
+  year: "This year",
+  custom: "Custom range",
+}
 
 const sortLabels: Record<SortColumn, string> = {
   merchant: "Merchant",
@@ -155,6 +167,61 @@ export default function ConsumerTransactionsPage() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("date")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [receiptFilter, setReceiptFilter] = useState<ReceiptFilter>("all")
+  const [dateRange, setDateRange] = useState<DateRangeFilter>("all")
+  const [customFrom, setCustomFrom] = useState("")
+  const [customTo, setCustomTo] = useState("")
+
+  // Resolve the active date filter into a concrete [from, to] window. Presets
+  // are computed off "today"; "custom" reads the two date inputs (either bound
+  // is optional, so a user can filter "since X" or "up to Y" alone).
+  const dateWindow = useMemo<{ from: Date | null; to: Date | null }>(() => {
+    const now = new Date()
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    let from: Date | null = null
+    let to: Date | null = null
+    switch (dateRange) {
+      case "7d":
+        from = new Date(startOfToday)
+        from.setDate(from.getDate() - 6)
+        break
+      case "30d":
+        from = new Date(startOfToday)
+        from.setDate(from.getDate() - 29)
+        break
+      case "month":
+        from = new Date(now.getFullYear(), now.getMonth(), 1)
+        break
+      case "3m":
+        from = new Date(startOfToday)
+        from.setMonth(from.getMonth() - 3)
+        break
+      case "year":
+        from = new Date(now.getFullYear(), 0, 1)
+        break
+      case "custom":
+        from = customFrom ? new Date(`${customFrom}T00:00:00`) : null
+        to = customTo ? new Date(`${customTo}T23:59:59`) : null
+        break
+      case "all":
+      default:
+        break
+    }
+    return { from, to }
+  }, [dateRange, customFrom, customTo])
+
+  const dateRangeButtonLabel = useMemo(() => {
+    if (dateRange === "custom" && (customFrom || customTo)) {
+      const fmt = (s: string) =>
+        new Date(`${s}T00:00:00`).toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+        })
+      if (customFrom && customTo) return `${fmt(customFrom)} – ${fmt(customTo)}`
+      if (customFrom) return `From ${fmt(customFrom)}`
+      return `Until ${fmt(customTo)}`
+    }
+    return dateRangeLabels[dateRange]
+  }, [dateRange, customFrom, customTo])
 
   const handleSort = useCallback((col: SortColumn) => {
     setSortColumn((prevCol) => {
@@ -263,6 +330,16 @@ export default function ConsumerTransactionsPage() {
       result = result.filter((tx) => !tx.receipt)
     }
 
+    if (dateWindow.from || dateWindow.to) {
+      result = result.filter((tx) => {
+        const d = new Date(tx.date)
+        if (Number.isNaN(d.getTime())) return false
+        if (dateWindow.from && d < dateWindow.from) return false
+        if (dateWindow.to && d > dateWindow.to) return false
+        return true
+      })
+    }
+
     result.sort((a, b) => {
       let cmp: number
       switch (sortColumn) {
@@ -286,7 +363,7 @@ export default function ConsumerTransactionsPage() {
     })
 
     return result
-  }, [transactions, searchQuery, selectedCategory, sortColumn, sortDirection, receiptFilter])
+  }, [transactions, searchQuery, selectedCategory, sortColumn, sortDirection, receiptFilter, dateWindow])
 
   const totalSpent = useMemo(() => {
     return filteredTransactions.reduce((sum, tx) => {
@@ -313,8 +390,8 @@ export default function ConsumerTransactionsPage() {
         </div>
 
         {/* Filters */}
-        <div className="space-y-2 sm:space-y-0 sm:flex sm:flex-row sm:gap-3">
-          <div className="relative flex-1">
+        <div className="space-y-3">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--muted-foreground)]" />
             <input
               type="text"
@@ -325,9 +402,9 @@ export default function ConsumerTransactionsPage() {
             />
           </div>
 
-          {/* On mobile the three filter chips share a row; on sm+ they
-              dissolve back into the parent flex layout. */}
-          <div className="grid grid-cols-3 gap-2 sm:contents">
+          {/* Filter chips: two columns on mobile, a single wrapping row on
+              sm+. Sort is pushed to the far right on desktop. */}
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
@@ -355,6 +432,27 @@ export default function ConsumerTransactionsPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
+                <Calendar className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{dateRangeButtonLabel}</span>
+                <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {(Object.keys(dateRangeLabels) as DateRangeFilter[]).map((key) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => setDateRange(key)}
+                  className={cn(dateRange === key && "bg-[var(--muted)]")}
+                >
+                  {dateRangeLabels[key]}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
                 <Receipt className="h-4 w-4 flex-shrink-0" />
                 <span className="truncate">{receiptFilter === "all" ? "All receipts" : receiptFilter === "matched" ? "With receipt" : "No receipt"}</span>
                 <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
@@ -369,7 +467,7 @@ export default function ConsumerTransactionsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[170px]">
+              <button className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-md border border-[var(--border)] px-2 sm:px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[170px] sm:ml-auto">
                 <ArrowUpDown className="h-4 w-4 flex-shrink-0" />
                 <span className="truncate">{sortLabels[sortColumn]}</span>
                 {sortDirection === "asc" ? (
@@ -403,20 +501,66 @@ export default function ConsumerTransactionsPage() {
             </DropdownMenuContent>
           </DropdownMenu>
           </div>
+
+          {/* Custom range inputs — only shown when "Custom range" is picked. */}
+          {dateRange === "custom" && (
+            <div className="flex flex-wrap items-end gap-3 rounded-md border border-[var(--border)] bg-[var(--muted)]/30 p-3">
+              <label className="flex flex-col gap-1 text-xs font-medium text-[var(--muted-foreground)]">
+                From
+                <input
+                  type="date"
+                  value={customFrom}
+                  max={customTo || undefined}
+                  onChange={(e) => setCustomFrom(e.target.value)}
+                  className="rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs font-medium text-[var(--muted-foreground)]">
+                To
+                <input
+                  type="date"
+                  value={customTo}
+                  min={customFrom || undefined}
+                  onChange={(e) => setCustomTo(e.target.value)}
+                  className="rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                />
+              </label>
+              {(customFrom || customTo) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomFrom("")
+                    setCustomTo("")
+                  }}
+                  className="ml-auto rounded-md px-3 py-1.5 text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Summary */}
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2 px-1">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-[var(--muted-foreground)]">
-            Showing {filteredTransactions.length} transaction{filteredTransactions.length !== 1 ? 's' : ''}
+            Showing{" "}
+            <span className="font-medium text-[var(--foreground)]">
+              {filteredTransactions.length}
+            </span>{" "}
+            transaction{filteredTransactions.length !== 1 ? "s" : ""}
           </p>
-          <p className="text-sm font-medium">
-            Total spent:{" "}
-            {totalSpent.toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-            })}
-          </p>
+          <div className="flex items-baseline gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/40 px-3.5 py-1.5">
+            <span className="text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)]">
+              Total spent
+            </span>
+            <span className="text-lg font-semibold tabular-nums">
+              {totalSpent.toLocaleString(undefined, {
+                style: "currency",
+                currency: "USD",
+              })}
+            </span>
+          </div>
         </div>
 
         {/* Loading state */}

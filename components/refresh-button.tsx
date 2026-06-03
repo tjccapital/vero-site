@@ -105,10 +105,10 @@ export function RefreshButton({
           disabled={isRefreshing || debounced}
           aria-label={tooltip}
           className={cn(
-            "inline-flex h-9 w-9 items-center justify-center rounded-md",
-            "border border-[var(--border)] bg-white text-[var(--foreground)]",
-            "transition-colors hover:bg-[var(--muted)]",
-            "disabled:cursor-not-allowed disabled:opacity-50"
+            "inline-flex h-8 w-8 items-center justify-center rounded-md",
+            "text-[var(--muted-foreground)] opacity-60",
+            "transition-all hover:bg-[var(--muted)] hover:text-[var(--foreground)] hover:opacity-100",
+            "disabled:cursor-not-allowed disabled:opacity-40"
           )}
         >
           <RefreshCw
