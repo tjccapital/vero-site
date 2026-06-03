@@ -2,9 +2,10 @@
 // api.veroreceipts.com with an Auth0 bearer token).
 //
 // Endpoints documented at api.veroreceipts.com:
-//   POST /api/plaid/create_link_token
-//   POST /api/plaid/exchange_public_token
-//   GET  /api/plaid/accounts
+//   POST   /api/plaid/create_link_token
+//   POST   /api/plaid/exchange_public_token
+//   GET    /api/plaid/accounts
+//   DELETE /api/plaid/accounts/:accountId
 
 export interface PlaidLinkTokenResponse {
   link_token: string
@@ -77,4 +78,15 @@ export function exchangePublicToken(
 
 export function fetchPlaidAccounts(): Promise<PlaidAccountsResponse> {
   return getJson<PlaidAccountsResponse>("/api/plaid/accounts")
+}
+
+export async function deletePlaidAccount(accountId: string): Promise<void> {
+  const url = `/api/plaid/accounts/${encodeURIComponent(accountId)}`
+  const res = await fetch(url, { method: "DELETE" })
+  if (!res.ok) {
+    const text = await res.text().catch(() => "")
+    throw new Error(
+      `DELETE ${url} failed (${res.status}): ${text || res.statusText}`
+    )
+  }
 }
