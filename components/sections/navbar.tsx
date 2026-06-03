@@ -33,7 +33,7 @@ const dashboardItems = [
     icon: Receipt,
     title: "User",
     description: "View your receipts, transactions, and accounts.",
-    href: "/consumer",
+    href: "/user-dashboard",
   },
   {
     icon: Store,

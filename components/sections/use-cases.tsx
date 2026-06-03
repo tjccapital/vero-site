@@ -14,7 +14,7 @@ const useCases = [
     description: "Reduce chargebacks with one click. When customers see what they bought, they stop disputing purchases they forgot about. Free forever.",
   },
   {
-    image: "/consumer-app.png",
+    image: "/user-dashboard-app.png",
     title: "Consumers",
     description: "See itemized receipts in your banking app instead of cryptic merchant codes. Budget better, track spending, and never wonder what a charge was for.",
   },

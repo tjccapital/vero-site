@@ -41,7 +41,7 @@ const tabContent = {
     headline: "See what you bought, not cryptic codes",
     description: "No app to download. No accounts to create. Just use your card and see itemized receipts in your banking app. Budget better and never wonder what a charge was for.",
     cta: "Learn more",
-    image: "/consumer-app.png",
+    image: "/user-dashboard-app.png",
     features: [
       "Zero setup required",
       "Itemized details in your bank app",

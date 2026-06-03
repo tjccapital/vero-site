@@ -61,7 +61,7 @@ const onboardingSteps = [
     title: "Connect an account",
     description: "Link your bank or credit card via Plaid",
     status: "completed" as const,
-    href: "/consumer/accounts",
+    href: "/user-dashboard/accounts",
   },
   {
     id: 2,
@@ -75,7 +75,7 @@ const onboardingSteps = [
     title: "View receipt details",
     description: "See itemized receipt information",
     status: "current" as const,
-    href: "/consumer/transactions",
+    href: "/user-dashboard/transactions",
   },
   {
     id: 4,
@@ -712,7 +712,7 @@ export default function ConsumerDashboardPage() {
             </div>
 
             <Link
-              href="/consumer/transactions"
+              href="/user-dashboard/transactions"
               className="rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors cursor-pointer block"
             >
               <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
@@ -835,7 +835,7 @@ export default function ConsumerDashboardPage() {
                 <p className="text-sm text-center">
                   <span className="font-medium">No transactions yet</span>
                   <span className="text-[var(--muted-foreground)]"> · </span>
-                  <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                  <Link href="/user-dashboard/accounts" className="text-[var(--primary)] hover:underline">
                     Link an account
                   </Link>
                   <span className="text-[var(--muted-foreground)]"> to see your spending</span>
@@ -858,7 +858,7 @@ export default function ConsumerDashboardPage() {
                   </p>
                 </div>
                 <Link
-                  href="/consumer/transactions"
+                  href="/user-dashboard/transactions"
                   className="flex items-center gap-1 text-sm text-[var(--primary)] hover:underline"
                 >
                   View all
@@ -878,7 +878,7 @@ export default function ConsumerDashboardPage() {
                     return (
                       <Link
                         key={tx.id}
-                        href={`/consumer/transactions/${tx.id}`}
+                        href={`/user-dashboard/transactions/${tx.id}`}
                         onClick={() => {
                           saveDashboardScroll()
                           cacheTransactionForDetail(tx)
@@ -930,7 +930,7 @@ export default function ConsumerDashboardPage() {
                   </div>
                   <p className="mt-3 text-sm font-medium">No transactions yet</p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    <Link href="/consumer/accounts" className="text-[var(--primary)] hover:underline">
+                    <Link href="/user-dashboard/accounts" className="text-[var(--primary)] hover:underline">
                       Link an account
                     </Link>{" "}
                     to see your transactions
@@ -991,7 +991,7 @@ export default function ConsumerDashboardPage() {
           // The dashboard's account list is still sample data; send the
           // user to the accounts page so they see the freshly linked
           // institution from /api/plaid/accounts.
-          router.push("/consumer/accounts")
+          router.push("/user-dashboard/accounts")
         }}
       />
     </>

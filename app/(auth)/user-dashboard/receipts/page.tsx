@@ -429,7 +429,7 @@ export default function ConsumerReceiptsPage() {
                   <div className="mt-auto flex items-center justify-between gap-2">
                     {matchedTx ? (
                       <Link
-                        href={`/consumer/transactions/${matchedTx.id}`}
+                        href={`/user-dashboard/transactions/${matchedTx.id}`}
                         className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
                       >
                         View transaction
@@ -507,7 +507,7 @@ export default function ConsumerReceiptsPage() {
                   )}
                   {matchedTx ? (
                     <Link
-                      href={`/consumer/transactions/${matchedTx.id}`}
+                      href={`/user-dashboard/transactions/${matchedTx.id}`}
                       className="hidden items-center gap-1 text-xs text-[var(--primary)] hover:underline sm:inline-flex"
                     >
                       View

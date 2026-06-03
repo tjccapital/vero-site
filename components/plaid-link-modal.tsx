@@ -15,7 +15,7 @@ interface PlaidLinkModalProps {
   onLinked?: () => Promise<void> | void
 }
 
-// Each /consumer page used to inline the Plaid Link modal — same header,
+// Each /user-dashboard page used to inline the Plaid Link modal — same header,
 // same loading button, same security note, with slightly different page-
 // specific extras above the call-to-action. We've standardised on a single
 // minimal layout so the flow is identical regardless of where the user

@@ -44,7 +44,7 @@ export default function SelectRolePage() {
             </CardHeader>
             <CardFooter>
               <a
-                href="/auth/login?returnTo=/consumer"
+                href="/auth/login?returnTo=/user-dashboard"
                 className="flex w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-5 py-3 text-sm font-medium text-[var(--primary-foreground)] hover:opacity-90 transition-opacity"
               >
                 Sign in to view your receipts

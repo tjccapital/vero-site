@@ -280,7 +280,7 @@ export default function TransactionDetailPage() {
             We couldn&apos;t find this transaction.
           </p>
           <Link
-            href="/consumer/transactions"
+            href="/user-dashboard/transactions"
             className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--primary)] hover:underline"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -315,7 +315,7 @@ export default function TransactionDetailPage() {
           "Back to Site" link, so page-specific actions live inline. */}
       <div className="flex items-center justify-between gap-2">
         <Link
-          href="/consumer/transactions"
+          href="/user-dashboard/transactions"
           className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] min-w-0"
         >
           <ArrowLeft className="h-4 w-4 flex-shrink-0" />
