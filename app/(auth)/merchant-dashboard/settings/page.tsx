@@ -45,9 +45,9 @@ import {
 const DOCS_URL = "https://docs.veroreceipts.com/pos-plugins/overview"
 
 const mainNavItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Integrations", href: "/dashboard/integrations", icon: Cable },
-  { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
+  { name: "Dashboard", href: "/merchant-dashboard", icon: LayoutDashboard },
+  { name: "Integrations", href: "/merchant-dashboard/integrations", icon: Cable },
+  { name: "Payments", href: "/merchant-dashboard/payments", icon: CreditCard },
   { name: "Analytics", href: DOCS_URL, icon: BarChart3, external: true },
   { name: "Receipts", href: DOCS_URL, icon: Receipt, external: true },
 ]
@@ -60,7 +60,7 @@ const documentNavItems = [
 ]
 
 const bottomNavItems = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings, active: true },
+  { name: "Settings", href: "/merchant-dashboard/settings", icon: Settings, active: true },
   { name: "Get Help", href: "/contact", icon: CircleHelp },
   { name: "Search", href: DOCS_URL, icon: Search, external: true },
 ]
@@ -102,7 +102,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/auth/login?returnTo=/dashboard/settings")
+      router.push("/auth/login?returnTo=/merchant-dashboard/settings")
     }
   }, [user, isLoading, router])
 
@@ -136,7 +136,7 @@ export default function SettingsPage() {
       )}>
         {/* Logo */}
         <div className="flex h-14 items-center px-4">
-          <Link href="/dashboard">
+          <Link href="/merchant-dashboard">
             {!sidebarCollapsed && <VeroLogoFull height={20} className="text-[var(--foreground)]" />}
             {sidebarCollapsed && <VeroLogo size={20} className="text-[var(--foreground)]" />}
           </Link>
@@ -606,7 +606,7 @@ export default function SettingsPage() {
             {/* Save Button */}
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push('/merchant-dashboard')}
                 className="rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
               >
                 Cancel

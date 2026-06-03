@@ -16,7 +16,7 @@ export function MerchantCTA() {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href="/contact"
+            href="/auth/login?returnTo=/merchant-dashboard"
             className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-primary-900 bg-white hover:bg-primary-50 transition-colors group shadow-sm"
           >
             Get Started
