@@ -5,7 +5,8 @@
 // fetches initial transactions asynchronously and they typically take 10-60s
 // to land in our cache after Link.
 
-const KEY = "vero.pendingFirstSync"
+// deepcode ignore HardcodedNonCryptoSecret: sessionStorage key name, not a secret
+const STORAGE_KEY = "vero.pendingFirstSync"
 // Matches the realistic upper bound on Plaid's initial transactions fetch.
 // After this window, fall back to the normal empty state — at that point the
 // user is better served by a clear "still nothing" message than a perpetual
@@ -23,18 +24,18 @@ export interface PendingFirstSync {
 export function readPendingFirstSync(): PendingFirstSync | null {
   if (typeof window === "undefined") return null
   try {
-    const raw = sessionStorage.getItem(KEY)
+    const raw = sessionStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as Partial<PendingFirstSync>
     if (
       typeof parsed.institutionName !== "string" ||
       typeof parsed.startedAt !== "number"
     ) {
-      sessionStorage.removeItem(KEY)
+      sessionStorage.removeItem(STORAGE_KEY)
       return null
     }
     if (Date.now() - parsed.startedAt > TTL_MS) {
-      sessionStorage.removeItem(KEY)
+      sessionStorage.removeItem(STORAGE_KEY)
       return null
     }
     return parsed as PendingFirstSync
@@ -46,7 +47,7 @@ export function readPendingFirstSync(): PendingFirstSync | null {
 export function clearPendingFirstSync(): void {
   if (typeof window === "undefined") return
   try {
-    sessionStorage.removeItem(KEY)
+    sessionStorage.removeItem(STORAGE_KEY)
   } catch {
     // ignore
   }

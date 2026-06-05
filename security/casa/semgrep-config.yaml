@@ -1,0 +1,14 @@
+# Semgrep config for vero-site (Next.js / React / TypeScript)
+# CASA Tier 2 SAST evidence
+#
+# Bundles used:
+#   p/typescript        - TS-specific issues
+#   p/javascript        - JS issues
+#   p/react             - React anti-patterns and security
+#   p/nextjs            - Next.js specific
+#   p/owasp-top-ten     - OWASP top 10
+#   p/security-audit    - general security
+#   p/secrets           - hardcoded secrets/keys
+#
+# Run via:  ./security/casa/run-casa-scans.sh
+rules: []

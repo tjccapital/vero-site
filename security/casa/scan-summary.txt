@@ -1,0 +1,31 @@
+CASA Tier 2 Security Scan Summary
+Repository: vero-site
+Date: 2026-06-05
+
+SAST (Semgrep)
+- Tool: semgrep 1.99.0
+- Rule packs: p/typescript, p/javascript, p/react, p/owasp-top-ten, p/security-audit, p/secrets
+- Result files:
+  - security/casa/semgrep-results.json
+- Findings: 0 (ERROR + WARNING severity)
+
+Dependency Scan (npm audit, production deps only)
+- Result files:
+  - security/casa/npm-audit.json
+  - security/casa/npm-audit.txt
+- Findings: 0 High, 0 Critical
+- Note: 3 moderate-severity advisories remain (would require downgrading
+  next to v9, breaking change). Tracked for review per CASA fix policy
+  (fix High/Critical, document Medium/Low).
+
+Remediation log (this run)
+- Upgraded next 16.1.1 → 16.2.7 (resolved 1 High advisory)
+- Upgraded @auth0/nextjs-auth0 to 4.22.0 (resolved Improper Proxy Cache Lookup)
+- Verified `npm run build` succeeds after upgrade
+
+Run locally:
+  ./security/casa/run-casa-scans.sh
+
+DAST: vero-site is a static/SSR Next.js site that calls the
+plaid-wrapper API. DAST coverage is provided by the plaid-wrapper
+ZAP scan; vero-site has no server-side data routes of its own.
