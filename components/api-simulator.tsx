@@ -87,13 +87,18 @@ interface StepData {
   };
 }
 
-// Mock API responses
+// Mock API responses for the public marketing API simulator.
+// These are placeholder display values, never real keys.
+const MOCK_PUBLIC_KEY_DISPLAY = "<demo-public-key>";
+const MOCK_PRIVATE_KEY_DISPLAY = "<demo-private-key>";
+
+// deepcode ignore HardcodedNonCryptoSecret: marketing-site demo placeholders, not real key material
 const generateKeyPairResponse = {
   success: true,
   data: {
     keyId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
-    publicKey: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...",
-    privateKey: "MIIEvgIBADANBgkqhkiG9w0BAQEFAASC...",
+    publicKey: MOCK_PUBLIC_KEY_DISPLAY,
+    privateKey: MOCK_PRIVATE_KEY_DISPLAY,
     algorithm: "RSA-OAEP-256"
   }
 };

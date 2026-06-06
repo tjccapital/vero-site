@@ -1,0 +1,20 @@
+# Snyk (https://snyk.io) policy file.
+# Documents Snyk Code findings that are false positives or accepted risks
+# for CASA Tier 2 evidence.
+version: v1.25.0
+
+# Justifications for ignored Snyk Code (SAST) findings:
+#
+# components/api-simulator.tsx
+#   The api-simulator is a public marketing component embedded on the
+#   /merchants page. It is a SIMULATOR that shows what the Vero issuer
+#   onboarding API responses *look like* using static placeholder strings
+#   (e.g. "<demo-public-key>"). No real key material is ever held client-
+#   side; this component has no network calls and no access to secrets.
+#   Snyk's heuristic flags the property name `privateKey` regardless of
+#   value. The value is a hardcoded placeholder string and the field name
+#   intentionally mirrors the public API contract documented at
+#   docs.veroreceipts.com.
+exclude:
+  code:
+    - components/api-simulator.tsx

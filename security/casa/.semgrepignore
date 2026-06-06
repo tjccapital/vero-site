@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+public/
+coverage/
+security/
+*.min.js
+*.map
+.git/
