@@ -36,6 +36,12 @@ export interface Transaction {
   name: string
   merchantName?: string
   merchant_name?: string
+  // Brand logo URL. The list endpoint returns it as a top-level `merchantLogo`
+  // (snake_case `merchant_logo` on some endpoints); the enriched `merchant`
+  // record may also carry it as logoUrl/logo_url. transactionLogoUrl() reads
+  // whichever is present.
+  merchantLogo?: string
+  merchant_logo?: string
   merchant?: TransactionMerchant | null
   category?: string[] | null
   pending?: boolean
@@ -126,6 +132,23 @@ export function syncTransactions(): Promise<TransactionsResponse> {
 
 export function refreshTransactions(): Promise<TransactionsResponse> {
   return postJson<TransactionsResponse>("/api/transactions/refresh")
+}
+
+// Pull the merchant logo URL out of a transaction. The backend enriches
+// transactions with a merchant record that carries the brand logo (camelCase
+// `logoUrl`, but a few endpoints serialise it snake_case) — surface whichever
+// is present so the UI can render the merchant's logo instead of a generic
+// category icon. Returns undefined when no logo is available.
+export function transactionLogoUrl(
+  tx: Transaction | null | undefined
+): string | undefined {
+  return (
+    tx?.merchantLogo ||
+    tx?.merchant_logo ||
+    tx?.merchant?.logoUrl ||
+    tx?.merchant?.logo_url ||
+    undefined
+  )
 }
 
 // Pull the merchant display name out of a transaction, preferring the

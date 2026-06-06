@@ -40,10 +40,8 @@ import {
   clearPendingFirstSync,
   readPendingFirstSync,
 } from "@/lib/pending-first-sync"
-import {
-  formatTxShortDate,
-  getTransactionIcon,
-} from "@/lib/category-display"
+import { formatTxShortDate } from "@/lib/category-display"
+import { TransactionAvatar } from "@/components/transaction-avatar"
 import { useMainScrollRestore } from "@/lib/use-main-scroll-restore"
 import {
   Area,
@@ -868,7 +866,6 @@ export default function ConsumerDashboardPage() {
               {hasRealTransactions ? (
                 <div className="divide-y divide-[var(--border)]">
                   {recentTransactions.map((tx) => {
-                    const CategoryIcon = getTransactionIcon(tx)
                     const merchant = transactionDisplayName(tx)
                     // Plaid expense transactions arrive with a positive amount;
                     // payments/credits arrive negative. Display the magnitude
@@ -885,9 +882,11 @@ export default function ConsumerDashboardPage() {
                         }}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--muted)]/50 transition-colors"
                       >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
-                          <CategoryIcon className="h-5 w-5 text-[var(--muted-foreground)]" />
-                        </div>
+                        <TransactionAvatar
+                          transaction={tx}
+                          className="h-10 w-10 bg-[var(--muted)]"
+                          iconClassName="h-5 w-5 text-[var(--muted-foreground)]"
+                        />
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm truncate">{merchant}</p>
                           <p className="text-xs text-[var(--muted-foreground)]">
