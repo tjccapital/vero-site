@@ -71,8 +71,8 @@ import {
   formatTxDate,
   getCategoryColor,
   getCategoryLabel,
-  getTransactionIcon,
 } from "@/lib/category-display"
+import { TransactionAvatar } from "@/components/transaction-avatar"
 import { useMainScrollRestore } from "@/lib/use-main-scroll-restore"
 
 type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopping"
@@ -636,7 +636,6 @@ export default function ConsumerTransactionsPage() {
               </TableHeader>
               <TableBody>
                 {filteredTransactions.map((tx) => {
-                  const Icon = getTransactionIcon(tx)
                   const merchant = transactionDisplayName(tx)
                   const sign = tx.amount < 0 ? "+" : ""
                   const magnitude = Math.abs(tx.amount).toFixed(2)
@@ -648,9 +647,11 @@ export default function ConsumerTransactionsPage() {
                     >
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
-                            <Icon className="h-5 w-5 text-[var(--muted-foreground)]" />
-                          </div>
+                          <TransactionAvatar
+                            transaction={tx}
+                            className="h-10 w-10 bg-[var(--muted)]"
+                            iconClassName="h-5 w-5 text-[var(--muted-foreground)]"
+                          />
                           <div>
                             <p className="font-medium">{merchant}</p>
                             {tx.pending && (
@@ -692,7 +693,6 @@ export default function ConsumerTransactionsPage() {
         {filteredTransactions.length > 0 && (
           <div className="md:hidden space-y-3">
             {filteredTransactions.map((tx) => {
-              const Icon = getTransactionIcon(tx)
               const merchant = transactionDisplayName(tx)
               const sign = tx.amount < 0 ? "+" : ""
               const magnitude = Math.abs(tx.amount).toFixed(2)
@@ -707,9 +707,11 @@ export default function ConsumerTransactionsPage() {
                   className="block rounded-lg border border-[var(--border)] p-4 hover:bg-[var(--muted)]/50 transition-colors"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--muted)]">
-                      <Icon className="h-5 w-5 text-[var(--muted-foreground)]" />
-                    </div>
+                    <TransactionAvatar
+                      transaction={tx}
+                      className="h-10 w-10 bg-[var(--muted)]"
+                      iconClassName="h-5 w-5 text-[var(--muted-foreground)]"
+                    />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div>

@@ -48,8 +48,8 @@ import {
   formatTxLongDate,
   getCategoryColor,
   getCategoryLabel,
-  getTransactionIcon,
 } from "@/lib/category-display"
+import { TransactionAvatar } from "@/components/transaction-avatar"
 
 function isPdfUrl(url: string | null | undefined): boolean {
   if (!url) return false
@@ -316,7 +316,6 @@ export default function TransactionDetailPage() {
     )
   }
 
-  const Icon = getTransactionIcon(transaction)
   const categoryColor = getCategoryColor(transaction)
   const categoryLabel = getCategoryLabel(transaction)
   const merchant =
@@ -376,12 +375,11 @@ export default function TransactionDetailPage() {
       <div className="rounded-lg border border-[var(--border)] overflow-hidden">
         <div className="bg-gradient-to-r from-[var(--primary)]/5 to-transparent p-4 sm:p-6">
           <div className="flex items-start gap-4">
-            <div className={cn(
-              "flex h-14 w-14 items-center justify-center rounded-full",
-              categoryColor
-            )}>
-              <Icon className="h-7 w-7" />
-            </div>
+            <TransactionAvatar
+              transaction={transaction}
+              className={cn("h-14 w-14", categoryColor)}
+              iconClassName="h-7 w-7"
+            />
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                 <div>
