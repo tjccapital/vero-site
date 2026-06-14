@@ -22,6 +22,7 @@ import {
 import {
   deleteReceipt,
   fetchReceipts,
+  promoteDuplicate,
   receiptDate,
   receiptDisplayName,
   receiptImage,
@@ -51,11 +52,12 @@ interface PendingUpload {
   receiptId?: string
 }
 
-// How long we keep showing "Matching…" before declaring the upload done and
-// folding the row back into the receipts list. The backend's OCR + match is
-// usually fast (a few seconds); after this window we just trust whatever
-// `fetchReceipts()` returned.
-const MATCH_GRACE_MS = 6000
+// Uploads are async: the backend stores the image and OCRs it in the
+// background ("processing" status). We poll the receipt list until the new
+// receipt leaves "processing", then fold the pending row away. POLL_TIMEOUT_MS
+// caps how long we keep polling before trusting whatever the list shows.
+const POLL_INTERVAL_MS = 4000
+const POLL_TIMEOUT_MS = 120000
 
 type ViewMode = "grid" | "list"
 const VIEW_STORAGE_KEY = "vero:consumer:receipts:view"
@@ -128,6 +130,20 @@ export default function ConsumerReceiptsPage() {
     loadReceipts().finally(() => setLoading(false))
   }, [loadReceipts])
 
+  // Keep polling while ANY receipt is still "processing" (background OCR),
+  // independent of this session's pendingUploads. This covers reloading the
+  // page mid-processing (pendingUploads is wiped on reload) and receipts that
+  // are processing from another surface — otherwise a processing row would be
+  // left hanging until a manual refresh.
+  const hasProcessing = receipts.some((r) => r.status === "processing")
+  useEffect(() => {
+    if (!hasProcessing) return
+    const timer = window.setInterval(() => {
+      void loadReceipts()
+    }, POLL_INTERVAL_MS)
+    return () => window.clearInterval(timer)
+  }, [hasProcessing, loadReceipts])
+
   // Build a lookup of receipt id → transaction (mirrors mobile's
   // buildDisplayReceipts). The backend returns the matched receipt embedded on
   // the transaction; we cross-reference here so a library row can deep-link to
@@ -160,11 +176,41 @@ export default function ConsumerReceiptsPage() {
     })
   }, [receipts, search, matchByReceiptId])
 
+  // Polls the receipt list until the freshly-ingested receipt leaves the
+  // "processing" status (background OCR done), then folds its pending row away.
+  // A receipt that vanishes from the list resolved to a hidden soft-duplicate;
+  // that's also "done". Caps at POLL_TIMEOUT_MS.
+  const pollReceipt = useCallback(
+    (key: string, id?: string) => {
+      const startedAt = Date.now()
+      const timer = window.setInterval(async () => {
+        let done = false
+        try {
+          const rs = await fetchReceipts()
+          setReceipts(rs)
+          const r = id ? rs.find((x) => x.id === id) : undefined
+          if (!id || !r || (r.status && r.status !== "processing")) {
+            done = true
+          }
+        } catch {
+          // Transient fetch error — keep polling until the timeout.
+        }
+        if (done || Date.now() - startedAt > POLL_TIMEOUT_MS) {
+          window.clearInterval(timer)
+          setPendingUploads((prev) => prev.filter((p) => p.key !== key))
+          // Final refresh to pick up transactions/match state too.
+          void loadReceipts()
+        }
+      }, POLL_INTERVAL_MS)
+    },
+    [loadReceipts]
+  )
+
   // Drop / pick handler for the library dropzone. Each file is uploaded
   // independently so a transient failure on one image doesn't tank the rest.
-  // We don't call /match here — the backend's auto-match heuristics handle
-  // that for library uploads. The "matching" phase is a visual grace window
-  // that gives those heuristics time to land before we refresh the list.
+  // We don't call /match here — the backend's auto-match heuristics handle that
+  // for library uploads. Uploads are async: the receipt appears immediately as
+  // "processing" and we poll until OCR fills it in.
   const handleFiles = useCallback(
     async (files: File[]) => {
       for (const file of files) {
@@ -177,28 +223,24 @@ export default function ConsumerReceiptsPage() {
         try {
           const result = await uploadReceipt(file)
           const id = result.receipt?.id
+
+          // Exact duplicate (or resolved synchronously): nothing to poll —
+          // refresh and drop the pending row.
+          if (result.deduplicated || result.processing === false) {
+            setPendingUploads((prev) => prev.filter((p) => p.key !== key))
+            await loadReceipts()
+            continue
+          }
+
+          // Accepted as "processing": show the OCR-in-progress state, refresh
+          // so the new row appears, and poll until it resolves.
           setPendingUploads((prev) =>
             prev.map((p) =>
-              p.key === key
-                ? { ...p, phase: "matching", receiptId: id }
-                : p
+              p.key === key ? { ...p, phase: "matching", receiptId: id } : p
             )
           )
-
-          // Refresh from the server (the new receipt is now in the list) and
-          // give the backend's OCR/auto-match a moment to attach it to a
-          // transaction. After the grace window expires we fold the pending
-          // row away; the static row below it now reflects whatever match
-          // state the backend reached.
           await loadReceipts()
-          window.setTimeout(() => {
-            setPendingUploads((prev) =>
-              prev.filter((p) => p.key !== key)
-            )
-            // Pull the latest match state in case the backend matched
-            // *during* the grace window.
-            void loadReceipts()
-          }, MATCH_GRACE_MS)
+          pollReceipt(key, id)
         } catch (err) {
           console.error("[Receipts] Upload failed:", err)
           setPendingUploads((prev) =>
@@ -218,7 +260,7 @@ export default function ConsumerReceiptsPage() {
         }
       }
     },
-    [loadReceipts]
+    [loadReceipts, pollReceipt]
   )
 
   const dismissPending = useCallback((key: string) => {
@@ -240,6 +282,21 @@ export default function ConsumerReceiptsPage() {
       }
     },
     []
+  )
+
+  // "Keep" on a possible-duplicate: promote it to a standalone receipt and
+  // refresh so it picks up its (now-attempted) match state.
+  const handleKeepDuplicate = useCallback(
+    async (receiptId: string) => {
+      try {
+        await promoteDuplicate(receiptId)
+        await loadReceipts()
+      } catch (err) {
+        console.error("[Receipts] Promote duplicate failed:", err)
+        alert("Couldn't keep that receipt — please try again.")
+      }
+    },
+    [loadReceipts]
   )
 
   // Phase shown on the main dropzone. While anything is uploading we hold the
@@ -450,7 +507,16 @@ export default function ConsumerReceiptsPage() {
                     </div>
                   )}
                   <div className="absolute top-2 left-2">
-                    {matchedTx ? (
+                    {r.status === "processing" ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Pending
+                      </span>
+                    ) : r.status === "duplicate" ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700">
+                        Possible duplicate
+                      </span>
+                    ) : matchedTx ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700">
                         <CheckCircle2 className="h-3 w-3" />
                         Matched
@@ -472,29 +538,52 @@ export default function ConsumerReceiptsPage() {
                         : ""}
                     </p>
                   </div>
-                  <div className="mt-auto flex items-center justify-between gap-2">
-                    {matchedTx ? (
-                      <Link
-                        href={`/user-dashboard/transactions/${matchedTx.id}`}
-                        className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
+                  {r.status === "duplicate" ? (
+                    <div className="mt-auto flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleKeepDuplicate(r.id)}
+                        className="flex-1 rounded-md border border-[var(--border)] px-2 py-1 text-xs font-medium hover:bg-[var(--muted)]"
                       >
-                        View transaction
-                        <ExternalLink className="h-3 w-3" />
-                      </Link>
-                    ) : (
-                      <span className="text-xs text-[var(--muted-foreground)]">
-                        Not yet matched
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(r.id)}
-                      aria-label="Delete receipt"
-                      className="rounded-md p-1 text-[var(--muted-foreground)] opacity-0 transition-opacity hover:bg-[var(--muted)] hover:text-red-600 group-hover:opacity-100"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                        Keep
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(r.id)}
+                        className="flex-1 rounded-md border border-[var(--border)] px-2 py-1 text-xs font-medium text-red-600 hover:bg-[var(--muted)]"
+                      >
+                        Discard
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mt-auto flex items-center justify-between gap-2">
+                      {r.status === "processing" ? (
+                        <span className="text-xs text-[var(--muted-foreground)]">
+                          Reading receipt…
+                        </span>
+                      ) : matchedTx ? (
+                        <Link
+                          href={`/user-dashboard/transactions/${matchedTx.id}`}
+                          className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
+                        >
+                          View transaction
+                          <ExternalLink className="h-3 w-3" />
+                        </Link>
+                      ) : (
+                        <span className="text-xs text-[var(--muted-foreground)]">
+                          Not yet matched
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(r.id)}
+                        aria-label="Delete receipt"
+                        className="rounded-md p-1 text-[var(--muted-foreground)] opacity-0 transition-opacity hover:bg-[var(--muted)] hover:text-red-600 group-hover:opacity-100"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -541,7 +630,16 @@ export default function ConsumerReceiptsPage() {
                   </p>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-2 sm:gap-3">
-                  {matchedTx ? (
+                  {r.status === "processing" ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Pending
+                    </span>
+                  ) : r.status === "duplicate" ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700">
+                      Possible duplicate
+                    </span>
+                  ) : matchedTx ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700">
                       <CheckCircle2 className="h-3 w-3" />
                       Matched
@@ -551,23 +649,44 @@ export default function ConsumerReceiptsPage() {
                       Unmatched
                     </span>
                   )}
-                  {matchedTx ? (
-                    <Link
-                      href={`/user-dashboard/transactions/${matchedTx.id}`}
-                      className="hidden items-center gap-1 text-xs text-[var(--primary)] hover:underline sm:inline-flex"
-                    >
-                      View
-                      <ExternalLink className="h-3 w-3" />
-                    </Link>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(r.id)}
-                    aria-label="Delete receipt"
-                    className="rounded-md p-1 text-[var(--muted-foreground)] opacity-0 transition-opacity hover:bg-[var(--muted)] hover:text-red-600 group-hover:opacity-100 sm:opacity-0"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                  {r.status === "duplicate" ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleKeepDuplicate(r.id)}
+                        className="rounded-md border border-[var(--border)] px-2 py-1 text-xs font-medium hover:bg-[var(--muted)]"
+                      >
+                        Keep
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(r.id)}
+                        className="rounded-md border border-[var(--border)] px-2 py-1 text-xs font-medium text-red-600 hover:bg-[var(--muted)]"
+                      >
+                        Discard
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {matchedTx ? (
+                        <Link
+                          href={`/user-dashboard/transactions/${matchedTx.id}`}
+                          className="hidden items-center gap-1 text-xs text-[var(--primary)] hover:underline sm:inline-flex"
+                        >
+                          View
+                          <ExternalLink className="h-3 w-3" />
+                        </Link>
+                      ) : null}
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(r.id)}
+                        aria-label="Delete receipt"
+                        className="rounded-md p-1 text-[var(--muted-foreground)] opacity-0 transition-opacity hover:bg-[var(--muted)] hover:text-red-600 group-hover:opacity-100 sm:opacity-0"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </>
+                  )}
                 </div>
               </li>
             )

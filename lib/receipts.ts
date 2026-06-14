@@ -46,6 +46,24 @@ export interface UploadReceiptResponse {
     line_items?: ReceiptLineItem[]
     lineItems?: ReceiptLineItem[]
   }
+  // True when the receipt was accepted asynchronously and is still being OCR'd
+  // (status "processing"). The OCR fields fill in later — poll the receipt /
+  // list until status leaves "processing".
+  processing?: boolean
+  // True when the backend detected an exact duplicate and returned the existing
+  // receipt instead of creating a new one.
+  deduplicated?: boolean
+}
+
+// Raw shape of POST /api/receipts/ingest.
+interface IngestResponse {
+  receipt_id: string
+  status?: string
+  deduplicated?: boolean
+  receipt?: ReceiptListItem & {
+    line_items?: ReceiptLineItem[]
+    lineItems?: ReceiptLineItem[]
+  }
 }
 
 export async function fetchReceipts(): Promise<ReceiptListItem[]> {
@@ -60,23 +78,41 @@ export async function fetchReceipts(): Promise<ReceiptListItem[]> {
   return body.receipts ?? []
 }
 
-// Uploads a single file. The backend field name is `receipt_image` to match the
-// mobile client; the browser sets the multipart boundary automatically when we
-// pass a FormData body and omit the content-type header here.
+// Uploads a single file via the async ingest endpoint. The backend stores the
+// image, creates a "processing" receipt, and runs OCR in the background
+// (returning in ~hundreds of ms). The field name is `receipt_image` to match
+// the mobile client; the browser sets the multipart boundary automatically when
+// we pass a FormData body and omit the content-type header here.
+//
+// The returned `receipt` always carries the new `id`/`status`; OCR fields
+// (merchant, total, line items) arrive later — callers should poll the receipt
+// list until status leaves "processing".
 export async function uploadReceipt(file: File): Promise<UploadReceiptResponse> {
   const fd = new FormData()
   fd.append("receipt_image", file, file.name)
-  const res = await fetch("/api/receipts/upload", {
+  fd.append("source", "upload")
+  const res = await fetch("/api/receipts/ingest", {
     method: "POST",
     body: fd,
   })
   if (!res.ok) {
     const text = await res.text().catch(() => "")
     throw new Error(
-      `POST /api/receipts/upload failed (${res.status}): ${text || res.statusText}`
+      `POST /api/receipts/ingest failed (${res.status}): ${text || res.statusText}`
     )
   }
-  return (await res.json()) as UploadReceiptResponse
+  const body = (await res.json()) as IngestResponse
+  const receipt = {
+    id: body.receipt_id,
+    status: body.status,
+    ...(body.receipt ?? {}),
+  } as UploadReceiptResponse["receipt"]
+  return {
+    success: true,
+    receipt,
+    processing: body.status === "processing",
+    deduplicated: body.deduplicated,
+  }
 }
 
 export async function matchReceiptToTransaction(
@@ -99,6 +135,23 @@ export async function matchReceiptToTransaction(
     const text = await res.text().catch(() => "")
     throw new Error(
       `POST /api/receipts/${receiptId}/match failed (${res.status}): ${
+        text || res.statusText
+      }`
+    )
+  }
+}
+
+// Promotes a soft-duplicate to a standalone receipt (clears duplicate_of and
+// re-runs auto-match). Used by the "Keep" action on a "possible duplicate".
+export async function promoteDuplicate(receiptId: string): Promise<void> {
+  const res = await fetch(
+    `/api/receipts/${encodeURIComponent(receiptId)}/promote-duplicate`,
+    { method: "POST" }
+  )
+  if (!res.ok) {
+    const text = await res.text().catch(() => "")
+    throw new Error(
+      `POST /api/receipts/${receiptId}/promote-duplicate failed (${res.status}): ${
         text || res.statusText
       }`
     )
