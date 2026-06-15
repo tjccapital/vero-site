@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import {
   Cable,
@@ -9,6 +10,7 @@ import {
   ChevronRight,
   Clock,
   HandCoins,
+  Loader2,
   MessageCircle,
   Search,
   Sparkles,
@@ -18,8 +20,10 @@ import {
 import { cn } from "@/lib/utils"
 import { AffiliateShell } from "@/components/affiliate-shell"
 import {
-  affiliateMerchants,
+  listMerchants,
+  type AffiliateMerchant,
   type MerchantStatus,
+  type MerchantStatusCounts,
 } from "@/lib/affiliate-merchants"
 import { Badge } from "@/components/ui/badge"
 
@@ -32,32 +36,72 @@ const TAB_LABELS: Record<TabKey, string> = {
   prospect: "Prospects",
 }
 
+const PAGE_SIZE = 50
+
+const EMPTY_COUNTS: MerchantStatusCounts = {
+  all: 0,
+  in_network: 0,
+  pending: 0,
+  prospect: 0,
+}
+
 export default function AffiliateMerchantsPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("all")
   const [query, setQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
 
-  const counts = useMemo(() => {
-    return {
-      all: affiliateMerchants.length,
-      in_network: affiliateMerchants.filter((m) => m.status === "in_network").length,
-      pending: affiliateMerchants.filter((m) => m.status === "pending").length,
-      prospect: affiliateMerchants.filter((m) => m.status === "prospect").length,
-    }
-  }, [])
+  const [items, setItems] = useState<AffiliateMerchant[]>([])
+  const [counts, setCounts] = useState<MerchantStatusCounts>(EMPTY_COUNTS)
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return affiliateMerchants.filter((m) => {
-      if (activeTab !== "all" && m.status !== activeTab) return false
-      if (!q) return true
-      return (
-        m.name.toLowerCase().includes(q) ||
-        m.category.toLowerCase().includes(q) ||
-        m.city.toLowerCase().includes(q) ||
-        m.posSystem.toLowerCase().includes(q)
-      )
-    })
-  }, [activeTab, query])
+  // Debounce the search input so each keystroke doesn't hit the API.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(query.trim()), 300)
+    return () => clearTimeout(t)
+  }, [query])
+
+  // Guards against out-of-order responses when filters change quickly.
+  const reqRef = useRef(0)
+
+  const load = useCallback(
+    async (offset: number) => {
+      const reqId = ++reqRef.current
+      if (offset === 0) setLoading(true)
+      else setLoadingMore(true)
+      setError(null)
+      try {
+        const page = await listMerchants({
+          status: activeTab,
+          q: debouncedQuery,
+          limit: PAGE_SIZE,
+          offset,
+        })
+        if (reqId !== reqRef.current) return // stale response
+        setCounts(page.counts)
+        setTotal(page.total)
+        setItems((prev) => (offset === 0 ? page.items : [...prev, ...page.items]))
+      } catch (e) {
+        if (reqId !== reqRef.current) return
+        setError(e instanceof Error ? e.message : "Failed to load merchants")
+      } finally {
+        if (reqId === reqRef.current) {
+          setLoading(false)
+          setLoadingMore(false)
+        }
+      }
+    },
+    [activeTab, debouncedQuery]
+  )
+
+  // Refetch from the top whenever the tab or search changes.
+  useEffect(() => {
+    load(0)
+  }, [load])
+
+  const canLoadMore = items.length < total
 
   return (
     <AffiliateShell
@@ -102,13 +146,30 @@ export default function AffiliateMerchantsPage() {
               >
                 {TAB_LABELS[tab]}
                 <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">
-                  {counts[tab]}
+                  {tab === "all" ? counts.all : counts[tab]}
                 </span>
               </button>
             ))}
           </div>
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-[var(--muted-foreground)]">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Loading merchants…
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+              <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
+              <p className="text-sm font-medium">Couldn&apos;t load merchants</p>
+              <p className="text-xs text-[var(--muted-foreground)]">{error}</p>
+              <button
+                onClick={() => load(0)}
+                className="mt-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--muted)]"
+              >
+                Retry
+              </button>
+            </div>
+          ) : items.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
               <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
               <p className="text-sm font-medium">No merchants match your filters</p>
@@ -117,51 +178,83 @@ export default function AffiliateMerchantsPage() {
               </p>
             </div>
           ) : (
-            <ul className="divide-y divide-[var(--border)]">
-              {filtered.map((m) => (
-                <li key={m.id}>
-                  <Link
-                    href={`/affiliate-dashboard/merchants/${m.id}`}
-                    className="flex items-center gap-4 px-4 py-4 hover:bg-[var(--muted)]/50 transition-colors"
-                  >
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)]">
-                      <Store className="h-5 w-5 text-[var(--muted-foreground)]" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate text-sm font-medium">{m.name}</p>
-                        <StatusBadge status={m.status} />
+            <>
+              <ul className="divide-y divide-[var(--border)]">
+                {items.map((m) => (
+                  <li key={m.id}>
+                    <Link
+                      href={`/affiliate-dashboard/merchants/${m.id}`}
+                      className="flex items-center gap-4 px-4 py-4 hover:bg-[var(--muted)]/50 transition-colors"
+                    >
+                      <MerchantLogo merchant={m} />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="truncate text-sm font-medium">{m.name}</p>
+                          <StatusBadge status={m.status} />
+                        </div>
+                        <p className="mt-0.5 truncate text-xs text-[var(--muted-foreground)]">
+                          {m.categoryLabel} · {m.posSystem} · {m.city}, {m.state}
+                        </p>
                       </div>
-                      <p className="mt-0.5 truncate text-xs text-[var(--muted-foreground)]">
-                        {m.category} · {m.posSystem} · {m.city}, {m.state}
-                      </p>
-                    </div>
-                    <div className="hidden sm:block text-right">
-                      <p className="text-xs text-[var(--muted-foreground)]">Est. annual value</p>
-                      <p className="text-sm font-medium">${m.estimatedValue.toLocaleString()}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-[var(--muted-foreground)]">
-                        {m.status === "in_network" ? "Earned" : "Reward"}
-                      </p>
-                      <p
-                        className={cn(
-                          "text-sm font-medium",
-                          m.status === "in_network" ? "text-green-600" : ""
-                        )}
-                      >
-                        ${m.reward.toLocaleString()}
-                      </p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                      <div className="hidden sm:block text-right">
+                        <p className="text-xs text-[var(--muted-foreground)]">Est. annual value</p>
+                        <p className="text-sm font-medium">${m.estimatedValue.toLocaleString()}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-[var(--muted-foreground)]">
+                          {m.status === "in_network" ? "Earned" : "Reward"}
+                        </p>
+                        <p
+                          className={cn(
+                            "text-sm font-medium",
+                            m.status === "in_network" ? "text-green-600" : ""
+                          )}
+                        >
+                          ${m.reward.toLocaleString()}
+                        </p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {canLoadMore && (
+                <div className="flex justify-center border-t border-[var(--border)] p-4">
+                  <button
+                    onClick={() => load(items.length)}
+                    disabled={loadingMore}
+                    className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] disabled:opacity-60"
+                  >
+                    {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
+                    Load more ({items.length} of {total})
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
     </AffiliateShell>
+  )
+}
+
+function MerchantLogo({ merchant }: { merchant: AffiliateMerchant }) {
+  if (merchant.logoUrl) {
+    return (
+      <Image
+        src={merchant.logoUrl}
+        alt=""
+        width={40}
+        height={40}
+        unoptimized
+        className="h-10 w-10 flex-shrink-0 rounded-md object-cover bg-[var(--muted)]"
+      />
+    )
+  }
+  return (
+    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)]">
+      <Store className="h-5 w-5 text-[var(--muted-foreground)]" />
+    </div>
   )
 }
 

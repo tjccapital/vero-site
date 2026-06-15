@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import {
@@ -11,15 +12,30 @@ import {
 } from "lucide-react"
 import { AffiliateShell } from "@/components/affiliate-shell"
 import { Badge } from "@/components/ui/badge"
-import { affiliateMerchants } from "@/lib/affiliate-merchants"
+import { getAffiliateDashboard, type AffiliateDashboard } from "@/lib/affiliate-merchants"
 
 export default function AffiliatePaymentsPage() {
   const { user } = useUser()
+  const [dashboard, setDashboard] = useState<AffiliateDashboard | null>(null)
 
-  const inNetwork = affiliateMerchants.filter((m) => m.status === "in_network")
-  const pending = affiliateMerchants.filter((m) => m.status === "pending")
-  const lifetimeEarned = inNetwork.reduce((sum, m) => sum + m.reward, 0)
-  const pendingPayout = pending.reduce((sum, m) => sum + m.reward, 0)
+  useEffect(() => {
+    let active = true
+    getAffiliateDashboard()
+      .then((d) => {
+        if (active) setDashboard(d)
+      })
+      .catch(() => {
+        /* leave zeroed on failure */
+      })
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const lifetimeEarned = dashboard?.earnedRewards ?? 0
+  const pendingPayout = dashboard?.pendingRewards ?? 0
+  const inNetworkCount = dashboard?.inNetworkCount ?? 0
+  const pendingCount = dashboard?.pendingCount ?? 0
 
   const stripeBillingPortalUrl = user?.sub
     ? `https://billing.stripe.com/p/login/test_${user.sub.replace("|", "_")}`
@@ -66,12 +82,12 @@ export default function AffiliatePaymentsPage() {
             <p className="text-sm text-[var(--muted-foreground)]">Pending Payout</p>
             <p className="mt-1 text-2xl font-semibold">${pendingPayout.toLocaleString()}</p>
             <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-              {pending.length} merchant{pending.length === 1 ? "" : "s"} awaiting confirmation
+              {pendingCount} merchant{pendingCount === 1 ? "" : "s"} awaiting confirmation
             </p>
           </div>
           <div className="rounded-xl border border-[var(--border)] p-5">
             <p className="text-sm text-[var(--muted-foreground)]">Merchants in Network</p>
-            <p className="mt-1 text-2xl font-semibold">{inNetwork.length}</p>
+            <p className="mt-1 text-2xl font-semibold">{inNetworkCount}</p>
             <p className="mt-1 text-xs text-[var(--muted-foreground)]">
               Earning recurring rewards
             </p>
