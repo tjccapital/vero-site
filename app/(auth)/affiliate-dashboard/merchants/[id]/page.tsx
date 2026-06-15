@@ -1,13 +1,14 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useCallback, useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
-import { notFound } from "next/navigation"
 import {
   ArrowLeft,
   Check,
   CheckCircle2,
   Clock,
+  Loader2,
   MapPin,
   Mail,
   Phone,
@@ -20,7 +21,7 @@ import { AffiliateShell } from "@/components/affiliate-shell"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import {
-  getMerchantById,
+  getMerchant,
   type AffiliateMerchant,
   type MerchantStatus,
 } from "@/lib/affiliate-merchants"
@@ -31,11 +32,88 @@ type PageProps = {
 
 export default function MerchantDetailsPage({ params }: PageProps) {
   const { id } = use(params)
-  const merchant = getMerchantById(id)
-  if (!merchant) {
-    notFound()
+  const [merchant, setMerchant] = useState<AffiliateMerchant | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const reqRef = useRef(0)
+  const load = useCallback(async () => {
+    const reqId = ++reqRef.current
+    setLoading(true)
+    setError(null)
+    try {
+      const m = await getMerchant(id)
+      if (reqId !== reqRef.current) return
+      setMerchant(m)
+    } catch (e) {
+      if (reqId !== reqRef.current) return
+      setError(e instanceof Error ? e.message : "Failed to load merchant")
+    } finally {
+      if (reqId === reqRef.current) setLoading(false)
+    }
+  }, [id])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  if (loading) {
+    return (
+      <DetailShell merchantId={id}>
+        <div className="flex items-center justify-center gap-2 py-16 text-sm text-[var(--muted-foreground)]">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading merchant…
+        </div>
+      </DetailShell>
+    )
   }
+
+  if (error || !merchant) {
+    return (
+      <DetailShell merchantId={id}>
+        <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
+          <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
+          <p className="text-sm font-medium">Merchant not found</p>
+          <p className="text-xs text-[var(--muted-foreground)]">{error}</p>
+          <Link
+            href="/affiliate-dashboard/merchants"
+            className="mt-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--muted)]"
+          >
+            Back to merchants
+          </Link>
+        </div>
+      </DetailShell>
+    )
+  }
+
   return <MerchantDetails initialMerchant={merchant} />
+}
+
+function DetailShell({
+  merchantId,
+  children,
+}: {
+  merchantId: string
+  children: React.ReactNode
+}) {
+  return (
+    <AffiliateShell
+      pageTitle="Merchant Details"
+      currentPath="/affiliate-dashboard/merchants"
+      returnTo={`/affiliate-dashboard/merchants/${merchantId}`}
+    >
+      <div className="mx-auto max-w-4xl space-y-6 w-full">
+        <Link
+          href="/affiliate-dashboard/merchants"
+          className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to merchants
+        </Link>
+        {children}
+      </div>
+    </AffiliateShell>
+  )
 }
 
 function MerchantDetails({ initialMerchant }: { initialMerchant: AffiliateMerchant }) {
@@ -54,13 +132,13 @@ function MerchantDetails({ initialMerchant }: { initialMerchant: AffiliateMercha
       return
     }
     setSubmitting(true)
-    // Simulate verification — in production this would call the affiliate API.
+    // Simulate verification — the real "send signup link" action lands in the
+    // attribution slice (PRD Item 2).
     setTimeout(() => {
       setMerchant((prev) => ({
         ...prev,
         status: "in_network",
         signedUpAt: new Date().toISOString().slice(0, 10),
-        signedUpBy: "you",
       }))
       setSubmitting(false)
       setJustConfirmed(true)
@@ -85,16 +163,27 @@ function MerchantDetails({ initialMerchant }: { initialMerchant: AffiliateMercha
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--muted)]">
-              <Store className="h-7 w-7 text-[var(--muted-foreground)]" />
-            </div>
+            {merchant.logoUrl ? (
+              <Image
+                src={merchant.logoUrl}
+                alt=""
+                width={56}
+                height={56}
+                unoptimized
+                className="h-14 w-14 flex-shrink-0 rounded-xl object-cover bg-[var(--muted)]"
+              />
+            ) : (
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--muted)]">
+                <Store className="h-7 w-7 text-[var(--muted-foreground)]" />
+              </div>
+            )}
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-2xl font-bold">{merchant.name}</h1>
                 <StatusBadge status={merchant.status} />
               </div>
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                {merchant.category} · {merchant.posSystem}
+                {merchant.categoryLabel} · {merchant.posSystem}
               </p>
             </div>
           </div>
@@ -178,7 +267,7 @@ function MerchantDetails({ initialMerchant }: { initialMerchant: AffiliateMercha
             <DetailRow
               icon={<TrendingUp className="h-4 w-4" />}
               label="Category"
-              value={merchant.category}
+              value={merchant.categoryLabel}
             />
             {merchant.contactEmail && (
               <DetailRow
