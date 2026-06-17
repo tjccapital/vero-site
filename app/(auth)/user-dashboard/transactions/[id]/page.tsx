@@ -50,6 +50,7 @@ import {
   getCategoryLabel,
 } from "@/lib/category-display"
 import { TransactionAvatar } from "@/components/transaction-avatar"
+import { ReceiptImage } from "@/components/receipt-image"
 
 function isPdfUrl(url: string | null | undefined): boolean {
   if (!url) return false
@@ -673,8 +674,7 @@ export default function TransactionDetailPage() {
             </div>
             <div className="min-h-0 flex-1 overflow-auto bg-[var(--muted)]/30">
               {preview.type === "image" ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
+                <ReceiptImage
                   src={preview.url}
                   alt="Receipt"
                   className="mx-auto block max-h-[80vh] w-auto object-contain"
