@@ -29,8 +29,12 @@ export type Offer = {
    * hard-coding markup per offer.
    */
   highlight: string
-  /** Short context line under the headline. */
-  description: string
+  /**
+   * Path to the offer's image under /public. Optional — the card falls back to
+   * OFFER_PLACEHOLDER_IMAGE when it's absent or fails to load. Eventually these
+   * will be merchant-supplied product/deal photos.
+   */
+  image?: string
   /** Longer terms shown on the dedicated offers page. */
   terms: string
   /** Human label for expiry, or null when the offer doesn't expire. */
@@ -50,56 +54,60 @@ export function offerTagLabel(tag: OfferTag): string {
   return OFFER_TAG_LABELS[tag]
 }
 
+/** Fallback image shown when an offer has no image (or it fails to load). */
+export const OFFER_PLACEHOLDER_IMAGE = "/placeholder-563x375.jpg"
+
 // Sample offers. Ordered roughly the way we'd rank them for a shopper: the
-// places they already spend at first, then nearby and new merchants.
+// places they already spend at first, then nearby and new merchants. The first
+// three carry real merchant imagery; the rest fall back to the placeholder.
 const SAMPLE_OFFERS: Offer[] = [
   {
-    id: "charlevoix-10",
-    merchant: "The Charlevoix",
-    initial: "C",
-    avatarColor: "#0f766e",
-    category: "Bar",
+    id: "american-tall-flannel",
+    merchant: "American Tall",
+    initial: "A",
+    avatarColor: "#1e3a8a",
+    category: "Apparel",
     location: "East Lansing",
     tag: "you_shop_here",
-    title: "10% off your next visit",
-    highlight: "10% off",
-    description: "You've spent $211 here in the last 90 days",
+    title: "$20 off flannel shirts",
+    highlight: "$20 off",
+    image: "/flannel-offer.jpg",
     terms:
-      "Discount applies to your total bill, food and drinks included. Valid for one visit. Pay with a linked card to redeem automatically.",
+      "Take $20 off any flannel shirt. Valid on a single item. Pay with a linked card to redeem automatically.",
     expiresLabel: "Ends Jun 30",
-    estimatedSavings: 12,
+    estimatedSavings: 20,
   },
   {
-    id: "4th-street-brunch-coffee",
-    merchant: "4th Street Brunch",
-    initial: "4",
-    avatarColor: "#92400e",
-    category: "Café",
-    location: "Ann Arbor",
+    id: "kroger-free-eggs",
+    merchant: "Kroger",
+    initial: "K",
+    avatarColor: "#1e40af",
+    category: "Groceries",
+    location: "East Lansing",
     tag: "you_shop_here",
-    title: "Free coffee with any entrée",
-    highlight: "any entrée",
-    description: "Last visit Jun 12 · $37.99",
+    title: "Free dozen eggs with $35+",
+    highlight: "Free dozen eggs",
+    image: "/eggs-offer.jpg",
     terms:
-      "One free drip coffee or hot tea with the purchase of any entrée. Dine-in only. Pay with a linked card to redeem.",
+      "Get one free dozen Grade A large eggs with any grocery purchase of $35 or more. Pay with a linked card to qualify.",
     expiresLabel: "Ends Jul 7",
     estimatedSavings: 4,
   },
   {
-    id: "grand-river-coffee-2off",
-    merchant: "Grand River Coffee",
+    id: "grill-house-sandwich-bogo",
+    merchant: "The Grill House",
     initial: "G",
-    avatarColor: "#1e3a8a",
-    category: "Café",
+    avatarColor: "#92400e",
+    category: "Restaurant",
     location: "0.3 mi away",
-    tag: "new_merchant",
-    title: "$2 off your first order",
-    highlight: "$2 off",
-    description: "New Vero merchant on your route",
+    tag: "near_you",
+    title: "Buy one sandwich, get one free",
+    highlight: "get one free",
+    image: "/sandwitch-offfer.jpg",
     terms:
-      "Valid on your first order only. Minimum purchase of $5. Pay with a linked card to redeem automatically.",
-    expiresLabel: null,
-    estimatedSavings: 2,
+      "Buy any sandwich and get a second of equal or lesser value free. Dine-in or takeout. Pay with a linked card to redeem.",
+    expiresLabel: "Ends Jul 15",
+    estimatedSavings: 12,
   },
   {
     id: "trader-joes-cashback",
@@ -111,27 +119,25 @@ const SAMPLE_OFFERS: Offer[] = [
     tag: "you_shop_here",
     title: "5% back on groceries this month",
     highlight: "5% back",
-    description: "Your most-visited grocery store",
     terms:
       "Earn 5% back as Vero credit on all in-store grocery purchases through the end of the month. Pay with a linked card to qualify.",
     expiresLabel: "Ends Jun 30",
     estimatedSavings: 18,
   },
   {
-    id: "blue-ridge-tacos-bogo",
-    merchant: "Blue Ridge Tacos",
-    initial: "B",
-    avatarColor: "#b45309",
-    category: "Restaurant",
-    location: "0.6 mi away",
-    tag: "near_you",
-    title: "Buy one taco, get one free",
-    highlight: "get one free",
-    description: "Popular with shoppers near you",
+    id: "grand-river-coffee-2off",
+    merchant: "Grand River Coffee",
+    initial: "G",
+    avatarColor: "#1e3a8a",
+    category: "Café",
+    location: "0.3 mi away",
+    tag: "new_merchant",
+    title: "$2 off your first order",
+    highlight: "$2 off",
     terms:
-      "Buy any taco and get a second of equal or lesser value free. Dine-in or takeout. Pay with a linked card to redeem.",
-    expiresLabel: "Ends Jul 15",
-    estimatedSavings: 4,
+      "Valid on your first order only. Minimum purchase of $5. Pay with a linked card to redeem automatically.",
+    expiresLabel: null,
+    estimatedSavings: 2,
   },
   {
     id: "campus-cycles-tuneup",
@@ -143,7 +149,6 @@ const SAMPLE_OFFERS: Offer[] = [
     tag: "near_you",
     title: "$15 off a bike tune-up",
     highlight: "$15 off",
-    description: "Trending with riders this week",
     terms:
       "Valid on any standard tune-up service. One per customer. Pay with a linked card to redeem automatically.",
     expiresLabel: "Ends Aug 1",
@@ -159,7 +164,6 @@ const SAMPLE_OFFERS: Offer[] = [
     tag: "new_merchant",
     title: "Free pastry with any coffee",
     highlight: "Free pastry",
-    description: "Just joined the Vero network",
     terms:
       "One free pastry with the purchase of any coffee drink. While supplies last. Pay with a linked card to redeem.",
     expiresLabel: null,
@@ -175,7 +179,6 @@ const SAMPLE_OFFERS: Offer[] = [
     tag: "trending",
     title: "$5 off two tickets",
     highlight: "$5 off",
-    description: "Trending in your area this weekend",
     terms:
       "Valid on the purchase of two or more standard tickets. Excludes premium formats. Pay with a linked card to redeem.",
     expiresLabel: "Ends Jul 4",
