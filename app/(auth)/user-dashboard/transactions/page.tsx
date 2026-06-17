@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -50,7 +50,6 @@ import { type DateRange } from "react-day-picker"
 import {
   format,
   startOfDay,
-  endOfDay,
   subDays,
   subMonths,
   startOfMonth,
@@ -62,7 +61,9 @@ import {
   syncTransactions,
   transactionDisplayName,
   type Transaction,
+  type TransactionFilters,
 } from "@/lib/transactions"
+import { LoadMore } from "@/components/ui/load-more"
 import {
   readPendingFirstSync,
   clearPendingFirstSync,
@@ -79,6 +80,12 @@ type CategoryFilter = "all" | "groceries" | "dining" | "coffee" | "gas" | "shopp
 type SortColumn = "merchant" | "category" | "date" | "receipt" | "amount"
 type SortDirection = "asc" | "desc"
 type ReceiptFilter = "all" | "matched" | "unmatched"
+
+// Transactions are paginated server-side; PAGE_SIZE rows per request and
+// "Load more" appends the next page. SEARCH_DEBOUNCE_MS keeps a keystroke from
+// firing a request per character.
+const PAGE_SIZE = 50
+const SEARCH_DEBOUNCE_MS = 300
 
 const sortLabels: Record<SortColumn, string> = {
   merchant: "Merchant",
@@ -174,15 +181,6 @@ export default function ConsumerTransactionsPage() {
   const [receiptFilter, setReceiptFilter] = useState<ReceiptFilter>("all")
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
-  // Concrete [from, to] window the filter compares against. A lone "from"
-  // (no end yet) means "from that day onward".
-  const dateWindow = useMemo<{ from: Date | null; to: Date | null }>(() => {
-    return {
-      from: dateRange?.from ? startOfDay(dateRange.from) : null,
-      to: dateRange?.to ? endOfDay(dateRange.to) : null,
-    }
-  }, [dateRange])
-
   // Quick-pick presets shown alongside the calendar in the popover.
   const datePresets = useMemo(() => {
     const today = new Date()
@@ -219,6 +217,27 @@ export default function ConsumerTransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [transactionsLoading, setTransactionsLoading] = useState(true)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
+  // Server-side pagination + filter-aware aggregates.
+  const [total, setTotal] = useState(0)
+  const [totalSpent, setTotalSpent] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+
+  // Filters sent to the server. search/date/receipt map cleanly to backend
+  // params, so total + total_spent + the loaded page all reflect them. The
+  // category quick-chip and sort are applied client-side over loaded rows
+  // (the backend can't express the multi-keyword category match or the
+  // absolute-value amount sort), so they are intentionally NOT sent here.
+  const serverFilters = useMemo<TransactionFilters>(() => {
+    const f: TransactionFilters = {}
+    const q = searchQuery.trim()
+    if (q) f.search = q
+    if (dateRange?.from) f.dateFrom = format(dateRange.from, "yyyy-MM-dd")
+    if (dateRange?.to) f.dateTo = format(dateRange.to, "yyyy-MM-dd")
+    if (receiptFilter === "matched") f.matched = "matched"
+    else if (receiptFilter === "unmatched") f.matched = "unmatched"
+    return f
+  }, [searchQuery, dateRange, receiptFilter])
 
   const [showPlaidModal, setShowPlaidModal] = useState(false)
 
@@ -241,34 +260,79 @@ export default function ConsumerTransactionsPage() {
     }
   }, [transactions.length])
 
-  const loadTransactions = useCallback(async () => {
+  // Loads the first page for the current server filters, replacing the list.
+  const reload = useCallback(async () => {
     setTransactionsLoading(true)
     setTransactionsError(null)
     try {
-      // Sync first so the cache picks up anything Plaid has cached on its side
-      // (e.g. data the user just linked, or anything a webhook should have
-      // delivered but didn't). Sync is included in the per-Item monthly
-      // Transactions fee, not billed per call. Mirror of mobile's
-      // pull-to-refresh.
-      try {
-        await syncTransactions()
-      } catch (syncErr) {
-        // Non-fatal — the cache read below will still return whatever's there.
-        console.warn("[Transactions] Sync before fetch failed:", syncErr)
-      }
-      const res = await fetchTransactions()
+      const res = await fetchTransactions({
+        ...serverFilters,
+        limit: PAGE_SIZE,
+        offset: 0,
+      })
       setTransactions(res.transactions ?? [])
+      setTotal(res.total ?? res.transactions?.length ?? 0)
+      setTotalSpent(res.total_spent ?? 0)
+      setHasMore(res.has_more ?? res.hasMore ?? false)
     } catch (err) {
       console.error("[Transactions] Failed to load:", err)
       setTransactionsError("Couldn't load your transactions.")
     } finally {
       setTransactionsLoading(false)
     }
-  }, [])
+  }, [serverFilters])
 
+  // Syncs from Plaid, then loads the first page. Used on initial mount and
+  // after a new bank link. Sync is included in the per-Item monthly
+  // Transactions fee, not billed per call. Filter changes use `reload`
+  // directly so typing/toggling doesn't trigger a sync each time.
+  const loadTransactions = useCallback(async () => {
+    try {
+      await syncTransactions()
+    } catch (syncErr) {
+      // Non-fatal — the cache read below still returns whatever's there.
+      console.warn("[Transactions] Sync before fetch failed:", syncErr)
+    }
+    await reload()
+  }, [reload])
+
+  // Appends the next page, offset by the rows already loaded.
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return
+    setLoadingMore(true)
+    try {
+      const res = await fetchTransactions({
+        ...serverFilters,
+        limit: PAGE_SIZE,
+        offset: transactions.length,
+      })
+      const next = res.transactions ?? []
+      setTransactions((prev) => {
+        const seen = new Set(prev.map((t) => t.id))
+        return [...prev, ...next.filter((t) => !seen.has(t.id))]
+      })
+      setTotal(res.total ?? total)
+      setTotalSpent(res.total_spent ?? totalSpent)
+      setHasMore(res.has_more ?? res.hasMore ?? false)
+    } catch (err) {
+      console.error("[Transactions] Failed to load more:", err)
+    } finally {
+      setLoadingMore(false)
+    }
+  }, [serverFilters, transactions.length, hasMore, loadingMore, total, totalSpent])
+
+  // Initial mount syncs + loads; later filter changes do a debounced reload
+  // (no sync). The ref distinguishes the first run from filter changes.
+  const didInitialLoad = useRef(false)
   useEffect(() => {
-    loadTransactions()
-  }, [loadTransactions])
+    if (!didInitialLoad.current) {
+      didInitialLoad.current = true
+      void loadTransactions()
+      return
+    }
+    const timer = window.setTimeout(() => void reload(), SEARCH_DEBOUNCE_MS)
+    return () => window.clearTimeout(timer)
+  }, [loadTransactions, reload])
 
   // Restore the list's scroll position after returning from a transaction
   // detail. Restored once the rows have rendered (transactionsLoading flips
@@ -289,38 +353,18 @@ export default function ConsumerTransactionsPage() {
     [router, saveListScroll]
   )
 
-  const filteredTransactions = useMemo(() => {
-    let result = [...transactions]
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      result = result.filter((tx) => {
-        const merchant = transactionDisplayName(tx).toLowerCase()
-        return merchant.includes(query) || (tx.name || "").toLowerCase().includes(query)
-      })
-    }
-
+  // Client-side refinement over the loaded page. search / date / receipt
+  // filters are applied server-side (so they also drive total + total_spent),
+  // so the only filter repeated here is the category quick-chip, whose
+  // multi-keyword match the backend can't express. Sorting is client-side
+  // too — it orders the loaded rows (the backend can't sort by absolute
+  // amount or by category/receipt presence).
+  const displayedTransactions = useMemo(() => {
+    let result = transactions
     if (selectedCategory !== "all") {
       result = result.filter((tx) => getCategoryFilterMatch(tx, selectedCategory))
     }
-
-    if (receiptFilter === "matched") {
-      result = result.filter((tx) => !!tx.receipt)
-    } else if (receiptFilter === "unmatched") {
-      result = result.filter((tx) => !tx.receipt)
-    }
-
-    if (dateWindow.from || dateWindow.to) {
-      result = result.filter((tx) => {
-        const d = new Date(tx.date)
-        if (Number.isNaN(d.getTime())) return false
-        if (dateWindow.from && d < dateWindow.from) return false
-        if (dateWindow.to && d > dateWindow.to) return false
-        return true
-      })
-    }
-
-    result.sort((a, b) => {
+    return [...result].sort((a, b) => {
       let cmp: number
       switch (sortColumn) {
         case "merchant":
@@ -341,17 +385,7 @@ export default function ConsumerTransactionsPage() {
       }
       return sortDirection === "asc" ? cmp : -cmp
     })
-
-    return result
-  }, [transactions, searchQuery, selectedCategory, sortColumn, sortDirection, receiptFilter, dateWindow])
-
-  const totalSpent = useMemo(() => {
-    return filteredTransactions.reduce((sum, tx) => {
-      // Plaid expense amounts are positive; refunds/credits are negative.
-      // For the "Total" line we sum only expenses.
-      return tx.amount > 0 ? sum + tx.amount : sum
-    }, 0)
-  }, [filteredTransactions])
+  }, [transactions, selectedCategory, sortColumn, sortDirection])
 
   return (
     <>
@@ -505,9 +539,9 @@ export default function ConsumerTransactionsPage() {
           <p className="text-sm text-[var(--muted-foreground)]">
             Showing{" "}
             <span className="font-medium text-[var(--foreground)]">
-              {filteredTransactions.length}
+              {displayedTransactions.length}
             </span>{" "}
-            transaction{filteredTransactions.length !== 1 ? "s" : ""}
+            of {total} transaction{total !== 1 ? "s" : ""}
           </p>
           <div className="flex items-baseline gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/40 px-3.5 py-1.5">
             <span className="text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)]">
@@ -572,7 +606,7 @@ export default function ConsumerTransactionsPage() {
         )}
 
         {/* Empty - filters return nothing */}
-        {!transactionsLoading && !transactionsError && transactions.length > 0 && filteredTransactions.length === 0 && (
+        {!transactionsLoading && !transactionsError && transactions.length > 0 && displayedTransactions.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--muted)]">
               <Receipt className="h-8 w-8 text-[var(--muted-foreground)]" />
@@ -585,7 +619,7 @@ export default function ConsumerTransactionsPage() {
         )}
 
         {/* Transactions Table - Desktop */}
-        {filteredTransactions.length > 0 && (
+        {displayedTransactions.length > 0 && (
           <div className="hidden md:block rounded-lg border border-[var(--border)] overflow-hidden">
             <Table>
               <TableHeader>
@@ -635,7 +669,7 @@ export default function ConsumerTransactionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTransactions.map((tx) => {
+                {displayedTransactions.map((tx) => {
                   const merchant = transactionDisplayName(tx)
                   const sign = tx.amount < 0 ? "+" : ""
                   const magnitude = Math.abs(tx.amount).toFixed(2)
@@ -690,9 +724,9 @@ export default function ConsumerTransactionsPage() {
         )}
 
         {/* Transactions List - Mobile */}
-        {filteredTransactions.length > 0 && (
+        {displayedTransactions.length > 0 && (
           <div className="md:hidden space-y-3">
-            {filteredTransactions.map((tx) => {
+            {displayedTransactions.map((tx) => {
               const merchant = transactionDisplayName(tx)
               const sign = tx.amount < 0 ? "+" : ""
               const magnitude = Math.abs(tx.amount).toFixed(2)
@@ -742,6 +776,15 @@ export default function ConsumerTransactionsPage() {
               )
             })}
           </div>
+        )}
+
+        {!transactionsLoading && !transactionsError && hasMore && (
+          <LoadMore
+            onClick={() => void loadMore()}
+            loading={loadingMore}
+            loaded={transactions.length}
+            total={total}
+          />
         )}
       </div>
 

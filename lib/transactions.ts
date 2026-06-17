@@ -62,6 +62,13 @@ export interface TransactionsResponse {
   nextCursor?: string
   has_more?: boolean
   hasMore?: boolean
+  // Offset pagination metadata (List endpoint).
+  total?: number
+  limit?: number
+  offset?: number
+  // Sum of expense (positive) amounts across ALL filter-matching transactions,
+  // independent of the current page. Drives the "Total spent" figure.
+  total_spent?: number
 }
 
 export interface TransactionFilters {
@@ -79,6 +86,9 @@ export interface TransactionFilters {
   pending?: string
   sortBy?: string
   sortOrder?: "asc" | "desc"
+  // Pagination. limit defaults server-side (50, max 100); offset pages results.
+  limit?: number
+  offset?: number
 }
 
 function buildQuery(filters?: TransactionFilters): string {
@@ -98,6 +108,8 @@ function buildQuery(filters?: TransactionFilters): string {
   if (filters.pending) params.set("pending", filters.pending)
   if (filters.sortBy) params.set("sort_by", filters.sortBy)
   if (filters.sortOrder) params.set("sort_order", filters.sortOrder)
+  if (filters.limit !== undefined) params.set("limit", String(filters.limit))
+  if (filters.offset !== undefined) params.set("offset", String(filters.offset))
   const qs = params.toString()
   return qs ? `?${qs}` : ""
 }

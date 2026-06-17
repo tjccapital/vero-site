@@ -34,10 +34,68 @@ export interface ReceiptListItem {
   status?: string
   ocrError?: string | null
   ocr_error?: string | null
+  // The receipt's own match (when matched). Lets the UI deep-link to the
+  // matched transaction without loading the full transactions list.
+  match?: { transaction_id?: string; match_method?: string } | null
+  linkedTransactionId?: string
+  linked_transaction_id?: string
 }
 
 interface ReceiptsListResponse {
   receipts?: ReceiptListItem[] | null
+  total?: number
+  unmatched_count?: number
+  limit?: number
+  offset?: number
+  has_more?: boolean
+}
+
+// Query params accepted by GET /api/receipts. Mirrors the backend ReceiptFilter.
+export interface ReceiptFilters {
+  status?: string
+  source?: string
+  matchMethod?: string
+  search?: string
+  dateFrom?: string
+  dateTo?: string
+  amountMin?: number
+  amountMax?: number
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+  // Pagination. limit defaults server-side (50, max 100); offset pages results.
+  limit?: number
+  offset?: number
+}
+
+// A single page of receipts plus pagination metadata.
+export interface ReceiptsPage {
+  receipts: ReceiptListItem[]
+  total: number
+  unmatchedCount: number
+  limit: number
+  offset: number
+  hasMore: boolean
+}
+
+function buildReceiptQuery(filters?: ReceiptFilters): string {
+  if (!filters) return ""
+  const params = new URLSearchParams()
+  if (filters.status) params.set("status", filters.status)
+  if (filters.source) params.set("source", filters.source)
+  if (filters.matchMethod) params.set("match_method", filters.matchMethod)
+  if (filters.search) params.set("search", filters.search)
+  if (filters.dateFrom) params.set("date_from", filters.dateFrom)
+  if (filters.dateTo) params.set("date_to", filters.dateTo)
+  if (filters.amountMin !== undefined)
+    params.set("amount_min", String(filters.amountMin))
+  if (filters.amountMax !== undefined)
+    params.set("amount_max", String(filters.amountMax))
+  if (filters.sortBy) params.set("sort_by", filters.sortBy)
+  if (filters.sortOrder) params.set("sort_order", filters.sortOrder)
+  if (filters.limit !== undefined) params.set("limit", String(filters.limit))
+  if (filters.offset !== undefined) params.set("offset", String(filters.offset))
+  const qs = params.toString()
+  return qs ? `?${qs}` : ""
 }
 
 export interface UploadReceiptResponse {
@@ -66,8 +124,10 @@ interface IngestResponse {
   }
 }
 
-export async function fetchReceipts(): Promise<ReceiptListItem[]> {
-  const res = await fetch("/api/receipts")
+export async function fetchReceipts(
+  filters?: ReceiptFilters
+): Promise<ReceiptsPage> {
+  const res = await fetch(`/api/receipts${buildReceiptQuery(filters)}`)
   if (!res.ok) {
     const text = await res.text().catch(() => "")
     throw new Error(
@@ -75,7 +135,17 @@ export async function fetchReceipts(): Promise<ReceiptListItem[]> {
     )
   }
   const body = (await res.json()) as ReceiptsListResponse
-  return body.receipts ?? []
+  const receipts = body.receipts ?? []
+  const offset = body.offset ?? filters?.offset ?? 0
+  const total = body.total ?? receipts.length
+  return {
+    receipts,
+    total,
+    unmatchedCount: body.unmatched_count ?? 0,
+    limit: body.limit ?? filters?.limit ?? receipts.length,
+    offset,
+    hasMore: body.has_more ?? offset + receipts.length < total,
+  }
 }
 
 // Uploads a single file via the async ingest endpoint. The backend stores the
@@ -178,6 +248,19 @@ export function receiptDisplayName(r: ReceiptListItem): string {
 
 export function receiptDate(r: ReceiptListItem): string | undefined {
   return r.createdAt || r.created_at
+}
+
+// The id of the transaction this receipt is matched to, if any. Reads the
+// receipt's embedded match so callers don't need the full transactions list.
+export function receiptMatchedTransactionId(
+  r: ReceiptListItem
+): string | undefined {
+  return (
+    r.match?.transaction_id ||
+    r.linkedTransactionId ||
+    r.linked_transaction_id ||
+    undefined
+  )
 }
 
 export function receiptImage(r: ReceiptListItem): string | undefined {
