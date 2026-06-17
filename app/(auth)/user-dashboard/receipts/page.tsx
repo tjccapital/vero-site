@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import {
+  Calendar as CalendarIcon,
   CheckCircle2,
+  ChevronDown,
   ExternalLink,
   FileImage,
   LayoutGrid,
@@ -13,6 +15,8 @@ import {
   Search,
   Trash2,
 } from "lucide-react"
+import { format } from "date-fns"
+import { type DateRange } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -26,15 +30,19 @@ import {
   receiptDate,
   receiptDisplayName,
   receiptImage,
+  receiptMatchedTransactionId,
   uploadReceipt,
+  type ReceiptFilters,
   type ReceiptListItem,
 } from "@/lib/receipts"
-import {
-  fetchTransactions,
-  transactionDisplayName,
-  type Transaction,
-} from "@/lib/transactions"
 import { formatTxShortDate } from "@/lib/category-display"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { LoadMore } from "@/components/ui/load-more"
 
 // One row per in-flight upload. We surface a "Matching…" state for a few
 // seconds after the upload succeeds so the user can see that work is still
@@ -59,6 +67,14 @@ interface PendingUpload {
 const POLL_INTERVAL_MS = 4000
 const POLL_TIMEOUT_MS = 120000
 
+// Receipts are paginated server-side; PAGE_SIZE rows are fetched per request and
+// "Load more" appends the next page.
+const PAGE_SIZE = 50
+
+// Debounce window for the server-side search box so each keystroke doesn't fire
+// a request.
+const SEARCH_DEBOUNCE_MS = 300
+
 type ViewMode = "grid" | "list"
 const VIEW_STORAGE_KEY = "vero:consumer:receipts:view"
 
@@ -73,12 +89,17 @@ function merchantInitial(name: string): string {
 
 export default function ConsumerReceiptsPage() {
   const [receipts, setReceipts] = useState<ReceiptListItem[]>([])
-  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pendingUploads, setPendingUploads] = useState<PendingUpload[]>([])
   const [view, setView] = useState<ViewMode>("list")
   const [search, setSearch] = useState("")
+  // Date-range filter (applied server-side via date_from / date_to).
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
+  // Server-side pagination state.
+  const [total, setTotal] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
   // Track image loads that 404 / error so we can swap in the avatar fallback
   // without ever paying for a re-fetch. Set is keyed by receipt id.
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set())
@@ -110,24 +131,64 @@ export default function ConsumerReceiptsPage() {
     })
   }, [])
 
+  // Server-side filters derived from the search box and date range. Memoised so
+  // the load effect re-runs only when a filter actually changes. Dates are sent
+  // as plain YYYY-MM-DD, which is what the backend compares against.
+  const filters = useMemo<ReceiptFilters>(() => {
+    const f: ReceiptFilters = {}
+    const q = search.trim()
+    if (q) f.search = q
+    if (dateRange?.from) f.dateFrom = format(dateRange.from, "yyyy-MM-dd")
+    if (dateRange?.to) f.dateTo = format(dateRange.to, "yyyy-MM-dd")
+    return f
+  }, [search, dateRange])
+
+  // Loads the first page for the current filters, replacing the list. Used by
+  // the initial load, filter changes, and the upload poller.
   const loadReceipts = useCallback(async () => {
     setError(null)
     try {
-      const [rs, tx] = await Promise.all([
-        fetchReceipts(),
-        fetchTransactions().then((r) => r.transactions ?? []),
-      ])
-      setReceipts(rs)
-      setTransactions(tx)
+      const page = await fetchReceipts({ ...filters, limit: PAGE_SIZE, offset: 0 })
+      setReceipts(page.receipts)
+      setTotal(page.total)
+      setHasMore(page.hasMore)
     } catch (err) {
       console.error("[Receipts] Failed to load:", err)
       setError("Couldn't load your receipts.")
     }
-  }, [])
+  }, [filters])
 
+  // Appends the next page. Offsets by the number of rows already loaded.
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return
+    setLoadingMore(true)
+    try {
+      const page = await fetchReceipts({
+        ...filters,
+        limit: PAGE_SIZE,
+        offset: receipts.length,
+      })
+      setReceipts((prev) => {
+        const seen = new Set(prev.map((r) => r.id))
+        return [...prev, ...page.receipts.filter((r) => !seen.has(r.id))]
+      })
+      setTotal(page.total)
+      setHasMore(page.hasMore)
+    } catch (err) {
+      console.error("[Receipts] Failed to load more:", err)
+    } finally {
+      setLoadingMore(false)
+    }
+  }, [filters, hasMore, loadingMore, receipts.length])
+
+  // (Re)load the first page whenever filters change, debounced so typing in the
+  // search box doesn't fire a request per keystroke.
   useEffect(() => {
     setLoading(true)
-    loadReceipts().finally(() => setLoading(false))
+    const timer = window.setTimeout(() => {
+      void loadReceipts().finally(() => setLoading(false))
+    }, SEARCH_DEBOUNCE_MS)
+    return () => window.clearTimeout(timer)
   }, [loadReceipts])
 
   // Keep polling while ANY receipt is still "processing" (background OCR),
@@ -144,38 +205,6 @@ export default function ConsumerReceiptsPage() {
     return () => window.clearInterval(timer)
   }, [hasProcessing, loadReceipts])
 
-  // Build a lookup of receipt id → transaction (mirrors mobile's
-  // buildDisplayReceipts). The backend returns the matched receipt embedded on
-  // the transaction; we cross-reference here so a library row can deep-link to
-  // its matched transaction.
-  const matchByReceiptId = useMemo(() => {
-    const map = new Map<string, Transaction>()
-    for (const tx of transactions) {
-      if (tx.receipt?.id) {
-        map.set(tx.receipt.id, tx)
-      }
-    }
-    return map
-  }, [transactions])
-
-  // Filter the library by the search box. Matches the receipt's display name
-  // (merchant), its total, and the name of any transaction it's matched to so
-  // a user can find a receipt by what they remember about the purchase.
-  const filteredReceipts = useMemo(() => {
-    const q = search.trim().toLowerCase()
-    if (!q) return receipts
-    return receipts.filter((r) => {
-      const name = receiptDisplayName(r).toLowerCase()
-      const total =
-        typeof r.total === "number" ? r.total.toFixed(2) : ""
-      const matchedTx = matchByReceiptId.get(r.id)
-      const txName = matchedTx ? transactionDisplayName(matchedTx).toLowerCase() : ""
-      return (
-        name.includes(q) || total.includes(q) || txName.includes(q)
-      )
-    })
-  }, [receipts, search, matchByReceiptId])
-
   // Polls the receipt list until the freshly-ingested receipt leaves the
   // "processing" status (background OCR done), then folds its pending row away.
   // A receipt that vanishes from the list resolved to a hidden soft-duplicate;
@@ -186,9 +215,17 @@ export default function ConsumerReceiptsPage() {
       const timer = window.setInterval(async () => {
         let done = false
         try {
-          const rs = await fetchReceipts()
-          setReceipts(rs)
-          const r = id ? rs.find((x) => x.id === id) : undefined
+          // Newly-uploaded receipts land on the first page (default created_at
+          // DESC), so polling page 0 is enough to detect when OCR completes.
+          const page = await fetchReceipts({
+            ...filters,
+            limit: PAGE_SIZE,
+            offset: 0,
+          })
+          setReceipts(page.receipts)
+          setTotal(page.total)
+          setHasMore(page.hasMore)
+          const r = id ? page.receipts.find((x) => x.id === id) : undefined
           if (!id || !r || (r.status && r.status !== "processing")) {
             done = true
           }
@@ -198,12 +235,12 @@ export default function ConsumerReceiptsPage() {
         if (done || Date.now() - startedAt > POLL_TIMEOUT_MS) {
           window.clearInterval(timer)
           setPendingUploads((prev) => prev.filter((p) => p.key !== key))
-          // Final refresh to pick up transactions/match state too.
+          // Final refresh to pick up match state too.
           void loadReceipts()
         }
       }, POLL_INTERVAL_MS)
     },
-    [loadReceipts]
+    [filters, loadReceipts]
   )
 
   // Drop / pick handler for the library dropzone. Each file is uploaded
@@ -319,6 +356,23 @@ export default function ConsumerReceiptsPage() {
 
   const showViewToggle = !loading && !error && receipts.length > 0
 
+  // Whether a server-side filter is currently narrowing the list.
+  const hasActiveFilter = search.trim() !== "" || dateRange?.from !== undefined
+
+  // Show the search + date-range controls whenever there are receipts OR a
+  // filter is active — otherwise a filter that returns nothing would hide the
+  // very controls needed to clear it.
+  const showFilters = !loading && !error && (receipts.length > 0 || hasActiveFilter)
+
+  // Human-readable label for the date-range trigger button.
+  const dateRangeLabel = useMemo(() => {
+    if (!dateRange?.from) return "Any date"
+    if (dateRange.to) {
+      return `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d")}`
+    }
+    return `From ${format(dateRange.from, "MMM d")}`
+  }, [dateRange])
+
   return (
     <div className="mx-auto max-w-5xl space-y-4 sm:space-y-6 w-full">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -367,17 +421,47 @@ export default function ConsumerReceiptsPage() {
         ) : null}
       </div>
 
-      {showViewToggle ? (
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search receipts by merchant, amount, or transaction…"
-            aria-label="Search receipts"
-            className="w-full rounded-md border border-[var(--border)] bg-white py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:border-[var(--foreground)] focus:ring-1 focus:ring-[var(--foreground)]"
-          />
+      {showFilters ? (
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search receipts by merchant or item…"
+              aria-label="Search receipts"
+              className="w-full rounded-md border border-[var(--border)] bg-white py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:border-[var(--foreground)] focus:ring-1 focus:ring-[var(--foreground)]"
+            />
+          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex w-full min-w-0 items-center justify-center gap-1.5 rounded-md border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] transition-colors sm:w-auto sm:min-w-[160px]">
+                <CalendarIcon className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{dateRangeLabel}</span>
+                <ChevronDown className="h-4 w-4 flex-shrink-0 sm:ml-auto" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-auto p-0">
+              <Calendar
+                mode="range"
+                selected={dateRange}
+                onSelect={setDateRange}
+                numberOfMonths={1}
+              />
+              {dateRange?.from ? (
+                <div className="border-t border-[var(--border)] p-2">
+                  <button
+                    type="button"
+                    onClick={() => setDateRange(undefined)}
+                    className="w-full rounded-md px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                  >
+                    Clear dates
+                  </button>
+                </div>
+              ) : null}
+            </PopoverContent>
+          </Popover>
         </div>
       ) : null}
 
@@ -452,6 +536,17 @@ export default function ConsumerReceiptsPage() {
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error}
         </div>
+      ) : receipts.length === 0 && hasActiveFilter ? (
+        <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
+          <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
+            <Search className="h-6 w-6 text-[var(--muted-foreground)]" />
+          </div>
+          <h3 className="mt-4 font-medium">No matching receipts</h3>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            No receipts match your current search and date filters. Try widening
+            them.
+          </p>
+        </div>
       ) : receipts.length === 0 && pendingUploads.length === 0 ? (
         <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
           <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
@@ -463,21 +558,10 @@ export default function ConsumerReceiptsPage() {
             will be auto-matched to your transactions.
           </p>
         </div>
-      ) : filteredReceipts.length === 0 && search.trim() ? (
-        <div className="rounded-lg border border-dashed border-[var(--border)] p-8 text-center">
-          <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[var(--muted)]">
-            <Search className="h-6 w-6 text-[var(--muted-foreground)]" />
-          </div>
-          <h3 className="mt-4 font-medium">No matching receipts</h3>
-          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-            Nothing matched &ldquo;{search.trim()}&rdquo;. Try a different
-            merchant, amount, or transaction name.
-          </p>
-        </div>
       ) : view === "grid" ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-          {filteredReceipts.map((r) => {
-            const matchedTx = matchByReceiptId.get(r.id)
+          {receipts.map((r) => {
+            const matchedTxId = receiptMatchedTransactionId(r)
             const rawImg = receiptImage(r)
             const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
             const date = receiptDate(r)
@@ -516,7 +600,7 @@ export default function ConsumerReceiptsPage() {
                       <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700">
                         Possible duplicate
                       </span>
-                    ) : matchedTx ? (
+                    ) : matchedTxId ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700">
                         <CheckCircle2 className="h-3 w-3" />
                         Matched
@@ -561,9 +645,9 @@ export default function ConsumerReceiptsPage() {
                         <span className="text-xs text-[var(--muted-foreground)]">
                           Reading receipt…
                         </span>
-                      ) : matchedTx ? (
+                      ) : matchedTxId ? (
                         <Link
-                          href={`/user-dashboard/transactions/${matchedTx.id}`}
+                          href={`/user-dashboard/transactions/${matchedTxId}`}
                           className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
                         >
                           View transaction
@@ -591,8 +675,8 @@ export default function ConsumerReceiptsPage() {
         </div>
       ) : (
         <ul className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border border-[var(--border)] bg-white">
-          {filteredReceipts.map((r) => {
-            const matchedTx = matchByReceiptId.get(r.id)
+          {receipts.map((r) => {
+            const matchedTxId = receiptMatchedTransactionId(r)
             const rawImg = receiptImage(r)
             const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
             const date = receiptDate(r)
@@ -639,7 +723,7 @@ export default function ConsumerReceiptsPage() {
                     <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700">
                       Possible duplicate
                     </span>
-                  ) : matchedTx ? (
+                  ) : matchedTxId ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700">
                       <CheckCircle2 className="h-3 w-3" />
                       Matched
@@ -668,9 +752,9 @@ export default function ConsumerReceiptsPage() {
                     </>
                   ) : (
                     <>
-                      {matchedTx ? (
+                      {matchedTxId ? (
                         <Link
-                          href={`/user-dashboard/transactions/${matchedTx.id}`}
+                          href={`/user-dashboard/transactions/${matchedTxId}`}
                           className="hidden items-center gap-1 text-xs text-[var(--primary)] hover:underline sm:inline-flex"
                         >
                           View
@@ -693,6 +777,15 @@ export default function ConsumerReceiptsPage() {
           })}
         </ul>
       )}
+
+      {!loading && !error && hasMore ? (
+        <LoadMore
+          onClick={() => void loadMore()}
+          loading={loadingMore}
+          loaded={receipts.length}
+          total={total}
+        />
+      ) : null}
     </div>
   )
 }
