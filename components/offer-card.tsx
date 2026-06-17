@@ -61,11 +61,11 @@ export function OfferCard({ offer, saved, onToggleSave, className }: OfferCardPr
           onClick={() => onToggleSave(offer.id)}
           aria-pressed={saved}
           aria-label={saved ? "Remove saved offer" : "Save offer"}
-          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-colors hover:bg-white"
+          className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-colors hover:bg-white sm:h-8 sm:w-8"
         >
           <Heart
             className={cn(
-              "h-4 w-4 transition-colors",
+              "h-3.5 w-3.5 transition-colors sm:h-4 sm:w-4",
               saved
                 ? "fill-green-600 text-green-600"
                 : "text-[var(--muted-foreground)]"
@@ -74,7 +74,7 @@ export function OfferCard({ offer, saved, onToggleSave, className }: OfferCardPr
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col p-3">
+      <div className="flex flex-1 flex-col p-2.5 sm:p-3">
         <div className="flex items-center gap-2">
           <div
             className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-white"
