@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
+import { Heart } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Check } from "lucide-react"
-import { offerTagLabel, type Offer } from "@/lib/offers"
+import { OFFER_PLACEHOLDER_IMAGE, offerTagLabel, type Offer } from "@/lib/offers"
 
 // Renders the savings headline with its `highlight` substring in the accent
 // color. Falls back to the plain title if the highlight isn't found so a
@@ -31,56 +32,68 @@ export type OfferCardProps = {
 }
 
 export function OfferCard({ offer, saved, onToggleSave, className }: OfferCardProps) {
+  // Fall back to the shared placeholder when the offer has no image or the
+  // image 404s (e.g. a merchant photo that hasn't been uploaded yet).
+  const [imageFailed, setImageFailed] = useState(false)
+  const imageSrc =
+    imageFailed || !offer.image ? OFFER_PLACEHOLDER_IMAGE : offer.image
+
   return (
     <div
       className={cn(
-        "flex flex-col rounded-lg border border-[var(--border)] p-4 transition-colors hover:border-[var(--foreground)]/20",
+        "flex flex-col overflow-hidden rounded-lg border border-[var(--border)] transition-colors hover:border-[var(--foreground)]/20",
         className
       )}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div
-            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
-            style={{ backgroundColor: offer.avatarColor }}
-          >
-            {offer.initial}
-          </div>
-          <div className="min-w-0">
-            <p className="truncate font-medium text-sm">{offer.merchant}</p>
-            <p className="truncate text-xs text-[var(--muted-foreground)]">
-              {offer.category} · {offer.location}
-            </p>
-          </div>
-        </div>
-        <span className="flex-shrink-0 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--muted-foreground)]">
+      <div className="relative aspect-[3/2] bg-[var(--muted)]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={imageSrc}
+          alt={offer.merchant}
+          className="h-full w-full object-cover"
+          onError={() => setImageFailed(true)}
+        />
+        <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--foreground)] shadow-sm backdrop-blur-sm">
           {offerTagLabel(offer.tag)}
         </span>
-      </div>
-
-      <p className="mt-4 text-base">
-        <OfferTitle title={offer.title} highlight={offer.highlight} />
-      </p>
-      <p className="mt-1 text-sm text-[var(--muted-foreground)]">{offer.description}</p>
-
-      <div className="mt-4 flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => onToggleSave(offer.id)}
           aria-pressed={saved}
-          className={cn(
-            "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-            saved
-              ? "bg-green-600 text-white hover:bg-green-600/90"
-              : "bg-[var(--foreground)] text-white hover:bg-[var(--foreground)]/90"
-          )}
+          aria-label={saved ? "Remove saved offer" : "Save offer"}
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm transition-colors hover:bg-white"
         >
-          {saved && <Check className="h-3.5 w-3.5" />}
-          {saved ? "Saved" : "Save offer"}
+          <Heart
+            className={cn(
+              "h-4 w-4 transition-colors",
+              saved
+                ? "fill-green-600 text-green-600"
+                : "text-[var(--muted-foreground)]"
+            )}
+          />
         </button>
-        <span className="text-xs text-[var(--muted-foreground)]">
+      </div>
+
+      <div className="flex flex-1 flex-col p-3">
+        <div className="flex items-center gap-2">
+          <div
+            className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-white"
+            style={{ backgroundColor: offer.avatarColor }}
+          >
+            {offer.initial}
+          </div>
+          <p className="truncate text-xs text-[var(--muted-foreground)]">
+            {offer.merchant} · {offer.location}
+          </p>
+        </div>
+
+        <p className="mt-2 text-sm">
+          <OfferTitle title={offer.title} highlight={offer.highlight} />
+        </p>
+
+        <p className="mt-1 text-xs text-[var(--muted-foreground)]">
           {offer.expiresLabel ?? "No expiry"}
-        </span>
+        </p>
       </div>
     </div>
   )
