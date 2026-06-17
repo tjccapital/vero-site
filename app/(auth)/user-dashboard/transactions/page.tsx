@@ -57,6 +57,7 @@ import {
 } from "date-fns"
 import {
   cacheTransactionForDetail,
+  fetchAllTransactionsCached,
   fetchTransactionsCached,
   maybeSyncTransactions,
   transactionDisplayName,
@@ -86,6 +87,16 @@ type ReceiptFilter = "all" | "matched" | "unmatched"
 // firing a request per character.
 const PAGE_SIZE = 50
 const SEARCH_DEBOUNCE_MS = 300
+
+// "Total spent" sums expenses only. Plaid sends expenses as positive amounts
+// and credits (refunds/payments) as negative; we exclude the latter so a refund
+// doesn't shrink the spending figure.
+function sumExpenses(transactions: Transaction[]): number {
+  return transactions.reduce(
+    (sum, tx) => (tx.amount > 0 ? sum + tx.amount : sum),
+    0
+  )
+}
 
 const sortLabels: Record<SortColumn, string> = {
   merchant: "Merchant",
@@ -270,15 +281,23 @@ export default function ConsumerTransactionsPage() {
     setTransactionsLoading(true)
     setTransactionsError(null)
     try {
-      const res = await fetchTransactionsCached({
-        ...serverFilters,
-        limit: PAGE_SIZE,
-        offset: 0,
-      })
+      // Page 0 drives the visible list; the full matching set (cached, fetched
+      // in parallel) drives "Total spent". We compute the total here rather
+      // than trusting the server's total_spent because that figure nets credits
+      // (refunds/payments arrive as negative amounts) against spending — we want
+      // expenses only, so we sum just the positive amounts.
+      const [res, allRes] = await Promise.all([
+        fetchTransactionsCached({
+          ...serverFilters,
+          limit: PAGE_SIZE,
+          offset: 0,
+        }),
+        fetchAllTransactionsCached(serverFilters),
+      ])
       setTransactions(res.transactions ?? [])
       setTotal(res.total ?? res.transactions?.length ?? 0)
-      setTotalSpent(res.total_spent ?? 0)
       setHasMore(res.has_more ?? res.hasMore ?? false)
+      setTotalSpent(sumExpenses(allRes.transactions ?? []))
     } catch (err) {
       console.error("[Transactions] Failed to load:", err)
       setTransactionsError("Couldn't load your transactions.")
@@ -317,14 +336,15 @@ export default function ConsumerTransactionsPage() {
         return [...prev, ...next.filter((t) => !seen.has(t.id))]
       })
       setTotal(res.total ?? total)
-      setTotalSpent(res.total_spent ?? totalSpent)
+      // totalSpent reflects the full filtered set (computed in reload), so it
+      // doesn't change as more pages are appended.
       setHasMore(res.has_more ?? res.hasMore ?? false)
     } catch (err) {
       console.error("[Transactions] Failed to load more:", err)
     } finally {
       setLoadingMore(false)
     }
-  }, [serverFilters, transactions.length, hasMore, loadingMore, total, totalSpent])
+  }, [serverFilters, transactions.length, hasMore, loadingMore, total])
 
   // Initial mount syncs + loads; later filter changes do a debounced reload
   // (no sync). The ref distinguishes the first run from filter changes.
