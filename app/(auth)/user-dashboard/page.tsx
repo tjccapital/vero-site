@@ -31,7 +31,7 @@ import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 import {
   cacheTransactionForDetail,
-  fetchTransactionsCached,
+  fetchAllTransactionsCached,
   maybeSyncTransactions,
   transactionDisplayName,
   type Transaction,
@@ -188,7 +188,9 @@ export default function ConsumerDashboardPage() {
           console.warn("[Transactions] Sync before fetch failed:", syncErr)
         }
         if (cancelled) return
-        const res = await fetchTransactionsCached()
+        // Pull the full history (paged) so the spending chart and category
+        // breakdown reflect every transaction, not just the first page.
+        const res = await fetchAllTransactionsCached()
         if (cancelled) return
         setTransactions(res.transactions ?? [])
       } catch (err) {
