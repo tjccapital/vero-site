@@ -50,7 +50,7 @@ export function OfferCard({ offer, saved, onToggleSave, className }: OfferCardPr
         <img
           src={imageSrc}
           alt={offer.merchant}
-          className="h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
           onError={() => setImageFailed(true)}
         />
         <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--foreground)] shadow-sm backdrop-blur-sm">

@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { fetchTransactions, refreshTransactions } from "@/lib/transactions"
+import {
+  clearTransactionsCache,
+  fetchTransactions,
+  refreshTransactions,
+} from "@/lib/transactions"
 import type { Transaction } from "@/lib/transactions"
 
 // 30s client-side debounce. The server enforces a separate 30-minute per-Item
@@ -58,6 +62,9 @@ export function RefreshButton({
         // Non-fatal — the GET below still reads the latest cache state.
         console.warn("[Refresh] /refresh failed:", refreshErr)
       }
+      // Invalidate the per-tab list cache so a later reload re-fetches the
+      // freshly refreshed data instead of serving the pre-refresh copy.
+      clearTransactionsCache()
       const res = await fetchTransactions()
       onResult(res.transactions ?? [])
       setLastUpdatedAt(Date.now())

@@ -57,8 +57,8 @@ import {
 } from "date-fns"
 import {
   cacheTransactionForDetail,
-  fetchTransactions,
-  syncTransactions,
+  fetchTransactionsCached,
+  maybeSyncTransactions,
   transactionDisplayName,
   type Transaction,
   type TransactionFilters,
@@ -179,7 +179,12 @@ export default function ConsumerTransactionsPage() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("date")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [receiptFilter, setReceiptFilter] = useState<ReceiptFilter>("all")
-  const [dateRange, setDateRange] = useState<DateRange | undefined>()
+  // Default the list to the last 30 days so a first visit isn't an unbounded
+  // pull. Users can widen or clear it via the date picker.
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    const today = new Date()
+    return { from: subDays(startOfDay(today), 29), to: today }
+  })
 
   // Quick-pick presets shown alongside the calendar in the popover.
   const datePresets = useMemo(() => {
@@ -265,7 +270,7 @@ export default function ConsumerTransactionsPage() {
     setTransactionsLoading(true)
     setTransactionsError(null)
     try {
-      const res = await fetchTransactions({
+      const res = await fetchTransactionsCached({
         ...serverFilters,
         limit: PAGE_SIZE,
         offset: 0,
@@ -288,7 +293,7 @@ export default function ConsumerTransactionsPage() {
   // directly so typing/toggling doesn't trigger a sync each time.
   const loadTransactions = useCallback(async () => {
     try {
-      await syncTransactions()
+      await maybeSyncTransactions()
     } catch (syncErr) {
       // Non-fatal — the cache read below still returns whatever's there.
       console.warn("[Transactions] Sync before fetch failed:", syncErr)
@@ -301,7 +306,7 @@ export default function ConsumerTransactionsPage() {
     if (loadingMore || !hasMore) return
     setLoadingMore(true)
     try {
-      const res = await fetchTransactions({
+      const res = await fetchTransactionsCached({
         ...serverFilters,
         limit: PAGE_SIZE,
         offset: transactions.length,
