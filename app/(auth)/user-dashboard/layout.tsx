@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   MessageSquare,
+  Tag,
   MoreVertical,
   PanelLeft,
   PanelLeftClose,
@@ -35,10 +36,16 @@ import {
 // content — including their own page-level "not found" / error states —
 // so the navigation chrome stays consistent across every state.
 
-const mainNavItems = [
+const mainNavItems: {
+  name: string
+  href: string
+  icon: typeof LayoutDashboard
+  badge?: string
+}[] = [
   { name: "Home", href: "/user-dashboard", icon: LayoutDashboard },
   { name: "Transactions", href: "/user-dashboard/transactions", icon: Receipt },
   { name: "Receipts", href: "/user-dashboard/receipts", icon: FileImage },
+  { name: "Offers", href: "/user-dashboard/offers", icon: Tag, badge: "New" },
   { name: "Accounts", href: "/user-dashboard/accounts", icon: Landmark },
   { name: "Chat", href: "/user-dashboard/chat?new=1", icon: MessageSquare },
 ]
@@ -139,7 +146,16 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
                 )}
               >
                 <item.icon className="h-4 w-4 flex-shrink-0" />
-                {!sidebarCollapsed && item.name}
+                {!sidebarCollapsed && (
+                  <span className="flex flex-1 items-center justify-between">
+                    {item.name}
+                    {item.badge && (
+                      <span className="rounded-full bg-[var(--primary)]/10 px-1.5 py-0.5 text-[10px] font-medium text-[var(--primary)]">
+                        {item.badge}
+                      </span>
+                    )}
+                  </span>
+                )}
               </Link>
             )
           })}
@@ -316,7 +332,14 @@ export default function ConsumerLayout({ children }: { children: ReactNode }) {
                       )}
                     >
                       <item.icon className="h-5 w-5" />
-                      {item.name}
+                      <span className="flex flex-1 items-center justify-between">
+                        {item.name}
+                        {item.badge && (
+                          <span className="rounded-full bg-[var(--primary)]/10 px-1.5 py-0.5 text-[10px] font-medium text-[var(--primary)]">
+                            {item.badge}
+                          </span>
+                        )}
+                      </span>
                     </Link>
                   )
                 })}

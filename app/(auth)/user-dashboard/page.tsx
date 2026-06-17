@@ -43,6 +43,9 @@ import {
 import { formatTxShortDate } from "@/lib/category-display"
 import { TransactionAvatar } from "@/components/transaction-avatar"
 import { useMainScrollRestore } from "@/lib/use-main-scroll-restore"
+import { OfferCard } from "@/components/offer-card"
+import { useSavedOffers } from "@/lib/use-saved-offers"
+import { fetchOffers, type Offer } from "@/lib/offers"
 import {
   Area,
   AreaChart,
@@ -98,6 +101,8 @@ export default function ConsumerDashboardPage() {
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
   const [accounts, setAccounts] = useState<PlaidAccount[]>([])
+  const [offers, setOffers] = useState<Offer[]>([])
+  const { saved: savedOffers, toggleSave: toggleSaveOffer } = useSavedOffers()
   // Mirrors the /transactions page: when the user just linked a bank but
   // transactions haven't landed yet, show a "Fetching from {bank}…" indicator
   // in the recent-transactions widget instead of the sample data.
@@ -202,6 +207,26 @@ export default function ConsumerDashboardPage() {
       cancelled = true
     }
   }, [])
+
+  // Load the user's offers. Stubbed with sample data today (see lib/offers.ts);
+  // we only surface the top few here and link out to the full offers page.
+  useEffect(() => {
+    let cancelled = false
+    fetchOffers()
+      .then((res) => {
+        if (cancelled) return
+        setOffers(res)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.error("[Offers] Failed to load:", err)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const featuredOffers = useMemo(() => offers.slice(0, 3), [offers])
 
   // Restore the dashboard's scroll position after returning from a
   // transaction detail opened from the "Recent Transactions" card.
@@ -740,6 +765,37 @@ export default function ConsumerDashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* Offers for you */}
+        {featuredOffers.length > 0 && (
+          <div>
+            <div className="flex items-end justify-between gap-3 mb-3">
+              <div>
+                <h3 className="text-lg font-semibold">Offers for you</h3>
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  From places you already shop — save on what you already buy
+                </p>
+              </div>
+              <Link
+                href="/user-dashboard/offers"
+                className="flex flex-shrink-0 items-center gap-1 text-sm text-[var(--primary)] hover:underline"
+              >
+                View all
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredOffers.map((offer) => (
+                <OfferCard
+                  key={offer.id}
+                  offer={offer}
+                  saved={savedOffers.has(offer.id)}
+                  onToggleSave={toggleSaveOffer}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Spending Chart */}
         <div className="relative rounded-lg border border-[var(--border)] p-4 sm:p-6">
