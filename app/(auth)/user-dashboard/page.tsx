@@ -31,8 +31,8 @@ import { PlaidLinkModal } from "@/components/plaid-link-modal"
 import { fetchPlaidAccounts, type PlaidAccount } from "@/lib/plaid"
 import {
   cacheTransactionForDetail,
-  fetchTransactions,
-  syncTransactions,
+  fetchTransactionsCached,
+  maybeSyncTransactions,
   transactionDisplayName,
   type Transaction,
 } from "@/lib/transactions"
@@ -94,6 +94,7 @@ export default function ConsumerDashboardPage() {
   const [referralCopied, setReferralCopied] = useState(false)
   const [showPlaidModal, setShowPlaidModal] = useState(false)
   const [accountsExpanded, setAccountsExpanded] = useState(false)
+  const [offersCollapsed, setOffersCollapsed] = useState(false)
   const [checklistCollapsed, setChecklistCollapsed] = useState(false)
   const [referralDismissed, setReferralDismissed] = useState(false)
   const [gettingStartedDismissed, setGettingStartedDismissed] = useState(false)
@@ -127,6 +128,19 @@ export default function ConsumerDashboardPage() {
     if (window.localStorage.getItem('vero:consumer:gettingStartedDismissed') === '1') {
       setGettingStartedDismissed(true)
     }
+    if (window.localStorage.getItem('vero:consumer:offersCollapsed') === '1') {
+      setOffersCollapsed(true)
+    }
+  }, [])
+
+  const toggleOffersCollapsed = useCallback(() => {
+    setOffersCollapsed((prev) => {
+      const next = !prev
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('vero:consumer:offersCollapsed', next ? '1' : '0')
+      }
+      return next
+    })
   }, [])
 
   const dismissReferral = useCallback(() => {
@@ -168,13 +182,13 @@ export default function ConsumerDashboardPage() {
     ;(async () => {
       try {
         try {
-          await syncTransactions()
+          await maybeSyncTransactions()
         } catch (syncErr) {
           // Non-fatal — the fetch below still returns whatever's cached.
           console.warn("[Transactions] Sync before fetch failed:", syncErr)
         }
         if (cancelled) return
-        const res = await fetchTransactions()
+        const res = await fetchTransactionsCached()
         if (cancelled) return
         setTransactions(res.transactions ?? [])
       } catch (err) {
@@ -770,12 +784,26 @@ export default function ConsumerDashboardPage() {
         {featuredOffers.length > 0 && (
           <div>
             <div className="flex items-end justify-between gap-3 mb-3">
-              <div>
-                <h3 className="text-lg font-semibold">Offers for you</h3>
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  From places you already shop — save on what you already buy
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={toggleOffersCollapsed}
+                aria-expanded={!offersCollapsed}
+                className="flex items-center gap-2 text-left"
+              >
+                <div>
+                  <h3 className="flex items-center gap-1.5 text-lg font-semibold">
+                    Offers for you
+                    {offersCollapsed ? (
+                      <ChevronDown className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    ) : (
+                      <ChevronUp className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    )}
+                  </h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    From places you already shop — save on what you already buy
+                  </p>
+                </div>
+              </button>
               <Link
                 href="/user-dashboard/offers"
                 className="flex flex-shrink-0 items-center gap-1 text-sm text-[var(--primary)] hover:underline"
@@ -784,16 +812,18 @@ export default function ConsumerDashboardPage() {
                 <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredOffers.map((offer) => (
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  saved={savedOffers.has(offer.id)}
-                  onToggleSave={toggleSaveOffer}
-                />
-              ))}
-            </div>
+            {!offersCollapsed && (
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {featuredOffers.map((offer) => (
+                  <OfferCard
+                    key={offer.id}
+                    offer={offer}
+                    saved={savedOffers.has(offer.id)}
+                    onToggleSave={toggleSaveOffer}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

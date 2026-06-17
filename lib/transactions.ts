@@ -146,6 +146,118 @@ export function refreshTransactions(): Promise<TransactionsResponse> {
   return postJson<TransactionsResponse>("/api/transactions/refresh")
 }
 
+// ─── Lightweight per-tab caching ─────────────────────────────────────────────
+// Reloading a dashboard page shouldn't re-hit the API every time. We cache list
+// responses in sessionStorage keyed by their query string (so each filter combo
+// caches independently) with a short TTL, and throttle the Plaid sync so it
+// runs at most once per window per tab. Both are best-effort — any storage
+// error or cache miss falls through to the network. sessionStorage (not local)
+// scopes the cache to the tab and clears it when the tab closes.
+
+const LIST_CACHE_PREFIX = "vero:tx:list:"
+const LIST_CACHE_TTL_MS = 60_000 // serve a cached list for up to 60s
+const SYNC_THROTTLE_KEY = "vero:tx:lastSync"
+const SYNC_THROTTLE_MS = 5 * 60_000 // sync at most once every 5 min per tab
+
+interface CachedList {
+  at: number
+  data: TransactionsResponse
+}
+
+function listCacheKey(filters?: TransactionFilters): string {
+  return LIST_CACHE_PREFIX + (buildQuery(filters) || "_all")
+}
+
+function readListCache(key: string): TransactionsResponse | null {
+  if (typeof window === "undefined") return null
+  try {
+    const raw = sessionStorage.getItem(key)
+    if (!raw) return null
+    const entry = JSON.parse(raw) as CachedList
+    if (Date.now() - entry.at > LIST_CACHE_TTL_MS) return null
+    return entry.data
+  } catch {
+    return null
+  }
+}
+
+function writeListCache(key: string, data: TransactionsResponse): void {
+  if (typeof window === "undefined") return
+  try {
+    const entry: CachedList = { at: Date.now(), data }
+    sessionStorage.setItem(key, JSON.stringify(entry))
+  } catch {
+    // Quota/availability errors are non-fatal — we just skip caching.
+  }
+}
+
+// Cached variant of fetchTransactions: returns a recent sessionStorage copy
+// when one exists, otherwise fetches and caches the response. Pass
+// { force: true } to bypass the cache (e.g. an explicit refresh).
+export async function fetchTransactionsCached(
+  filters?: TransactionFilters,
+  opts?: { force?: boolean }
+): Promise<TransactionsResponse> {
+  const key = listCacheKey(filters)
+  if (!opts?.force) {
+    const cached = readListCache(key)
+    if (cached) return cached
+  }
+  const data = await fetchTransactions(filters)
+  writeListCache(key, data)
+  return data
+}
+
+// True when no sync has run within the throttle window (so the caller should
+// sync). Pure check — call markTransactionsSynced() after a successful sync.
+function shouldSyncTransactions(): boolean {
+  if (typeof window === "undefined") return true
+  try {
+    const raw = sessionStorage.getItem(SYNC_THROTTLE_KEY)
+    const last = raw ? Number(raw) : 0
+    return Date.now() - last >= SYNC_THROTTLE_MS
+  } catch {
+    return true
+  }
+}
+
+function markTransactionsSynced(): void {
+  if (typeof window === "undefined") return
+  try {
+    sessionStorage.setItem(SYNC_THROTTLE_KEY, String(Date.now()))
+  } catch {
+    // ignore
+  }
+}
+
+// Sync from Plaid at most once per throttle window per tab. On rapid reloads
+// the redundant syncs are skipped — the cached list is already fresh enough.
+// Throws on a real sync failure so callers can keep their existing non-fatal
+// handling; the throttle timestamp is only recorded on success so a failed
+// sync is retried on the next load.
+export async function maybeSyncTransactions(): Promise<void> {
+  if (!shouldSyncTransactions()) return
+  await syncTransactions()
+  markTransactionsSynced()
+}
+
+// Drops every cached list and resets the sync throttle. Call after an explicit
+// refresh so a later reload re-fetches instead of serving the pre-refresh copy.
+export function clearTransactionsCache(): void {
+  if (typeof window === "undefined") return
+  try {
+    const keys: string[] = []
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i)
+      if (k && k.startsWith(LIST_CACHE_PREFIX)) keys.push(k)
+    }
+    keys.forEach((k) => sessionStorage.removeItem(k))
+    sessionStorage.removeItem(SYNC_THROTTLE_KEY)
+  } catch {
+    // ignore
+  }
+}
+
 // Pull the merchant logo URL out of a transaction. The backend enriches
 // transactions with a merchant record that carries the brand logo (camelCase
 // `logoUrl`, but a few endpoints serialise it snake_case) — surface whichever

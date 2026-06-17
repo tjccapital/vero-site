@@ -1,16 +1,14 @@
 "use client"
 
-// Circular badge for a transaction. Renders the enriched merchant logo when
-// the backend provides one (merchant.logoUrl / logo_url) and falls back to the
-// category icon when there's no logo or the image fails to load. Previously the
-// consumer surfaces only ever drew the category icon and silently dropped the
-// logo the API returns; vero-mobile renders these logos, so this brings the web
-// app in line.
+// Circular badge for a transaction. Always renders the category icon — the
+// consumer surfaces (dashboard, transactions list, transaction detail)
+// intentionally use icons across the board rather than merchant logos, so the
+// look stays consistent regardless of whether the backend enriched the
+// transaction with a logo.
 
-import { useState } from "react"
+import { createElement } from "react"
 import { cn } from "@/lib/utils"
 import { getTransactionIcon } from "@/lib/category-display"
-import { transactionDisplayName, transactionLogoUrl } from "@/lib/transactions"
 import type { Transaction } from "@/lib/transactions"
 
 export function TransactionAvatar({
@@ -21,13 +19,14 @@ export function TransactionAvatar({
   transaction: Transaction | null | undefined
   // Sizing/background for the circular container (e.g. "h-10 w-10 bg-[var(--muted)]").
   className?: string
-  // Sizing/color for the fallback category icon (e.g. "h-5 w-5 text-[var(--muted-foreground)]").
+  // Sizing/color for the category icon (e.g. "h-5 w-5 text-[var(--muted-foreground)]").
   iconClassName?: string
 }) {
-  const [broken, setBroken] = useState(false)
-  const logo = transactionLogoUrl(transaction)
-  const Icon = getTransactionIcon(transaction)
-  const showLogo = logo && !broken
+  // getTransactionIcon returns a stable, module-level lucide icon component.
+  // Render it via createElement (rather than assigning to a capitalized local
+  // and using JSX) so the static-components lint doesn't read it as an inline
+  // component definition.
+  const icon = getTransactionIcon(transaction)
 
   return (
     <div
@@ -36,18 +35,7 @@ export function TransactionAvatar({
         className
       )}
     >
-      {showLogo ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={logo}
-          alt={transaction ? `${transactionDisplayName(transaction)} logo` : ""}
-          className="h-full w-full object-cover"
-          loading="lazy"
-          onError={() => setBroken(true)}
-        />
-      ) : (
-        <Icon className={iconClassName} />
-      )}
+      {createElement(icon, { className: iconClassName })}
     </div>
   )
 }
