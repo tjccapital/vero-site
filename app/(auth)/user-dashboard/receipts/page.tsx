@@ -29,7 +29,7 @@ import {
   promoteDuplicate,
   receiptDate,
   receiptDisplayName,
-  receiptImage,
+  receiptThumbnail,
   receiptMatchedTransactionId,
   uploadReceipt,
   type ReceiptFilters,
@@ -562,7 +562,7 @@ export default function ConsumerReceiptsPage() {
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           {receipts.map((r) => {
             const matchedTxId = receiptMatchedTransactionId(r)
-            const rawImg = receiptImage(r)
+            const rawImg = receiptThumbnail(r)
             const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
             const date = receiptDate(r)
             const name = receiptDisplayName(r)
@@ -677,7 +677,7 @@ export default function ConsumerReceiptsPage() {
         <ul className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border border-[var(--border)] bg-white">
           {receipts.map((r) => {
             const matchedTxId = receiptMatchedTransactionId(r)
-            const rawImg = receiptImage(r)
+            const rawImg = receiptThumbnail(r)
             const img = rawImg && !brokenImages.has(r.id) ? rawImg : undefined
             const date = receiptDate(r)
             const name = receiptDisplayName(r)
