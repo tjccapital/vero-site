@@ -272,3 +272,11 @@ export function receiptImage(r: ReceiptListItem): string | undefined {
     undefined
   )
 }
+
+// Thumbnail-only variant for list rows. Unlike receiptImage it never falls back
+// to the full-size original, so a HEIC upload with no server-generated
+// thumbnail resolves to undefined (the UI then shows its placeholder) rather
+// than trying to render a full HEIC the browser can't decode.
+export function receiptThumbnail(r: ReceiptListItem): string | undefined {
+  return r.thumbnailUrl || r.thumbnail_url || undefined
+}

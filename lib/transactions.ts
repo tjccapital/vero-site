@@ -208,6 +208,59 @@ export async function fetchTransactionsCached(
   return data
 }
 
+// The list endpoint caps a single response (server default 50, max 100). Pages
+// that aggregate across full history — e.g. the dashboard spending chart and
+// category breakdown — need every row, not just the first page, so we walk the
+// pages here. ALL_MAX_PAGES is a safety ceiling so a huge account can't spin
+// forever; total_spent/total come from the first page (they're computed across
+// ALL filter-matching rows server-side, independent of the page).
+const ALL_PAGE_LIMIT = 100
+const ALL_MAX_PAGES = 20
+
+export async function fetchAllTransactions(
+  filters?: TransactionFilters
+): Promise<TransactionsResponse> {
+  const all: Transaction[] = []
+  let first: TransactionsResponse | null = null
+  let offset = 0
+  for (let page = 0; page < ALL_MAX_PAGES; page++) {
+    const res = await fetchTransactions({
+      ...filters,
+      limit: ALL_PAGE_LIMIT,
+      offset,
+    })
+    if (!first) first = res
+    const batch = res.transactions ?? []
+    all.push(...batch)
+    const more = res.has_more ?? res.hasMore ?? false
+    offset += batch.length
+    if (!more || batch.length === 0) break
+  }
+  return {
+    ...(first ?? { transactions: [] }),
+    transactions: all,
+    total: first?.total ?? all.length,
+    total_spent: first?.total_spent,
+  }
+}
+
+// Cached fetch-all, keyed separately from the single-page cache so the two
+// don't clobber each other. Cleared by clearTransactionsCache() alongside the
+// rest.
+export async function fetchAllTransactionsCached(
+  filters?: TransactionFilters,
+  opts?: { force?: boolean }
+): Promise<TransactionsResponse> {
+  const key = LIST_CACHE_PREFIX + "all:" + (buildQuery(filters) || "_all")
+  if (!opts?.force) {
+    const cached = readListCache(key)
+    if (cached) return cached
+  }
+  const data = await fetchAllTransactions(filters)
+  writeListCache(key, data)
+  return data
+}
+
 // True when no sync has run within the throttle window (so the caller should
 // sync). Pure check — call markTransactionsSynced() after a successful sync.
 function shouldSyncTransactions(): boolean {
