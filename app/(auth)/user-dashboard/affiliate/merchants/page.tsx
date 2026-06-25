@@ -18,7 +18,7 @@ import {
   TrendingUp,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { AffiliateShell } from "@/components/affiliate-shell"
+import { AffiliateHeader } from "../affiliate-tabs"
 import {
   listMerchants,
   type AffiliateMerchant,
@@ -104,137 +104,133 @@ export default function AffiliateMerchantsPage() {
   const canLoadMore = items.length < total
 
   return (
-    <AffiliateShell
-      pageTitle="Merchants"
-      currentPath="/affiliate-dashboard/merchants"
-      returnTo="/affiliate-dashboard/merchants"
-    >
-      <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Merchants</h1>
-            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-              Browse merchants in the Vero network and the ones still to recruit.
-            </p>
-          </div>
-          <div className="relative sm:w-72">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by name, category, city..."
-              className="w-full rounded-md border border-[var(--border)] bg-transparent py-2 pl-9 pr-3 text-sm focus:border-[var(--foreground)] focus:outline-none"
-            />
-          </div>
+    <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6 w-full">
+      <AffiliateHeader />
+
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">Merchants</h2>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            Browse merchants in the Vero network and the ones still to recruit.
+          </p>
         </div>
-
-        <GettingStartedCard />
-
-        <div className="rounded-lg border border-[var(--border)]">
-          <div className="flex overflow-x-auto border-b border-[var(--border)] px-2 sm:px-4">
-            {(Object.keys(TAB_LABELS) as TabKey[]).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={cn(
-                  "flex items-center gap-2 border-b-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
-                  activeTab === tab
-                    ? "border-[var(--foreground)] text-[var(--foreground)]"
-                    : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                )}
-              >
-                {TAB_LABELS[tab]}
-                <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">
-                  {tab === "all" ? counts.all : counts[tab]}
-                </span>
-              </button>
-            ))}
-          </div>
-
-          {loading ? (
-            <div className="flex items-center justify-center gap-2 py-12 text-sm text-[var(--muted-foreground)]">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading merchants…
-            </div>
-          ) : error ? (
-            <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-              <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
-              <p className="text-sm font-medium">Couldn&apos;t load merchants</p>
-              <p className="text-xs text-[var(--muted-foreground)]">{error}</p>
-              <button
-                onClick={() => load(0)}
-                className="mt-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--muted)]"
-              >
-                Retry
-              </button>
-            </div>
-          ) : items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-              <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
-              <p className="text-sm font-medium">No merchants match your filters</p>
-              <p className="text-xs text-[var(--muted-foreground)]">
-                Try clearing the search or switching tabs.
-              </p>
-            </div>
-          ) : (
-            <>
-              <ul className="divide-y divide-[var(--border)]">
-                {items.map((m) => (
-                  <li key={m.id}>
-                    <Link
-                      href={`/affiliate-dashboard/merchants/${m.id}`}
-                      className="flex items-center gap-4 px-4 py-4 hover:bg-[var(--muted)]/50 transition-colors"
-                    >
-                      <MerchantLogo merchant={m} />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="truncate text-sm font-medium">{m.name}</p>
-                          <StatusBadge status={m.status} />
-                        </div>
-                        <p className="mt-0.5 truncate text-xs text-[var(--muted-foreground)]">
-                          {m.categoryLabel} · {m.posSystem} · {m.city}, {m.state}
-                        </p>
-                      </div>
-                      <div className="hidden sm:block text-right">
-                        <p className="text-xs text-[var(--muted-foreground)]">Est. annual value</p>
-                        <p className="text-sm font-medium">${m.estimatedValue.toLocaleString()}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-[var(--muted-foreground)]">
-                          {m.status === "in_network" ? "Earned" : "Reward"}
-                        </p>
-                        <p
-                          className={cn(
-                            "text-sm font-medium",
-                            m.status === "in_network" ? "text-green-600" : ""
-                          )}
-                        >
-                          ${m.reward.toLocaleString()}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              {canLoadMore && (
-                <div className="flex justify-center border-t border-[var(--border)] p-4">
-                  <button
-                    onClick={() => load(items.length)}
-                    disabled={loadingMore}
-                    className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] disabled:opacity-60"
-                  >
-                    {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
-                    Load more ({items.length} of {total})
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+        <div className="relative sm:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name, category, city..."
+            className="w-full rounded-md border border-[var(--border)] bg-transparent py-2 pl-9 pr-3 text-sm focus:border-[var(--foreground)] focus:outline-none"
+          />
         </div>
       </div>
-    </AffiliateShell>
+
+      <GettingStartedCard />
+
+      <div className="rounded-lg border border-[var(--border)]">
+        <div className="flex overflow-x-auto border-b border-[var(--border)] px-2 sm:px-4">
+          {(Object.keys(TAB_LABELS) as TabKey[]).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={cn(
+                "flex items-center gap-2 border-b-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap",
+                activeTab === tab
+                  ? "border-[var(--foreground)] text-[var(--foreground)]"
+                  : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              )}
+            >
+              {TAB_LABELS[tab]}
+              <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-xs">
+                {tab === "all" ? counts.all : counts[tab]}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center gap-2 py-12 text-sm text-[var(--muted-foreground)]">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Loading merchants…
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+            <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
+            <p className="text-sm font-medium">Couldn&apos;t load merchants</p>
+            <p className="text-xs text-[var(--muted-foreground)]">{error}</p>
+            <button
+              onClick={() => load(0)}
+              className="mt-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--muted)]"
+            >
+              Retry
+            </button>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+            <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
+            <p className="text-sm font-medium">No merchants match your filters</p>
+            <p className="text-xs text-[var(--muted-foreground)]">
+              Try clearing the search or switching tabs.
+            </p>
+          </div>
+        ) : (
+          <>
+            <ul className="divide-y divide-[var(--border)]">
+              {items.map((m) => (
+                <li key={m.id}>
+                  <Link
+                    href={`/user-dashboard/affiliate/merchants/${m.id}`}
+                    className="flex items-center gap-4 px-4 py-4 hover:bg-[var(--muted)]/50 transition-colors"
+                  >
+                    <MerchantLogo merchant={m} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-medium">{m.name}</p>
+                        <StatusBadge status={m.status} />
+                      </div>
+                      <p className="mt-0.5 truncate text-xs text-[var(--muted-foreground)]">
+                        {m.categoryLabel} · {m.posSystem} · {m.city}, {m.state}
+                      </p>
+                    </div>
+                    <div className="hidden sm:block text-right">
+                      <p className="text-xs text-[var(--muted-foreground)]">Est. annual value</p>
+                      <p className="text-sm font-medium">${m.estimatedValue.toLocaleString()}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-[var(--muted-foreground)]">
+                        {m.status === "in_network" ? "Earned" : "Reward"}
+                      </p>
+                      <p
+                        className={cn(
+                          "text-sm font-medium",
+                          m.status === "in_network" ? "text-green-600" : ""
+                        )}
+                      >
+                        ${m.reward.toLocaleString()}
+                      </p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 flex-shrink-0 text-[var(--muted-foreground)]" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            {canLoadMore && (
+              <div className="flex justify-center border-t border-[var(--border)] p-4">
+                <button
+                  onClick={() => load(items.length)}
+                  disabled={loadingMore}
+                  className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--muted)] disabled:opacity-60"
+                >
+                  {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Load more ({items.length} of {total})
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   )
 }
 

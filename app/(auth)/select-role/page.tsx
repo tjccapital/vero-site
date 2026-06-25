@@ -122,7 +122,7 @@ export default function SelectRolePage() {
               </CardHeader>
               <CardFooter>
                 <a
-                  href="/auth/login?returnTo=/affiliate-dashboard"
+                  href="/auth/login?returnTo=/user-dashboard/affiliate"
                   className="flex w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--muted)] transition-colors"
                 >
                   Continue as Affiliate

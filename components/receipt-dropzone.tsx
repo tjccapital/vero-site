@@ -118,7 +118,7 @@ export function ReceiptDropzone({
       ? "We'll attach it to a transaction automatically."
       : phase === "error"
       ? "Try a clearer image or a different file."
-      : idleHint ?? "or click to choose a file (JPG, PNG, PDF)"
+      : idleHint ?? "or click to choose a file (JPG, PNG, HEIC, PDF)"
 
   const Icon =
     phase === "uploading" || phase === "matching"

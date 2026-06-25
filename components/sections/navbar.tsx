@@ -45,7 +45,7 @@ const dashboardItems = [
     icon: Handshake,
     title: "Affiliate",
     description: "Track prospects and earn rewards for new merchants.",
-    href: "/affiliate-dashboard",
+    href: "/user-dashboard/affiliate",
   },
 ];
 
