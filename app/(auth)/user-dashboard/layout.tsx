@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   CircleHelp,
   FileImage,
+  Handshake,
   Landmark,
   LayoutDashboard,
   LogOut,
@@ -47,6 +48,7 @@ const mainNavItems: {
   { name: "Receipts", href: "/user-dashboard/receipts", icon: FileImage },
   { name: "Offers", href: "/user-dashboard/offers", icon: Tag, badge: "New" },
   { name: "Accounts", href: "/user-dashboard/accounts", icon: Landmark },
+  { name: "Affiliate", href: "/user-dashboard/affiliate", icon: Handshake },
   { name: "Chat", href: "/user-dashboard/chat?new=1", icon: MessageSquare },
 ]
 

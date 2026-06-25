@@ -17,7 +17,6 @@ import {
   TrendingUp,
   Sparkles,
 } from "lucide-react"
-import { AffiliateShell } from "@/components/affiliate-shell"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import {
@@ -59,7 +58,7 @@ export default function MerchantDetailsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <DetailShell merchantId={id}>
+      <DetailShell>
         <div className="flex items-center justify-center gap-2 py-16 text-sm text-[var(--muted-foreground)]">
           <Loader2 className="h-4 w-4 animate-spin" />
           Loading merchant…
@@ -70,13 +69,13 @@ export default function MerchantDetailsPage({ params }: PageProps) {
 
   if (error || !merchant) {
     return (
-      <DetailShell merchantId={id}>
+      <DetailShell>
         <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
           <Store className="h-8 w-8 text-[var(--muted-foreground)]" />
           <p className="text-sm font-medium">Merchant not found</p>
           <p className="text-xs text-[var(--muted-foreground)]">{error}</p>
           <Link
-            href="/affiliate-dashboard/merchants"
+            href="/user-dashboard/affiliate/merchants"
             className="mt-2 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--muted)]"
           >
             Back to merchants
@@ -89,30 +88,18 @@ export default function MerchantDetailsPage({ params }: PageProps) {
   return <MerchantDetails initialMerchant={merchant} />
 }
 
-function DetailShell({
-  merchantId,
-  children,
-}: {
-  merchantId: string
-  children: React.ReactNode
-}) {
+function DetailShell({ children }: { children: React.ReactNode }) {
   return (
-    <AffiliateShell
-      pageTitle="Merchant Details"
-      currentPath="/affiliate-dashboard/merchants"
-      returnTo={`/affiliate-dashboard/merchants/${merchantId}`}
-    >
-      <div className="mx-auto max-w-4xl space-y-6 w-full">
-        <Link
-          href="/affiliate-dashboard/merchants"
-          className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to merchants
-        </Link>
-        {children}
-      </div>
-    </AffiliateShell>
+    <div className="mx-auto max-w-4xl space-y-6 w-full">
+      <Link
+        href="/user-dashboard/affiliate/merchants"
+        className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to merchants
+      </Link>
+      {children}
+    </div>
   )
 }
 
@@ -147,165 +134,159 @@ function MerchantDetails({ initialMerchant }: { initialMerchant: AffiliateMercha
   }
 
   return (
-    <AffiliateShell
-      pageTitle="Merchant Details"
-      currentPath="/affiliate-dashboard/merchants"
-      returnTo={`/affiliate-dashboard/merchants/${merchant.id}`}
-    >
-      <div className="mx-auto max-w-4xl space-y-6 w-full">
-        <Link
-          href="/affiliate-dashboard/merchants"
-          className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to merchants
-        </Link>
+    <div className="mx-auto max-w-4xl space-y-6 w-full">
+      <Link
+        href="/user-dashboard/affiliate/merchants"
+        className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to merchants
+      </Link>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-start gap-4">
-            {merchant.logoUrl ? (
-              <Image
-                src={merchant.logoUrl}
-                alt=""
-                width={56}
-                height={56}
-                unoptimized
-                className="h-14 w-14 flex-shrink-0 rounded-xl object-cover bg-[var(--muted)]"
-              />
-            ) : (
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--muted)]">
-                <Store className="h-7 w-7 text-[var(--muted-foreground)]" />
-              </div>
-            )}
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-bold">{merchant.name}</h1>
-                <StatusBadge status={merchant.status} />
-              </div>
-              <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                {merchant.categoryLabel} · {merchant.posSystem}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {justConfirmed && (
-          <div className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
-            <Sparkles className="h-5 w-5 flex-shrink-0 text-green-600" />
-            <div className="text-sm">
-              <p className="font-medium text-green-800">Signup confirmed</p>
-              <p className="text-green-700">
-                {merchant.name} is now in the Vero merchant network. ${merchant.reward.toLocaleString()}{" "}
-                has been added to your pending payout.
-              </p>
-            </div>
-          </div>
-        )}
-
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-lg border border-[var(--border)] p-4">
-            <p className="text-xs text-[var(--muted-foreground)]">Estimated annual value</p>
-            <p className="mt-1 text-xl font-semibold">
-              ${merchant.estimatedValue.toLocaleString()}
-            </p>
-            <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-              Based on {merchant.monthlyTransactions.toLocaleString()} monthly transactions
-            </p>
-          </div>
-          <div className="rounded-lg border border-[var(--border)] p-4">
-            <p className="text-xs text-[var(--muted-foreground)]">
-              {merchant.status === "in_network" ? "Reward earned" : "Reward on signup"}
-            </p>
-            <p
-              className={cn(
-                "mt-1 text-xl font-semibold",
-                merchant.status === "in_network" && "text-green-600"
-              )}
-            >
-              ${merchant.reward.toLocaleString()}
-            </p>
-            <p className="mt-1 text-xs text-[var(--muted-foreground)]">Paid on first full month</p>
-          </div>
-          <div className="rounded-lg border border-[var(--border)] p-4 col-span-2 lg:col-span-1">
-            <p className="text-xs text-[var(--muted-foreground)]">Monthly transactions</p>
-            <p className="mt-1 text-xl font-semibold">
-              {merchant.monthlyTransactions.toLocaleString()}
-            </p>
-            <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-              Approximate volume
-            </p>
-          </div>
-        </div>
-
-        <ConfirmationCard
-          merchant={merchant}
-          code={code}
-          setCode={setCode}
-          onSubmit={handleConfirm}
-          submitting={submitting}
-          error={error}
-        />
-
-        <div className="rounded-xl border border-[var(--border)] p-5">
-          <h2 className="text-base font-semibold mb-4">Merchant Details</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <DetailRow
-              icon={<Store className="h-4 w-4" />}
-              label="Business name"
-              value={merchant.name}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-4">
+          {merchant.logoUrl ? (
+            <Image
+              src={merchant.logoUrl}
+              alt=""
+              width={56}
+              height={56}
+              unoptimized
+              className="h-14 w-14 flex-shrink-0 rounded-xl object-cover bg-[var(--muted)]"
             />
-            <DetailRow
-              icon={<Receipt className="h-4 w-4" />}
-              label="Point of sale"
-              value={merchant.posSystem}
-            />
-            <DetailRow
-              icon={<MapPin className="h-4 w-4" />}
-              label="Address"
-              value={`${merchant.address}, ${merchant.city}, ${merchant.state} ${merchant.zip}`}
-            />
-            <DetailRow
-              icon={<TrendingUp className="h-4 w-4" />}
-              label="Category"
-              value={merchant.categoryLabel}
-            />
-            {merchant.contactEmail && (
-              <DetailRow
-                icon={<Mail className="h-4 w-4" />}
-                label="Contact email"
-                value={merchant.contactEmail}
-              />
-            )}
-            {merchant.contactPhone && (
-              <DetailRow
-                icon={<Phone className="h-4 w-4" />}
-                label="Contact phone"
-                value={merchant.contactPhone}
-              />
-            )}
-            {merchant.signedUpAt && (
-              <DetailRow
-                icon={<CheckCircle2 className="h-4 w-4 text-green-600" />}
-                label="Signed up"
-                value={new Date(merchant.signedUpAt).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              />
-            )}
-          </div>
-          {merchant.notes && (
-            <div className="mt-5 rounded-md bg-[var(--muted)]/60 p-3">
-              <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
-                Notes
-              </p>
-              <p className="mt-1 text-sm">{merchant.notes}</p>
+          ) : (
+            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--muted)]">
+              <Store className="h-7 w-7 text-[var(--muted-foreground)]" />
             </div>
           )}
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-bold">{merchant.name}</h1>
+              <StatusBadge status={merchant.status} />
+            </div>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+              {merchant.categoryLabel} · {merchant.posSystem}
+            </p>
+          </div>
         </div>
       </div>
-    </AffiliateShell>
+
+      {justConfirmed && (
+        <div className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
+          <Sparkles className="h-5 w-5 flex-shrink-0 text-green-600" />
+          <div className="text-sm">
+            <p className="font-medium text-green-800">Signup confirmed</p>
+            <p className="text-green-700">
+              {merchant.name} is now in the Vero merchant network. ${merchant.reward.toLocaleString()}{" "}
+              has been added to your pending payout.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-lg border border-[var(--border)] p-4">
+          <p className="text-xs text-[var(--muted-foreground)]">Estimated annual value</p>
+          <p className="mt-1 text-xl font-semibold">
+            ${merchant.estimatedValue.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+            Based on {merchant.monthlyTransactions.toLocaleString()} monthly transactions
+          </p>
+        </div>
+        <div className="rounded-lg border border-[var(--border)] p-4">
+          <p className="text-xs text-[var(--muted-foreground)]">
+            {merchant.status === "in_network" ? "Reward earned" : "Reward on signup"}
+          </p>
+          <p
+            className={cn(
+              "mt-1 text-xl font-semibold",
+              merchant.status === "in_network" && "text-green-600"
+            )}
+          >
+            ${merchant.reward.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-[var(--muted-foreground)]">Paid on first full month</p>
+        </div>
+        <div className="rounded-lg border border-[var(--border)] p-4 col-span-2 lg:col-span-1">
+          <p className="text-xs text-[var(--muted-foreground)]">Monthly transactions</p>
+          <p className="mt-1 text-xl font-semibold">
+            {merchant.monthlyTransactions.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+            Approximate volume
+          </p>
+        </div>
+      </div>
+
+      <ConfirmationCard
+        merchant={merchant}
+        code={code}
+        setCode={setCode}
+        onSubmit={handleConfirm}
+        submitting={submitting}
+        error={error}
+      />
+
+      <div className="rounded-xl border border-[var(--border)] p-5">
+        <h2 className="text-base font-semibold mb-4">Merchant Details</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <DetailRow
+            icon={<Store className="h-4 w-4" />}
+            label="Business name"
+            value={merchant.name}
+          />
+          <DetailRow
+            icon={<Receipt className="h-4 w-4" />}
+            label="Point of sale"
+            value={merchant.posSystem}
+          />
+          <DetailRow
+            icon={<MapPin className="h-4 w-4" />}
+            label="Address"
+            value={`${merchant.address}, ${merchant.city}, ${merchant.state} ${merchant.zip}`}
+          />
+          <DetailRow
+            icon={<TrendingUp className="h-4 w-4" />}
+            label="Category"
+            value={merchant.categoryLabel}
+          />
+          {merchant.contactEmail && (
+            <DetailRow
+              icon={<Mail className="h-4 w-4" />}
+              label="Contact email"
+              value={merchant.contactEmail}
+            />
+          )}
+          {merchant.contactPhone && (
+            <DetailRow
+              icon={<Phone className="h-4 w-4" />}
+              label="Contact phone"
+              value={merchant.contactPhone}
+            />
+          )}
+          {merchant.signedUpAt && (
+            <DetailRow
+              icon={<CheckCircle2 className="h-4 w-4 text-green-600" />}
+              label="Signed up"
+              value={new Date(merchant.signedUpAt).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            />
+          )}
+        </div>
+        {merchant.notes && (
+          <div className="mt-5 rounded-md bg-[var(--muted)]/60 p-3">
+            <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide">
+              Notes
+            </p>
+            <p className="mt-1 text-sm">{merchant.notes}</p>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -342,10 +323,10 @@ function ConfirmationCard({
                 : ""}
               . Track your payout on the{" "}
               <Link
-                href="/affiliate-dashboard/payments"
+                href="/user-dashboard/affiliate/payments"
                 className="font-medium underline underline-offset-2"
               >
-                Payments
+                Payouts
               </Link>{" "}
               page.
             </p>
