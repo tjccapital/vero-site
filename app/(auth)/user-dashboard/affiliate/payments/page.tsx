@@ -42,9 +42,10 @@ export default function AffiliatePayoutsPage() {
     : "https://billing.stripe.com/p/login"
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 w-full">
+    <div className="mx-auto max-w-6xl space-y-6 w-full">
       <AffiliateHeader />
 
+      <div className="max-w-3xl space-y-6">
       <div className="rounded-xl border border-[var(--border)] p-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -145,6 +146,7 @@ export default function AffiliatePayoutsPage() {
         >
           Contact Support
         </Link>
+      </div>
       </div>
     </div>
   )
