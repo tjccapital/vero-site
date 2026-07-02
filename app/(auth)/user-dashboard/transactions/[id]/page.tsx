@@ -51,6 +51,7 @@ import {
 } from "@/lib/category-display"
 import { TransactionAvatar } from "@/components/transaction-avatar"
 import { ReceiptImage } from "@/components/receipt-image"
+import { CatalogMappingCard } from "@/components/catalog-mapping-card"
 
 function isPdfUrl(url: string | null | undefined): boolean {
   if (!url) return false
@@ -692,6 +693,8 @@ export default function TransactionDetailPage() {
           </div>
         </div>
       ) : null}
+
+      <CatalogMappingCard transactionId={transactionId} />
     </div>
   )
 }

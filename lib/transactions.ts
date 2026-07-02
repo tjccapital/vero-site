@@ -513,3 +513,41 @@ export function receiptItemTotalPrice(item: ReceiptItem): number | undefined {
   if (item.price !== undefined) return item.price
   return undefined
 }
+
+// --- Catalog mapping verification (GET /api/transactions/:id/catalog-match) ---
+// Surfaces how a transaction was mapped to the merchant_catalog: the brand link
+// (Stage 1 candidate outlets) and the user's outlet resolution (Stage 2).
+
+export interface CatalogMatchCandidate {
+  id: string
+  name: string
+  category: string
+  city: string
+  state: string
+  status: string
+  matchMethod?: string
+  matchConfidence?: number
+}
+
+export interface CatalogUserMatch {
+  catalogId?: string // absent = brand-level (outlet unresolved)
+  method?: string
+  confidence?: number
+}
+
+export interface CatalogMatch {
+  transactionId: string
+  merchantId?: string
+  merchantName?: string
+  transactionCity?: string
+  candidates: CatalogMatchCandidate[]
+  userMatches: CatalogUserMatch[]
+}
+
+export function fetchTransactionCatalogMatch(
+  transactionId: string
+): Promise<CatalogMatch> {
+  return getJson<CatalogMatch>(
+    `/api/transactions/${encodeURIComponent(transactionId)}/catalog-match`
+  )
+}
